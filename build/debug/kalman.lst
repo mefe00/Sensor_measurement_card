@@ -1,0 +1,1927 @@
+ARM GAS  /tmp/ccQCvMrx.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"kalman.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/kalman.c"
+  20              		.section	.text.matrix_get,"ax",%progbits
+  21              		.align	1
+  22              		.global	matrix_get
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	matrix_get:
+  28              	.LVL0:
+  29              	.LFB0:
+  30              		.file 2 "Core/Inc/matrix.h"
+   1:Core/Inc/matrix.h **** #ifndef MATRIX_H_
+   2:Core/Inc/matrix.h **** #define MATRIX_H_
+   3:Core/Inc/matrix.h **** 
+   4:Core/Inc/matrix.h **** #include <stdint.h>
+   5:Core/Inc/matrix.h **** #include "compiler.h"
+   6:Core/Inc/matrix.h **** 
+   7:Core/Inc/matrix.h **** /*!
+   8:Core/Inc/matrix.h **** * \def EXTERN_INLINE_MATRIX Helper inline to switch from local inline to extern inline
+   9:Core/Inc/matrix.h **** */
+  10:Core/Inc/matrix.h **** #ifndef EXTERN_INLINE_MATRIX
+  11:Core/Inc/matrix.h **** #define EXTERN_INLINE_MATRIX EXTERN_INLINE
+  12:Core/Inc/matrix.h **** #endif
+  13:Core/Inc/matrix.h **** 
+  14:Core/Inc/matrix.h **** /**
+  15:Core/Inc/matrix.h **** * Matrix data type definition.
+  16:Core/Inc/matrix.h **** */
+  17:Core/Inc/matrix.h **** // MCU'nun donanımsal FPU'su (Floating Point Unit) varsa, matrix_data_t'yi float olarak tanımlaya
+  18:Core/Inc/matrix.h **** typedef float matrix_data_t;
+  19:Core/Inc/matrix.h **** 
+  20:Core/Inc/matrix.h **** /**
+  21:Core/Inc/matrix.h **** * \brief Matrix definition
+  22:Core/Inc/matrix.h **** */
+  23:Core/Inc/matrix.h **** // Bu struct yapısının asıl amacı MCU'nun hantallaşmaısını engellemek içindir. Bunun içi
+  24:Core/Inc/matrix.h **** typedef struct {
+  25:Core/Inc/matrix.h ****     /**
+  26:Core/Inc/matrix.h ****     * \brief Number of rows
+  27:Core/Inc/matrix.h ****     */
+  28:Core/Inc/matrix.h ****     uint_fast8_t rows;
+ARM GAS  /tmp/ccQCvMrx.s 			page 2
+
+
+  29:Core/Inc/matrix.h **** 
+  30:Core/Inc/matrix.h ****     /**
+  31:Core/Inc/matrix.h ****     * \brief Number of columns
+  32:Core/Inc/matrix.h ****     */
+  33:Core/Inc/matrix.h ****     uint_fast8_t cols;
+  34:Core/Inc/matrix.h **** 
+  35:Core/Inc/matrix.h ****     /**
+  36:Core/Inc/matrix.h ****     * \brief Pointer to the data array of size {\see rows} x {\see cols}.
+  37:Core/Inc/matrix.h ****     */
+  38:Core/Inc/matrix.h ****     matrix_data_t *data;
+  39:Core/Inc/matrix.h **** } matrix_t;
+  40:Core/Inc/matrix.h **** 
+  41:Core/Inc/matrix.h **** /**
+  42:Core/Inc/matrix.h **** * \brief Initializes a matrix structure.
+  43:Core/Inc/matrix.h **** * \param[in] mat The matrix to initialize
+  44:Core/Inc/matrix.h **** * \param[in] rows The number of rows
+  45:Core/Inc/matrix.h **** * \param[in] cols The number of columns
+  46:Core/Inc/matrix.h **** * \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
+  47:Core/Inc/matrix.h **** */
+  48:Core/Inc/matrix.h **** void matrix_init(matrix_t *const  mat, const uint_fast8_t rows, const uint_fast8_t cols, matrix_dat
+  49:Core/Inc/matrix.h **** 
+  50:Core/Inc/matrix.h **** /**
+  51:Core/Inc/matrix.h **** * \brief Inverts a lower triangular matrix.
+  52:Core/Inc/matrix.h **** * \param[in] lower The lower triangular matrix to be inverted.
+  53:Core/Inc/matrix.h **** * \param[in] inverse The calculated inverse of the lower triangular matrix.
+  54:Core/Inc/matrix.h **** *
+  55:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  56:Core/Inc/matrix.h **** */
+  57:Core/Inc/matrix.h **** void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT inverse) HOT;
+  58:Core/Inc/matrix.h **** 
+  59:Core/Inc/matrix.h **** /*!
+  60:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref x} * {\ref b}
+  61:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  62:Core/Inc/matrix.h **** * \param[in] x Vector x
+  63:Core/Inc/matrix.h **** * \param[in] c Resulting vector C (will be overwritten)
+  64:Core/Inc/matrix.h **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+  65:Core/Inc/matrix.h **** *
+  66:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  67:Core/Inc/matrix.h **** */
+  68:Core/Inc/matrix.h **** void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matr
+  69:Core/Inc/matrix.h **** 
+  70:Core/Inc/matrix.h **** /*!
+  71:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref c} + {\ref x} * {\ref b}
+  72:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  73:Core/Inc/matrix.h **** * \param[in] x Vector x
+  74:Core/Inc/matrix.h **** * \param[in] c Resulting vector C (will be added to)
+  75:Core/Inc/matrix.h **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+  76:Core/Inc/matrix.h **** *
+  77:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  78:Core/Inc/matrix.h **** */
+  79:Core/Inc/matrix.h **** void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, m
+  80:Core/Inc/matrix.h **** 
+  81:Core/Inc/matrix.h **** /*!
+  82:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+  83:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  84:Core/Inc/matrix.h **** * \param[in] b Matrix B
+  85:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C (will be overwritten)
+ARM GAS  /tmp/ccQCvMrx.s 			page 3
+
+
+  86:Core/Inc/matrix.h **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+  87:Core/Inc/matrix.h **** *
+  88:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  89:Core/Inc/matrix.h **** */
+  90:Core/Inc/matrix.h **** void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matr
+  91:Core/Inc/matrix.h **** 
+  92:Core/Inc/matrix.h **** /*!
+  93:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication with transposed B such that {\ref c} = {\ref a} * {\ref b
+  94:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  95:Core/Inc/matrix.h **** * \param[in] b Matrix B
+  96:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C (will be overwritten)
+  97:Core/Inc/matrix.h **** *
+  98:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  99:Core/Inc/matrix.h **** */
+ 100:Core/Inc/matrix.h **** void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT 
+ 101:Core/Inc/matrix.h **** 
+ 102:Core/Inc/matrix.h **** /*!
+ 103:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication with transposed B and adds the result to {\ref c} such th
+ 104:Core/Inc/matrix.h **** * \param[in] a Matrix A
+ 105:Core/Inc/matrix.h **** * \param[in] b Matrix B
+ 106:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C (will be added to)
+ 107:Core/Inc/matrix.h **** *
+ 108:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 109:Core/Inc/matrix.h **** */
+ 110:Core/Inc/matrix.h **** void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRI
+ 111:Core/Inc/matrix.h **** 
+ 112:Core/Inc/matrix.h **** /*!
+ 113:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication with transposed B and scales the result such that {\ref c
+ 114:Core/Inc/matrix.h **** * \param[in] a Matrix A
+ 115:Core/Inc/matrix.h **** * \param[in] b Matrix B
+ 116:Core/Inc/matrix.h **** * \param[in] scale Scaling factor
+ 117:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C(will be overwritten)
+ 118:Core/Inc/matrix.h **** *
+ 119:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 120:Core/Inc/matrix.h **** */
+ 121:Core/Inc/matrix.h **** void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matri
+ 122:Core/Inc/matrix.h **** 
+ 123:Core/Inc/matrix.h **** /*!
+ 124:Core/Inc/matrix.h **** * \brief Gets a matrix element
+ 125:Core/Inc/matrix.h **** * \param[in] mat The matrix to get from
+ 126:Core/Inc/matrix.h **** * \param[in] rows The row
+ 127:Core/Inc/matrix.h **** * \param[in] cols The column
+ 128:Core/Inc/matrix.h **** * \return The value at the given cell.
+ 129:Core/Inc/matrix.h **** */
+ 130:Core/Inc/matrix.h **** PURE EXTERN_INLINE_MATRIX matrix_data_t matrix_get(const matrix_t *const mat, const register uint_f
+ 131:Core/Inc/matrix.h **** {
+  31              		.loc 2 131 1 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+ 132:Core/Inc/matrix.h ****     register uint_fast16_t address = row * mat->cols + column;
+  36              		.loc 2 132 5 view .LVU1
+  37              		.loc 2 132 47 is_stmt 0 view .LVU2
+  38 0000 4368     		ldr	r3, [r0, #4]
+  39              		.loc 2 132 28 view .LVU3
+  40 0002 01FB0322 		mla	r2, r1, r3, r2
+ARM GAS  /tmp/ccQCvMrx.s 			page 4
+
+
+  41              	.LVL1:
+ 133:Core/Inc/matrix.h ****     return mat->data[address];
+  42              		.loc 2 133 5 is_stmt 1 view .LVU4
+  43              		.loc 2 133 15 is_stmt 0 view .LVU5
+  44 0006 8368     		ldr	r3, [r0, #8]
+  45              		.loc 2 133 21 view .LVU6
+  46 0008 03EB8203 		add	r3, r3, r2, lsl #2
+ 134:Core/Inc/matrix.h **** }
+  47              		.loc 2 134 1 view .LVU7
+  48 000c 93ED000A 		vldr.32	s0, [r3]
+  49 0010 7047     		bx	lr
+  50              		.cfi_endproc
+  51              	.LFE0:
+  53              		.section	.text.matrix_set,"ax",%progbits
+  54              		.align	1
+  55              		.global	matrix_set
+  56              		.syntax unified
+  57              		.thumb
+  58              		.thumb_func
+  60              	matrix_set:
+  61              	.LVL2:
+  62              	.LFB1:
+ 135:Core/Inc/matrix.h **** 
+ 136:Core/Inc/matrix.h **** /*!
+ 137:Core/Inc/matrix.h **** * \brief Sets a matrix element
+ 138:Core/Inc/matrix.h **** * \param[in] mat The matrix to set
+ 139:Core/Inc/matrix.h **** * \param[in] rows The row
+ 140:Core/Inc/matrix.h **** * \param[in] cols The column
+ 141:Core/Inc/matrix.h **** * \param[in] value The value to set
+ 142:Core/Inc/matrix.h **** */
+ 143:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_set(matrix_t *mat, const register uint_fast8_t row, const register
+ 144:Core/Inc/matrix.h **** {
+  63              		.loc 2 144 1 is_stmt 1 view -0
+  64              		.cfi_startproc
+  65              		@ args = 0, pretend = 0, frame = 0
+  66              		@ frame_needed = 0, uses_anonymous_args = 0
+  67              		@ link register save eliminated.
+ 145:Core/Inc/matrix.h ****     register uint_fast16_t address = row * mat->cols + column;
+  68              		.loc 2 145 5 view .LVU9
+  69              		.loc 2 145 47 is_stmt 0 view .LVU10
+  70 0000 4368     		ldr	r3, [r0, #4]
+  71              		.loc 2 145 28 view .LVU11
+  72 0002 01FB0322 		mla	r2, r1, r3, r2
+  73              	.LVL3:
+ 146:Core/Inc/matrix.h ****     mat->data[address] = value;
+  74              		.loc 2 146 5 is_stmt 1 view .LVU12
+  75              		.loc 2 146 8 is_stmt 0 view .LVU13
+  76 0006 8368     		ldr	r3, [r0, #8]
+  77              		.loc 2 146 14 view .LVU14
+  78 0008 03EB8203 		add	r3, r3, r2, lsl #2
+  79              		.loc 2 146 24 view .LVU15
+  80 000c 83ED000A 		vstr.32	s0, [r3]
+ 147:Core/Inc/matrix.h **** }
+  81              		.loc 2 147 1 view .LVU16
+  82 0010 7047     		bx	lr
+  83              		.cfi_endproc
+  84              	.LFE1:
+ARM GAS  /tmp/ccQCvMrx.s 			page 5
+
+
+  86              		.section	.text.matrix_set_symmetric,"ax",%progbits
+  87              		.align	1
+  88              		.global	matrix_set_symmetric
+  89              		.syntax unified
+  90              		.thumb
+  91              		.thumb_func
+  93              	matrix_set_symmetric:
+  94              	.LVL4:
+  95              	.LFB2:
+ 148:Core/Inc/matrix.h **** 
+ 149:Core/Inc/matrix.h **** /*!
+ 150:Core/Inc/matrix.h **** * \brief Sets matrix elements in a symmetric matrix
+ 151:Core/Inc/matrix.h **** * \param[in] mat The matrix to set
+ 152:Core/Inc/matrix.h **** * \param[in] rows The row
+ 153:Core/Inc/matrix.h **** * \param[in] cols The column
+ 154:Core/Inc/matrix.h **** * \param[in] value The value to set
+ 155:Core/Inc/matrix.h **** */
+ 156:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_set_symmetric(matrix_t *mat, const register uint_fast8_t row, cons
+ 157:Core/Inc/matrix.h **** {
+  96              		.loc 2 157 1 is_stmt 1 view -0
+  97              		.cfi_startproc
+  98              		@ args = 0, pretend = 0, frame = 0
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100              		.loc 2 157 1 is_stmt 0 view .LVU18
+ 101 0000 70B5     		push	{r4, r5, r6, lr}
+ 102              		.cfi_def_cfa_offset 16
+ 103              		.cfi_offset 4, -16
+ 104              		.cfi_offset 5, -12
+ 105              		.cfi_offset 6, -8
+ 106              		.cfi_offset 14, -4
+ 107 0002 2DED028B 		vpush.64	{d8}
+ 108              		.cfi_def_cfa_offset 24
+ 109              		.cfi_offset 80, -24
+ 110              		.cfi_offset 81, -20
+ 111 0006 0446     		mov	r4, r0
+ 112 0008 0E46     		mov	r6, r1
+ 113 000a 1546     		mov	r5, r2
+ 114 000c B0EE408A 		vmov.f32	s16, s0
+ 158:Core/Inc/matrix.h ****     matrix_set(mat, row, column, value);
+ 115              		.loc 2 158 5 is_stmt 1 view .LVU19
+ 116 0010 FFF7FEFF 		bl	matrix_set
+ 117              	.LVL5:
+ 159:Core/Inc/matrix.h ****     matrix_set(mat, column, row, value);
+ 118              		.loc 2 159 5 view .LVU20
+ 119 0014 B0EE480A 		vmov.f32	s0, s16
+ 120 0018 3246     		mov	r2, r6
+ 121 001a 2946     		mov	r1, r5
+ 122 001c 2046     		mov	r0, r4
+ 123 001e FFF7FEFF 		bl	matrix_set
+ 124              	.LVL6:
+ 160:Core/Inc/matrix.h **** }
+ 125              		.loc 2 160 1 is_stmt 0 view .LVU21
+ 126 0022 BDEC028B 		vldm	sp!, {d8}
+ 127              		.cfi_restore 80
+ 128              		.cfi_restore 81
+ 129              		.cfi_def_cfa_offset 16
+ 130              	.LVL7:
+ARM GAS  /tmp/ccQCvMrx.s 			page 6
+
+
+ 131              		.loc 2 160 1 view .LVU22
+ 132 0026 70BD     		pop	{r4, r5, r6, pc}
+ 133              		.loc 2 160 1 view .LVU23
+ 134              		.cfi_endproc
+ 135              	.LFE2:
+ 137              		.section	.text.matrix_get_row_pointer,"ax",%progbits
+ 138              		.align	1
+ 139              		.global	matrix_get_row_pointer
+ 140              		.syntax unified
+ 141              		.thumb
+ 142              		.thumb_func
+ 144              	matrix_get_row_pointer:
+ 145              	.LVL8:
+ 146              	.LFB3:
+ 161:Core/Inc/matrix.h **** 
+ 162:Core/Inc/matrix.h **** /*!
+ 163:Core/Inc/matrix.h **** * \brief Gets a pointer to a matrix row
+ 164:Core/Inc/matrix.h **** * \param[in] mat The matrix to get from
+ 165:Core/Inc/matrix.h **** * \param[in] rows The row
+ 166:Core/Inc/matrix.h **** * \param[out] row_data A pointer to the given matrix row
+ 167:Core/Inc/matrix.h **** */
+ 168:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_get_row_pointer(const matrix_t *const mat, const register uint_fas
+ 169:Core/Inc/matrix.h **** {
+ 147              		.loc 2 169 1 is_stmt 1 view -0
+ 148              		.cfi_startproc
+ 149              		@ args = 0, pretend = 0, frame = 0
+ 150              		@ frame_needed = 0, uses_anonymous_args = 0
+ 151              		@ link register save eliminated.
+ 170:Core/Inc/matrix.h ****     register uint_fast16_t address = row * mat->cols;
+ 152              		.loc 2 170 5 view .LVU25
+ 153              		.loc 2 170 47 is_stmt 0 view .LVU26
+ 154 0000 4368     		ldr	r3, [r0, #4]
+ 155              		.loc 2 170 28 view .LVU27
+ 156 0002 01FB03F3 		mul	r3, r1, r3
+ 157              	.LVL9:
+ 171:Core/Inc/matrix.h ****     *row_data = &mat->data[address];
+ 158              		.loc 2 171 5 is_stmt 1 view .LVU28
+ 159              		.loc 2 171 21 is_stmt 0 view .LVU29
+ 160 0006 8168     		ldr	r1, [r0, #8]
+ 161              	.LVL10:
+ 162              		.loc 2 171 17 view .LVU30
+ 163 0008 01EB8301 		add	r1, r1, r3, lsl #2
+ 164              		.loc 2 171 15 view .LVU31
+ 165 000c 1160     		str	r1, [r2]
+ 172:Core/Inc/matrix.h **** }
+ 166              		.loc 2 172 1 view .LVU32
+ 167 000e 7047     		bx	lr
+ 168              		.cfi_endproc
+ 169              	.LFE3:
+ 171              		.section	.text.matrix_get_column_copy,"ax",%progbits
+ 172              		.align	1
+ 173              		.global	matrix_get_column_copy
+ 174              		.syntax unified
+ 175              		.thumb
+ 176              		.thumb_func
+ 178              	matrix_get_column_copy:
+ 179              	.LVL11:
+ARM GAS  /tmp/ccQCvMrx.s 			page 7
+
+
+ 180              	.LFB4:
+ 173:Core/Inc/matrix.h **** 
+ 174:Core/Inc/matrix.h **** /*!
+ 175:Core/Inc/matrix.h **** * \brief Gets a copy of a matrix column
+ 176:Core/Inc/matrix.h **** * \param[in] mat The matrix to initialize
+ 177:Core/Inc/matrix.h **** * \param[in] rows The column
+ 178:Core/Inc/matrix.h **** * \param[in] row_data Pointer to an array of the correct length to hold a column of matrix {\ref ma
+ 179:Core/Inc/matrix.h **** */
+ 180:Core/Inc/matrix.h **** HOT EXTERN_INLINE_MATRIX void matrix_get_column_copy(const matrix_t *const mat, const register uint
+ 181:Core/Inc/matrix.h **** {
+ 181              		.loc 2 181 1 is_stmt 1 view -0
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 0
+ 184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 185              		.loc 2 181 1 is_stmt 0 view .LVU34
+ 186 0000 30B5     		push	{r4, r5, lr}
+ 187              		.cfi_def_cfa_offset 12
+ 188              		.cfi_offset 4, -12
+ 189              		.cfi_offset 5, -8
+ 190              		.cfi_offset 14, -4
+ 182:Core/Inc/matrix.h ****     // start from the back, so target index is equal to the index of the last row.
+ 183:Core/Inc/matrix.h ****     register uint_fast8_t target_index = mat->rows - 1;
+ 191              		.loc 2 183 5 is_stmt 1 view .LVU35
+ 192              		.loc 2 183 45 is_stmt 0 view .LVU36
+ 193 0002 0368     		ldr	r3, [r0]
+ 194              		.loc 2 183 27 view .LVU37
+ 195 0004 013B     		subs	r3, r3, #1
+ 196              	.LVL12:
+ 184:Core/Inc/matrix.h **** 
+ 185:Core/Inc/matrix.h ****     // also, the source index is the column..th index
+ 186:Core/Inc/matrix.h ****     const register int_fast16_t stride = mat->cols;
+ 197              		.loc 2 186 5 is_stmt 1 view .LVU38
+ 198              		.loc 2 186 45 is_stmt 0 view .LVU39
+ 199 0006 4468     		ldr	r4, [r0, #4]
+ 200              	.LVL13:
+ 187:Core/Inc/matrix.h ****     register int_fast16_t source_index = target_index * stride + column;
+ 201              		.loc 2 187 5 is_stmt 1 view .LVU40
+ 202              		.loc 2 187 64 is_stmt 0 view .LVU41
+ 203 0008 03FB0411 		mla	r1, r3, r4, r1
+ 204              	.LVL14:
+ 188:Core/Inc/matrix.h **** 
+ 189:Core/Inc/matrix.h ****     // fetch data
+ 190:Core/Inc/matrix.h ****     row_data[target_index] = mat->data[source_index];
+ 205              		.loc 2 190 5 is_stmt 1 view .LVU42
+ 206              		.loc 2 190 13 is_stmt 0 view .LVU43
+ 207 000c 02EB830E 		add	lr, r2, r3, lsl #2
+ 208              		.loc 2 190 39 view .LVU44
+ 209 0010 8568     		ldr	r5, [r0, #8]
+ 210 0012 05EB810C 		add	ip, r5, r1, lsl #2
+ 211 0016 DCF800C0 		ldr	ip, [ip]	@ float
+ 212              		.loc 2 190 28 view .LVU45
+ 213 001a CEF800C0 		str	ip, [lr]	@ float
+ 191:Core/Inc/matrix.h ****     while (target_index != 0)
+ 214              		.loc 2 191 5 is_stmt 1 view .LVU46
+ 215              		.loc 2 191 11 is_stmt 0 view .LVU47
+ 216 001e 0AE0     		b	.L7
+ 217              	.L8:
+ARM GAS  /tmp/ccQCvMrx.s 			page 8
+
+
+ 192:Core/Inc/matrix.h ****     {
+ 193:Core/Inc/matrix.h ****         --target_index;
+ 218              		.loc 2 193 9 is_stmt 1 view .LVU48
+ 219 0020 013B     		subs	r3, r3, #1
+ 220              	.LVL15:
+ 194:Core/Inc/matrix.h ****         source_index -= stride;
+ 221              		.loc 2 194 9 view .LVU49
+ 222              		.loc 2 194 22 is_stmt 0 view .LVU50
+ 223 0022 091B     		subs	r1, r1, r4
+ 224              	.LVL16:
+ 195:Core/Inc/matrix.h **** 
+ 196:Core/Inc/matrix.h ****         row_data[target_index] = mat->data[source_index];
+ 225              		.loc 2 196 9 is_stmt 1 view .LVU51
+ 226              		.loc 2 196 17 is_stmt 0 view .LVU52
+ 227 0024 02EB830E 		add	lr, r2, r3, lsl #2
+ 228              		.loc 2 196 43 view .LVU53
+ 229 0028 8568     		ldr	r5, [r0, #8]
+ 230 002a 05EB810C 		add	ip, r5, r1, lsl #2
+ 231 002e DCF800C0 		ldr	ip, [ip]	@ float
+ 232              		.loc 2 196 32 view .LVU54
+ 233 0032 CEF800C0 		str	ip, [lr]	@ float
+ 234              	.L7:
+ 191:Core/Inc/matrix.h ****     {
+ 235              		.loc 2 191 25 is_stmt 1 view .LVU55
+ 236 0036 002B     		cmp	r3, #0
+ 237 0038 F2D1     		bne	.L8
+ 197:Core/Inc/matrix.h ****     }
+ 198:Core/Inc/matrix.h **** }
+ 238              		.loc 2 198 1 is_stmt 0 view .LVU56
+ 239 003a 30BD     		pop	{r4, r5, pc}
+ 240              		.loc 2 198 1 view .LVU57
+ 241              		.cfi_endproc
+ 242              	.LFE4:
+ 244              		.section	.text.matrix_get_row_copy,"ax",%progbits
+ 245              		.align	1
+ 246              		.global	matrix_get_row_copy
+ 247              		.syntax unified
+ 248              		.thumb
+ 249              		.thumb_func
+ 251              	matrix_get_row_copy:
+ 252              	.LVL17:
+ 253              	.LFB5:
+ 199:Core/Inc/matrix.h **** 
+ 200:Core/Inc/matrix.h **** /*!
+ 201:Core/Inc/matrix.h **** * \brief Gets a copy of a matrix row
+ 202:Core/Inc/matrix.h **** * \param[in] mat The matrix to initialize
+ 203:Core/Inc/matrix.h **** * \param[in] rows The row
+ 204:Core/Inc/matrix.h **** * \param[in] row_data Pointer to an array of the correct length to hold a row of matrix {\ref mat}.
+ 205:Core/Inc/matrix.h **** */
+ 206:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, const register uint_fast8_
+ 207:Core/Inc/matrix.h **** {
+ 254              		.loc 2 207 1 is_stmt 1 view -0
+ 255              		.cfi_startproc
+ 256              		@ args = 0, pretend = 0, frame = 0
+ 257              		@ frame_needed = 0, uses_anonymous_args = 0
+ 258              		@ link register save eliminated.
+ 259              		.loc 2 207 1 is_stmt 0 view .LVU59
+ARM GAS  /tmp/ccQCvMrx.s 			page 9
+
+
+ 260 0000 30B4     		push	{r4, r5}
+ 261              		.cfi_def_cfa_offset 8
+ 262              		.cfi_offset 4, -8
+ 263              		.cfi_offset 5, -4
+ 208:Core/Inc/matrix.h ****     register uint_fast8_t target_index = mat->cols - 1;
+ 264              		.loc 2 208 5 is_stmt 1 view .LVU60
+ 265              		.loc 2 208 45 is_stmt 0 view .LVU61
+ 266 0002 4468     		ldr	r4, [r0, #4]
+ 267              		.loc 2 208 27 view .LVU62
+ 268 0004 631E     		subs	r3, r4, #1
+ 269              	.LVL18:
+ 209:Core/Inc/matrix.h ****     register int_fast16_t source_index = (row + 1) * mat->cols - 1;
+ 270              		.loc 2 209 5 is_stmt 1 view .LVU63
+ 271              		.loc 2 209 52 is_stmt 0 view .LVU64
+ 272 0006 01FB0444 		mla	r4, r1, r4, r4
+ 273              		.loc 2 209 64 view .LVU65
+ 274 000a 611E     		subs	r1, r4, #1
+ 275              	.LVL19:
+ 210:Core/Inc/matrix.h **** 
+ 211:Core/Inc/matrix.h ****     // fetch data
+ 212:Core/Inc/matrix.h ****     row_data[target_index] = mat->data[source_index];
+ 276              		.loc 2 212 5 is_stmt 1 view .LVU66
+ 277              		.loc 2 212 33 is_stmt 0 view .LVU67
+ 278 000c 8468     		ldr	r4, [r0, #8]
+ 279              		.loc 2 212 13 view .LVU68
+ 280 000e 02EB830C 		add	ip, r2, r3, lsl #2
+ 281              		.loc 2 212 39 view .LVU69
+ 282 0012 04EB8104 		add	r4, r4, r1, lsl #2
+ 283 0016 2468     		ldr	r4, [r4]	@ float
+ 284              		.loc 2 212 28 view .LVU70
+ 285 0018 CCF80040 		str	r4, [ip]	@ float
+ 213:Core/Inc/matrix.h ****     while (target_index != 0)
+ 286              		.loc 2 213 5 is_stmt 1 view .LVU71
+ 287              		.loc 2 213 11 is_stmt 0 view .LVU72
+ 288 001c 0AE0     		b	.L11
+ 289              	.L12:
+ 214:Core/Inc/matrix.h ****     {
+ 215:Core/Inc/matrix.h ****         --target_index;
+ 290              		.loc 2 215 9 is_stmt 1 view .LVU73
+ 291 001e 013B     		subs	r3, r3, #1
+ 292              	.LVL20:
+ 216:Core/Inc/matrix.h ****         --source_index;
+ 293              		.loc 2 216 9 view .LVU74
+ 294 0020 0139     		subs	r1, r1, #1
+ 295              	.LVL21:
+ 217:Core/Inc/matrix.h ****         row_data[target_index] = mat->data[source_index];
+ 296              		.loc 2 217 9 view .LVU75
+ 297              		.loc 2 217 17 is_stmt 0 view .LVU76
+ 298 0022 02EB8304 		add	r4, r2, r3, lsl #2
+ 299              		.loc 2 217 43 view .LVU77
+ 300 0026 8568     		ldr	r5, [r0, #8]
+ 301 0028 05EB810C 		add	ip, r5, r1, lsl #2
+ 302 002c DCF800C0 		ldr	ip, [ip]	@ float
+ 303              		.loc 2 217 32 view .LVU78
+ 304 0030 C4F800C0 		str	ip, [r4]	@ float
+ 305              	.L11:
+ 213:Core/Inc/matrix.h ****     {
+ARM GAS  /tmp/ccQCvMrx.s 			page 10
+
+
+ 306              		.loc 2 213 25 is_stmt 1 view .LVU79
+ 307 0034 002B     		cmp	r3, #0
+ 308 0036 F2D1     		bne	.L12
+ 218:Core/Inc/matrix.h ****     }
+ 219:Core/Inc/matrix.h **** }
+ 309              		.loc 2 219 1 is_stmt 0 view .LVU80
+ 310 0038 30BC     		pop	{r4, r5}
+ 311              		.cfi_restore 5
+ 312              		.cfi_restore 4
+ 313              		.cfi_def_cfa_offset 0
+ 314 003a 7047     		bx	lr
+ 315              		.cfi_endproc
+ 316              	.LFE5:
+ 318              		.section	.text.matrix_copy,"ax",%progbits
+ 319              		.align	1
+ 320              		.global	matrix_copy
+ 321              		.syntax unified
+ 322              		.thumb
+ 323              		.thumb_func
+ 325              	matrix_copy:
+ 326              	.LVL22:
+ 327              	.LFB6:
+ 220:Core/Inc/matrix.h **** 
+ 221:Core/Inc/matrix.h **** /*!
+ 222:Core/Inc/matrix.h **** * \brief Copies the matrix from {\ref mat} to {\ref target}
+ 223:Core/Inc/matrix.h **** * \param[in] mat The matrix to copy
+ 224:Core/Inc/matrix.h **** * \param[in] target The matrix to copy to
+ 225:Core/Inc/matrix.h **** */
+ 226:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_copy(const matrix_t *const mat, matrix_t *const target)
+ 227:Core/Inc/matrix.h **** {
+ 328              		.loc 2 227 1 is_stmt 1 view -0
+ 329              		.cfi_startproc
+ 330              		@ args = 0, pretend = 0, frame = 0
+ 331              		@ frame_needed = 0, uses_anonymous_args = 0
+ 332              		@ link register save eliminated.
+ 333              		.loc 2 227 1 is_stmt 0 view .LVU82
+ 334 0000 10B4     		push	{r4}
+ 335              		.cfi_def_cfa_offset 4
+ 336              		.cfi_offset 4, -4
+ 228:Core/Inc/matrix.h ****     register const uint_fast16_t count = mat->cols * mat->rows;
+ 337              		.loc 2 228 5 is_stmt 1 view .LVU83
+ 338              		.loc 2 228 45 is_stmt 0 view .LVU84
+ 339 0002 4368     		ldr	r3, [r0, #4]
+ 340              		.loc 2 228 57 view .LVU85
+ 341 0004 0268     		ldr	r2, [r0]
+ 342              		.loc 2 228 34 view .LVU86
+ 343 0006 02FB03F3 		mul	r3, r2, r3
+ 344              	.LVL23:
+ 229:Core/Inc/matrix.h ****     register int_fast16_t index = 0;
+ 345              		.loc 2 229 5 is_stmt 1 view .LVU87
+ 230:Core/Inc/matrix.h **** 
+ 231:Core/Inc/matrix.h ****     const matrix_data_t *RESTRICT const A = mat->data;
+ 346              		.loc 2 231 5 view .LVU88
+ 347              		.loc 2 231 41 is_stmt 0 view .LVU89
+ 348 000a 8468     		ldr	r4, [r0, #8]
+ 349              	.LVL24:
+ 232:Core/Inc/matrix.h ****     matrix_data_t *RESTRICT const B = target->data;
+ARM GAS  /tmp/ccQCvMrx.s 			page 11
+
+
+ 350              		.loc 2 232 5 is_stmt 1 view .LVU90
+ 351              		.loc 2 232 35 is_stmt 0 view .LVU91
+ 352 000c 8868     		ldr	r0, [r1, #8]
+ 353              	.LVL25:
+ 233:Core/Inc/matrix.h **** 
+ 234:Core/Inc/matrix.h ****     // fetch data
+ 235:Core/Inc/matrix.h ****     for (index = count - 1; index >= 0; --index)
+ 354              		.loc 2 235 5 is_stmt 1 view .LVU92
+ 355              		.loc 2 235 24 is_stmt 0 view .LVU93
+ 356 000e 013B     		subs	r3, r3, #1
+ 357              	.LVL26:
+ 358              		.loc 2 235 5 view .LVU94
+ 359 0010 06E0     		b	.L15
+ 360              	.LVL27:
+ 361              	.L16:
+ 236:Core/Inc/matrix.h ****     {
+ 237:Core/Inc/matrix.h ****         B[index] = A[index];
+ 362              		.loc 2 237 9 is_stmt 1 view .LVU95
+ 363              		.loc 2 237 10 is_stmt 0 view .LVU96
+ 364 0012 00EB8302 		add	r2, r0, r3, lsl #2
+ 365              		.loc 2 237 21 view .LVU97
+ 366 0016 04EB8301 		add	r1, r4, r3, lsl #2
+ 367 001a 0968     		ldr	r1, [r1]	@ float
+ 368              		.loc 2 237 18 view .LVU98
+ 369 001c 1160     		str	r1, [r2]	@ float
+ 235:Core/Inc/matrix.h ****     {
+ 370              		.loc 2 235 41 is_stmt 1 discriminator 3 view .LVU99
+ 371 001e 013B     		subs	r3, r3, #1
+ 372              	.LVL28:
+ 373              	.L15:
+ 235:Core/Inc/matrix.h ****     {
+ 374              		.loc 2 235 35 discriminator 1 view .LVU100
+ 375 0020 002B     		cmp	r3, #0
+ 376 0022 F6DA     		bge	.L16
+ 238:Core/Inc/matrix.h ****     }
+ 239:Core/Inc/matrix.h **** }
+ 377              		.loc 2 239 1 is_stmt 0 view .LVU101
+ 378 0024 5DF8044B 		ldr	r4, [sp], #4
+ 379              		.cfi_restore 4
+ 380              		.cfi_def_cfa_offset 0
+ 381              	.LVL29:
+ 382              		.loc 2 239 1 view .LVU102
+ 383 0028 7047     		bx	lr
+ 384              		.cfi_endproc
+ 385              	.LFE6:
+ 387              		.section	.text.matrix_sub,"ax",%progbits
+ 388              		.align	1
+ 389              		.global	matrix_sub
+ 390              		.syntax unified
+ 391              		.thumb
+ 392              		.thumb_func
+ 394              	matrix_sub:
+ 395              	.LVL30:
+ 396              	.LFB7:
+ 240:Core/Inc/matrix.h **** 
+ 241:Core/Inc/matrix.h **** /*!
+ 242:Core/Inc/matrix.h **** * \brief Subtracts two matrices, using {\ref c} = {\ref a} - {\ref b}
+ARM GAS  /tmp/ccQCvMrx.s 			page 12
+
+
+ 243:Core/Inc/matrix.h **** * \param[in] a The matrix to subtract from
+ 244:Core/Inc/matrix.h **** * \param[in] b The values to subtract
+ 245:Core/Inc/matrix.h **** * \param[in] c The output
+ 246:Core/Inc/matrix.h **** */
+ 247:Core/Inc/matrix.h **** HOT EXTERN_INLINE_MATRIX void matrix_sub(const matrix_t *const a, matrix_t *const b, const matrix_t
+ 248:Core/Inc/matrix.h **** {
+ 397              		.loc 2 248 1 is_stmt 1 view -0
+ 398              		.cfi_startproc
+ 399              		@ args = 0, pretend = 0, frame = 0
+ 400              		@ frame_needed = 0, uses_anonymous_args = 0
+ 401              		@ link register save eliminated.
+ 402              		.loc 2 248 1 is_stmt 0 view .LVU104
+ 403 0000 10B4     		push	{r4}
+ 404              		.cfi_def_cfa_offset 4
+ 405              		.cfi_offset 4, -4
+ 249:Core/Inc/matrix.h ****     register const uint_fast16_t count = a->cols * a->rows;
+ 406              		.loc 2 249 5 is_stmt 1 view .LVU105
+ 407              		.loc 2 249 43 is_stmt 0 view .LVU106
+ 408 0002 4368     		ldr	r3, [r0, #4]
+ 409              		.loc 2 249 53 view .LVU107
+ 410 0004 0468     		ldr	r4, [r0]
+ 411              		.loc 2 249 34 view .LVU108
+ 412 0006 04FB03F3 		mul	r3, r4, r3
+ 413              	.LVL31:
+ 250:Core/Inc/matrix.h ****     register int_fast16_t index = 0;
+ 414              		.loc 2 250 5 is_stmt 1 view .LVU109
+ 251:Core/Inc/matrix.h **** 
+ 252:Core/Inc/matrix.h ****     matrix_data_t *RESTRICT const A = a->data;
+ 415              		.loc 2 252 5 view .LVU110
+ 416              		.loc 2 252 35 is_stmt 0 view .LVU111
+ 417 000a 8468     		ldr	r4, [r0, #8]
+ 418              	.LVL32:
+ 253:Core/Inc/matrix.h ****     matrix_data_t *const B = b->data;
+ 419              		.loc 2 253 5 is_stmt 1 view .LVU112
+ 420              		.loc 2 253 26 is_stmt 0 view .LVU113
+ 421 000c 8868     		ldr	r0, [r1, #8]
+ 422              	.LVL33:
+ 254:Core/Inc/matrix.h ****     matrix_data_t *C = c->data;
+ 423              		.loc 2 254 5 is_stmt 1 view .LVU114
+ 424              		.loc 2 254 20 is_stmt 0 view .LVU115
+ 425 000e 9168     		ldr	r1, [r2, #8]
+ 426              	.LVL34:
+ 255:Core/Inc/matrix.h **** 
+ 256:Core/Inc/matrix.h ****     // subtract data
+ 257:Core/Inc/matrix.h ****     for (index = count - 1; index >= 0; --index)
+ 427              		.loc 2 257 5 is_stmt 1 view .LVU116
+ 428              		.loc 2 257 24 is_stmt 0 view .LVU117
+ 429 0010 013B     		subs	r3, r3, #1
+ 430              	.LVL35:
+ 431              		.loc 2 257 5 view .LVU118
+ 432 0012 0EE0     		b	.L19
+ 433              	.LVL36:
+ 434              	.L20:
+ 258:Core/Inc/matrix.h ****     {
+ 259:Core/Inc/matrix.h ****         C[index] = A[index] - B[index];
+ 435              		.loc 2 259 9 is_stmt 1 view .LVU119
+ 436              		.loc 2 259 21 is_stmt 0 view .LVU120
+ARM GAS  /tmp/ccQCvMrx.s 			page 13
+
+
+ 437 0014 04EB8302 		add	r2, r4, r3, lsl #2
+ 438 0018 D2ED007A 		vldr.32	s15, [r2]
+ 439              		.loc 2 259 32 view .LVU121
+ 440 001c 00EB8302 		add	r2, r0, r3, lsl #2
+ 441 0020 92ED007A 		vldr.32	s14, [r2]
+ 442              		.loc 2 259 10 view .LVU122
+ 443 0024 01EB8302 		add	r2, r1, r3, lsl #2
+ 444              		.loc 2 259 29 view .LVU123
+ 445 0028 77EEC77A 		vsub.f32	s15, s15, s14
+ 446              		.loc 2 259 18 view .LVU124
+ 447 002c C2ED007A 		vstr.32	s15, [r2]
+ 257:Core/Inc/matrix.h ****     {
+ 448              		.loc 2 257 41 is_stmt 1 discriminator 3 view .LVU125
+ 449 0030 013B     		subs	r3, r3, #1
+ 450              	.LVL37:
+ 451              	.L19:
+ 257:Core/Inc/matrix.h ****     {
+ 452              		.loc 2 257 35 discriminator 1 view .LVU126
+ 453 0032 002B     		cmp	r3, #0
+ 454 0034 EEDA     		bge	.L20
+ 260:Core/Inc/matrix.h ****     }
+ 261:Core/Inc/matrix.h **** }
+ 455              		.loc 2 261 1 is_stmt 0 view .LVU127
+ 456 0036 5DF8044B 		ldr	r4, [sp], #4
+ 457              		.cfi_restore 4
+ 458              		.cfi_def_cfa_offset 0
+ 459              	.LVL38:
+ 460              		.loc 2 261 1 view .LVU128
+ 461 003a 7047     		bx	lr
+ 462              		.cfi_endproc
+ 463              	.LFE7:
+ 465              		.section	.text.matrix_sub_inplace_b,"ax",%progbits
+ 466              		.align	1
+ 467              		.global	matrix_sub_inplace_b
+ 468              		.syntax unified
+ 469              		.thumb
+ 470              		.thumb_func
+ 472              	matrix_sub_inplace_b:
+ 473              	.LVL39:
+ 474              	.LFB8:
+ 262:Core/Inc/matrix.h **** 
+ 263:Core/Inc/matrix.h **** /*!
+ 264:Core/Inc/matrix.h **** * \brief Subtracts two matrices in place, using {\ref b} = {\ref a} - {\ref b}
+ 265:Core/Inc/matrix.h **** * \param[in] a The matrix to subtract from
+ 266:Core/Inc/matrix.h **** * \param[in] b The values to subtract, also the output
+ 267:Core/Inc/matrix.h **** */
+ 268:Core/Inc/matrix.h **** HOT EXTERN_INLINE_MATRIX void matrix_sub_inplace_b(const matrix_t *RESTRICT const a, const matrix_t
+ 269:Core/Inc/matrix.h **** {
+ 475              		.loc 2 269 1 is_stmt 1 view -0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 479              		@ link register save eliminated.
+ 270:Core/Inc/matrix.h ****     register const uint_fast16_t count = a->cols * a->rows;
+ 480              		.loc 2 270 5 view .LVU130
+ 481              		.loc 2 270 43 is_stmt 0 view .LVU131
+ 482 0000 4368     		ldr	r3, [r0, #4]
+ARM GAS  /tmp/ccQCvMrx.s 			page 14
+
+
+ 483              		.loc 2 270 53 view .LVU132
+ 484 0002 0268     		ldr	r2, [r0]
+ 485              		.loc 2 270 34 view .LVU133
+ 486 0004 02FB03F3 		mul	r3, r2, r3
+ 487              	.LVL40:
+ 271:Core/Inc/matrix.h ****     register int_fast16_t index = 0;
+ 488              		.loc 2 271 5 is_stmt 1 view .LVU134
+ 272:Core/Inc/matrix.h **** 
+ 273:Core/Inc/matrix.h ****     matrix_data_t *RESTRICT const A = a->data;
+ 489              		.loc 2 273 5 view .LVU135
+ 490              		.loc 2 273 35 is_stmt 0 view .LVU136
+ 491 0008 8068     		ldr	r0, [r0, #8]
+ 492              	.LVL41:
+ 274:Core/Inc/matrix.h ****     matrix_data_t *RESTRICT B = b->data;
+ 493              		.loc 2 274 5 is_stmt 1 view .LVU137
+ 494              		.loc 2 274 29 is_stmt 0 view .LVU138
+ 495 000a 8968     		ldr	r1, [r1, #8]
+ 496              	.LVL42:
+ 275:Core/Inc/matrix.h **** 
+ 276:Core/Inc/matrix.h ****     // subtract data
+ 277:Core/Inc/matrix.h ****     for (index = count - 1; index >= 0; --index)
+ 497              		.loc 2 277 5 is_stmt 1 view .LVU139
+ 498              		.loc 2 277 24 is_stmt 0 view .LVU140
+ 499 000c 013B     		subs	r3, r3, #1
+ 500              	.LVL43:
+ 501              		.loc 2 277 5 view .LVU141
+ 502 000e 0CE0     		b	.L23
+ 503              	.LVL44:
+ 504              	.L24:
+ 278:Core/Inc/matrix.h ****     {
+ 279:Core/Inc/matrix.h ****         B[index] = A[index] - B[index];
+ 505              		.loc 2 279 9 is_stmt 1 view .LVU142
+ 506              		.loc 2 279 21 is_stmt 0 view .LVU143
+ 507 0010 00EB8302 		add	r2, r0, r3, lsl #2
+ 508 0014 D2ED007A 		vldr.32	s15, [r2]
+ 509              		.loc 2 279 32 view .LVU144
+ 510 0018 01EB8302 		add	r2, r1, r3, lsl #2
+ 511 001c 92ED007A 		vldr.32	s14, [r2]
+ 512              		.loc 2 279 29 view .LVU145
+ 513 0020 77EEC77A 		vsub.f32	s15, s15, s14
+ 514              		.loc 2 279 18 view .LVU146
+ 515 0024 C2ED007A 		vstr.32	s15, [r2]
+ 277:Core/Inc/matrix.h ****     {
+ 516              		.loc 2 277 41 is_stmt 1 discriminator 3 view .LVU147
+ 517 0028 013B     		subs	r3, r3, #1
+ 518              	.LVL45:
+ 519              	.L23:
+ 277:Core/Inc/matrix.h ****     {
+ 520              		.loc 2 277 35 discriminator 1 view .LVU148
+ 521 002a 002B     		cmp	r3, #0
+ 522 002c F0DA     		bge	.L24
+ 280:Core/Inc/matrix.h ****     }
+ 281:Core/Inc/matrix.h **** }
+ 523              		.loc 2 281 1 is_stmt 0 view .LVU149
+ 524 002e 7047     		bx	lr
+ 525              		.cfi_endproc
+ 526              	.LFE8:
+ARM GAS  /tmp/ccQCvMrx.s 			page 15
+
+
+ 528              		.section	.text.matrix_add_inplace,"ax",%progbits
+ 529              		.align	1
+ 530              		.global	matrix_add_inplace
+ 531              		.syntax unified
+ 532              		.thumb
+ 533              		.thumb_func
+ 535              	matrix_add_inplace:
+ 536              	.LVL46:
+ 537              	.LFB9:
+ 282:Core/Inc/matrix.h **** 
+ 283:Core/Inc/matrix.h **** /*!
+ 284:Core/Inc/matrix.h **** * \brief Adds two matrices in place, using {\ref b} = {\ref a} + {\ref b}
+ 285:Core/Inc/matrix.h **** * \param[in] a The matrix to add to, also the output
+ 286:Core/Inc/matrix.h **** * \param[in] b The values to add
+ 287:Core/Inc/matrix.h **** */
+ 288:Core/Inc/matrix.h **** HOT EXTERN_INLINE_MATRIX void matrix_add_inplace(const matrix_t * a, const matrix_t *const b)
+ 289:Core/Inc/matrix.h **** {
+ 538              		.loc 2 289 1 is_stmt 1 view -0
+ 539              		.cfi_startproc
+ 540              		@ args = 0, pretend = 0, frame = 0
+ 541              		@ frame_needed = 0, uses_anonymous_args = 0
+ 542              		@ link register save eliminated.
+ 543              		.loc 2 289 1 is_stmt 0 view .LVU151
+ 544 0000 10B4     		push	{r4}
+ 545              		.cfi_def_cfa_offset 4
+ 546              		.cfi_offset 4, -4
+ 290:Core/Inc/matrix.h ****     register const uint_fast16_t count = a->cols * a->rows;
+ 547              		.loc 2 290 5 is_stmt 1 view .LVU152
+ 548              		.loc 2 290 43 is_stmt 0 view .LVU153
+ 549 0002 4368     		ldr	r3, [r0, #4]
+ 550              		.loc 2 290 53 view .LVU154
+ 551 0004 0268     		ldr	r2, [r0]
+ 552              		.loc 2 290 34 view .LVU155
+ 553 0006 02FB03F3 		mul	r3, r2, r3
+ 554              	.LVL47:
+ 291:Core/Inc/matrix.h ****     register int_fast16_t index = 0;
+ 555              		.loc 2 291 5 is_stmt 1 view .LVU156
+ 292:Core/Inc/matrix.h **** 
+ 293:Core/Inc/matrix.h ****     matrix_data_t *RESTRICT A = a->data;
+ 556              		.loc 2 293 5 view .LVU157
+ 557              		.loc 2 293 29 is_stmt 0 view .LVU158
+ 558 000a 8468     		ldr	r4, [r0, #8]
+ 559              	.LVL48:
+ 294:Core/Inc/matrix.h ****     matrix_data_t *RESTRICT const B = b->data;
+ 560              		.loc 2 294 5 is_stmt 1 view .LVU159
+ 561              		.loc 2 294 35 is_stmt 0 view .LVU160
+ 562 000c 8868     		ldr	r0, [r1, #8]
+ 563              	.LVL49:
+ 295:Core/Inc/matrix.h **** 
+ 296:Core/Inc/matrix.h ****     // subtract data
+ 297:Core/Inc/matrix.h ****     for (index = count - 1; index >= 0; --index)
+ 564              		.loc 2 297 5 is_stmt 1 view .LVU161
+ 565              		.loc 2 297 24 is_stmt 0 view .LVU162
+ 566 000e 013B     		subs	r3, r3, #1
+ 567              	.LVL50:
+ 568              		.loc 2 297 5 view .LVU163
+ 569 0010 0CE0     		b	.L26
+ARM GAS  /tmp/ccQCvMrx.s 			page 16
+
+
+ 570              	.LVL51:
+ 571              	.L27:
+ 298:Core/Inc/matrix.h ****     {
+ 299:Core/Inc/matrix.h ****         A[index] += B[index];
+ 572              		.loc 2 299 9 is_stmt 1 view .LVU164
+ 573              		.loc 2 299 10 is_stmt 0 view .LVU165
+ 574 0012 04EB8302 		add	r2, r4, r3, lsl #2
+ 575 0016 D2ED007A 		vldr.32	s15, [r2]
+ 576              		.loc 2 299 22 view .LVU166
+ 577 001a 00EB8301 		add	r1, r0, r3, lsl #2
+ 578 001e 91ED007A 		vldr.32	s14, [r1]
+ 579              		.loc 2 299 18 view .LVU167
+ 580 0022 77EE877A 		vadd.f32	s15, s15, s14
+ 581 0026 C2ED007A 		vstr.32	s15, [r2]
+ 297:Core/Inc/matrix.h ****     {
+ 582              		.loc 2 297 41 is_stmt 1 discriminator 3 view .LVU168
+ 583 002a 013B     		subs	r3, r3, #1
+ 584              	.LVL52:
+ 585              	.L26:
+ 297:Core/Inc/matrix.h ****     {
+ 586              		.loc 2 297 35 discriminator 1 view .LVU169
+ 587 002c 002B     		cmp	r3, #0
+ 588 002e F0DA     		bge	.L27
+ 300:Core/Inc/matrix.h ****     }
+ 301:Core/Inc/matrix.h **** }
+ 589              		.loc 2 301 1 is_stmt 0 view .LVU170
+ 590 0030 5DF8044B 		ldr	r4, [sp], #4
+ 591              		.cfi_restore 4
+ 592              		.cfi_def_cfa_offset 0
+ 593              	.LVL53:
+ 594              		.loc 2 301 1 view .LVU171
+ 595 0034 7047     		bx	lr
+ 596              		.cfi_endproc
+ 597              	.LFE9:
+ 599              		.section	.text.kalman_filter_initialize,"ax",%progbits
+ 600              		.align	1
+ 601              		.global	kalman_filter_initialize
+ 602              		.syntax unified
+ 603              		.thumb
+ 604              		.thumb_func
+ 606              	kalman_filter_initialize:
+ 607              	.LVL54:
+ 608              	.LFB21:
+   1:Core/Src/kalman.c **** #include <stdint.h>
+   2:Core/Src/kalman.c **** #include <assert.h>
+   3:Core/Src/kalman.c **** 
+   4:Core/Src/kalman.c **** #include "cholesky.h"
+   5:Core/Src/kalman.c **** 
+   6:Core/Src/kalman.c **** #define EXTERN_INLINE_MATRIX static INLINE
+   7:Core/Src/kalman.c **** #define EXTERN_INLINE_KALMAN static INLINE
+   8:Core/Src/kalman.c **** #include "kalman.h"
+   9:Core/Src/kalman.c **** 
+  10:Core/Src/kalman.c **** /*!
+  11:Core/Src/kalman.c **** * \brief Initializes the Kalman Filter
+  12:Core/Src/kalman.c **** * \param[in] kf The Kalman Filter structure to initialize
+  13:Core/Src/kalman.c **** * \param[in] num_states The number of state variables
+  14:Core/Src/kalman.c **** * \param[in] num_inputs The number of input variables
+ARM GAS  /tmp/ccQCvMrx.s 			page 17
+
+
+  15:Core/Src/kalman.c **** * \param[in] A The state transition matrix ({\ref num_states} x {\ref num_states})
+  16:Core/Src/kalman.c **** * \param[in] x The state vector ({\ref num_states} x \c 1)
+  17:Core/Src/kalman.c **** * \param[in] B The input transition matrix ({\ref num_states} x {\ref num_inputs})
+  18:Core/Src/kalman.c **** * \param[in] u The input vector ({\ref num_inputs} x \c 1)
+  19:Core/Src/kalman.c **** * \param[in] P The state covariance matrix ({\ref num_states} x {\ref num_states})
+  20:Core/Src/kalman.c **** * \param[in] Q The input covariance matrix ({\ref num_inputs} x {\ref num_inputs})
+  21:Core/Src/kalman.c **** * \param[in] aux The auxiliary buffer (length {\ref num_states} or {\ref num_inputs}, whichever is 
+  22:Core/Src/kalman.c **** * \param[in] predictedX The temporary vector for predicted X ({\ref num_states} x \c 1)
+  23:Core/Src/kalman.c **** * \param[in] temp_P The temporary matrix for P calculation ({\ref num_states} x {\ref num_states})
+  24:Core/Src/kalman.c **** * \param[in] temp_BQ The temporary matrix for BQ calculation ({\ref num_states} x {\ref num_inputs}
+  25:Core/Src/kalman.c **** */
+  26:Core/Src/kalman.c **** void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matri
+  27:Core/Src/kalman.c ****     matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q,
+  28:Core/Src/kalman.c ****     matrix_data_t *aux, matrix_data_t *predictedX, matrix_data_t *temp_P, matrix_data_t *temp_BQ)
+  29:Core/Src/kalman.c **** {
+ 609              		.loc 1 29 1 is_stmt 1 view -0
+ 610              		.cfi_startproc
+ 611              		@ args = 36, pretend = 0, frame = 0
+ 612              		@ frame_needed = 0, uses_anonymous_args = 0
+ 613              		.loc 1 29 1 is_stmt 0 view .LVU173
+ 614 0000 70B5     		push	{r4, r5, r6, lr}
+ 615              		.cfi_def_cfa_offset 16
+ 616              		.cfi_offset 4, -16
+ 617              		.cfi_offset 5, -12
+ 618              		.cfi_offset 6, -8
+ 619              		.cfi_offset 14, -4
+ 620 0002 0446     		mov	r4, r0
+ 621 0004 0D46     		mov	r5, r1
+ 622 0006 1646     		mov	r6, r2
+  30:Core/Src/kalman.c ****     matrix_init(&kf->A, num_states, num_states, A);
+ 623              		.loc 1 30 5 is_stmt 1 view .LVU174
+ 624 0008 0A46     		mov	r2, r1
+ 625              	.LVL55:
+ 626              		.loc 1 30 5 is_stmt 0 view .LVU175
+ 627 000a 0C30     		adds	r0, r0, #12
+ 628              	.LVL56:
+ 629              		.loc 1 30 5 view .LVU176
+ 630 000c FFF7FEFF 		bl	matrix_init
+ 631              	.LVL57:
+  31:Core/Src/kalman.c ****     matrix_init(&kf->P, num_states, num_states, P);
+ 632              		.loc 1 31 5 is_stmt 1 view .LVU177
+ 633 0010 079B     		ldr	r3, [sp, #28]
+ 634 0012 2A46     		mov	r2, r5
+ 635 0014 2946     		mov	r1, r5
+ 636 0016 04F11800 		add	r0, r4, #24
+ 637 001a FFF7FEFF 		bl	matrix_init
+ 638              	.LVL58:
+  32:Core/Src/kalman.c ****     matrix_init(&kf->x, num_states, 1, x);
+ 639              		.loc 1 32 5 view .LVU178
+ 640 001e 049B     		ldr	r3, [sp, #16]
+ 641 0020 0122     		movs	r2, #1
+ 642 0022 2946     		mov	r1, r5
+ 643 0024 2046     		mov	r0, r4
+ 644 0026 FFF7FEFF 		bl	matrix_init
+ 645              	.LVL59:
+  33:Core/Src/kalman.c **** 
+  34:Core/Src/kalman.c ****     matrix_init(&kf->B, num_states, num_inputs, B);
+ARM GAS  /tmp/ccQCvMrx.s 			page 18
+
+
+ 646              		.loc 1 34 5 view .LVU179
+ 647 002a 059B     		ldr	r3, [sp, #20]
+ 648 002c 3246     		mov	r2, r6
+ 649 002e 2946     		mov	r1, r5
+ 650 0030 04F13000 		add	r0, r4, #48
+ 651 0034 FFF7FEFF 		bl	matrix_init
+ 652              	.LVL60:
+  35:Core/Src/kalman.c ****     matrix_init(&kf->Q, num_inputs, num_inputs, Q);
+ 653              		.loc 1 35 5 view .LVU180
+ 654 0038 089B     		ldr	r3, [sp, #32]
+ 655 003a 3246     		mov	r2, r6
+ 656 003c 3146     		mov	r1, r6
+ 657 003e 04F13C00 		add	r0, r4, #60
+ 658 0042 FFF7FEFF 		bl	matrix_init
+ 659              	.LVL61:
+  36:Core/Src/kalman.c ****     matrix_init(&kf->u, num_inputs, 1, u);
+ 660              		.loc 1 36 5 view .LVU181
+ 661 0046 069B     		ldr	r3, [sp, #24]
+ 662 0048 0122     		movs	r2, #1
+ 663 004a 3146     		mov	r1, r6
+ 664 004c 04F12400 		add	r0, r4, #36
+ 665 0050 FFF7FEFF 		bl	matrix_init
+ 666              	.LVL62:
+  37:Core/Src/kalman.c **** 
+  38:Core/Src/kalman.c ****     // set auxiliary vector
+  39:Core/Src/kalman.c ****     kf->temporary.aux = aux;
+ 667              		.loc 1 39 5 view .LVU182
+ 668              		.loc 1 39 23 is_stmt 0 view .LVU183
+ 669 0054 099B     		ldr	r3, [sp, #36]
+ 670 0056 A364     		str	r3, [r4, #72]
+  40:Core/Src/kalman.c **** 
+  41:Core/Src/kalman.c ****     // set predicted x vector
+  42:Core/Src/kalman.c ****     matrix_init(&kf->temporary.predicted_x, num_states, 1, predictedX);
+ 671              		.loc 1 42 5 is_stmt 1 view .LVU184
+ 672 0058 0A9B     		ldr	r3, [sp, #40]
+ 673 005a 0122     		movs	r2, #1
+ 674 005c 2946     		mov	r1, r5
+ 675 005e 04F14C00 		add	r0, r4, #76
+ 676 0062 FFF7FEFF 		bl	matrix_init
+ 677              	.LVL63:
+  43:Core/Src/kalman.c **** 
+  44:Core/Src/kalman.c ****     // set temporary P matrix
+  45:Core/Src/kalman.c ****     matrix_init(&kf->temporary.P, num_states, num_states, temp_P);
+ 678              		.loc 1 45 5 view .LVU185
+ 679 0066 0B9B     		ldr	r3, [sp, #44]
+ 680 0068 2A46     		mov	r2, r5
+ 681 006a 2946     		mov	r1, r5
+ 682 006c 04F15800 		add	r0, r4, #88
+ 683 0070 FFF7FEFF 		bl	matrix_init
+ 684              	.LVL64:
+  46:Core/Src/kalman.c **** 
+  47:Core/Src/kalman.c ****     // set temporary BQ matrix
+  48:Core/Src/kalman.c ****     matrix_init(&kf->temporary.BQ, num_states, num_inputs, temp_BQ);
+ 685              		.loc 1 48 5 view .LVU186
+ 686 0074 0C9B     		ldr	r3, [sp, #48]
+ 687 0076 3246     		mov	r2, r6
+ 688 0078 2946     		mov	r1, r5
+ARM GAS  /tmp/ccQCvMrx.s 			page 19
+
+
+ 689 007a 04F16400 		add	r0, r4, #100
+ 690 007e FFF7FEFF 		bl	matrix_init
+ 691              	.LVL65:
+  49:Core/Src/kalman.c **** }
+ 692              		.loc 1 49 1 is_stmt 0 view .LVU187
+ 693 0082 70BD     		pop	{r4, r5, r6, pc}
+ 694              		.loc 1 49 1 view .LVU188
+ 695              		.cfi_endproc
+ 696              	.LFE21:
+ 698              		.section	.text.kalman_measurement_initialize,"ax",%progbits
+ 699              		.align	1
+ 700              		.global	kalman_measurement_initialize
+ 701              		.syntax unified
+ 702              		.thumb
+ 703              		.thumb_func
+ 705              	kalman_measurement_initialize:
+ 706              	.LVL66:
+ 707              	.LFB22:
+  50:Core/Src/kalman.c **** 
+  51:Core/Src/kalman.c **** 
+  52:Core/Src/kalman.c **** /*!
+  53:Core/Src/kalman.c **** * \brief Sets the measurement vector
+  54:Core/Src/kalman.c **** * \param[in] kfm The Kalman Filter measurement structure to initialize
+  55:Core/Src/kalman.c **** * \param[in] num_states The number of states
+  56:Core/Src/kalman.c **** * \param[in] num_measurements The number of measurements
+  57:Core/Src/kalman.c **** * \param[in] H The measurement transformation matrix ({\ref num_measurements} x {\ref num_states})
+  58:Core/Src/kalman.c **** * \param[in] z The measurement vector ({\ref num_measurements} x \c 1)
+  59:Core/Src/kalman.c **** * \param[in] R The process noise / measurement uncertainty ({\ref num_measurements} x {\ref num_mea
+  60:Core/Src/kalman.c **** * \param[in] y The innovation ({\ref num_measurements} x \c 1)
+  61:Core/Src/kalman.c **** * \param[in] S The residual covariance ({\ref num_measurements} x {\ref num_measurements})
+  62:Core/Src/kalman.c **** * \param[in] K The Kalman gain ({\ref num_states} x {\ref num_measurements})
+  63:Core/Src/kalman.c **** * \param[in] aux The auxiliary buffer (length {\ref num_states} or {\ref num_measurements}, whichev
+  64:Core/Src/kalman.c **** * \param[in] S_inv The temporary matrix for the inverted residual covariance  ({\ref num_measuremen
+  65:Core/Src/kalman.c **** * \param[in] temp_HP The temporary matrix for HxP ({\ref num_measurements} x {\ref num_states})
+  66:Core/Src/kalman.c **** * \param[in] temp_PHt The temporary matrix for PxH' ({\ref num_states} x {\ref num_measurements})
+  67:Core/Src/kalman.c **** * \param[in] temp_KHP The temporary matrix for KxHxP ({\ref num_states} x {\ref num_states})
+  68:Core/Src/kalman.c **** */
+  69:Core/Src/kalman.c **** void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_states, uint_fast8_t
+  70:Core/Src/kalman.c ****     matrix_data_t *y, matrix_data_t *S, matrix_data_t *K,
+  71:Core/Src/kalman.c ****     matrix_data_t *aux, matrix_data_t *S_inv, matrix_data_t *temp_HP, matrix_data_t *temp_PHt, matr
+  72:Core/Src/kalman.c **** {
+ 708              		.loc 1 72 1 is_stmt 1 view -0
+ 709              		.cfi_startproc
+ 710              		@ args = 40, pretend = 0, frame = 0
+ 711              		@ frame_needed = 0, uses_anonymous_args = 0
+ 712              		.loc 1 72 1 is_stmt 0 view .LVU190
+ 713 0000 70B5     		push	{r4, r5, r6, lr}
+ 714              		.cfi_def_cfa_offset 16
+ 715              		.cfi_offset 4, -16
+ 716              		.cfi_offset 5, -12
+ 717              		.cfi_offset 6, -8
+ 718              		.cfi_offset 14, -4
+ 719 0002 0546     		mov	r5, r0
+ 720 0004 0E46     		mov	r6, r1
+ 721 0006 1446     		mov	r4, r2
+  73:Core/Src/kalman.c ****     matrix_init(&kfm->H, num_measurements, num_states, H);
+ 722              		.loc 1 73 5 is_stmt 1 view .LVU191
+ARM GAS  /tmp/ccQCvMrx.s 			page 20
+
+
+ 723 0008 0A46     		mov	r2, r1
+ 724              	.LVL67:
+ 725              		.loc 1 73 5 is_stmt 0 view .LVU192
+ 726 000a 2146     		mov	r1, r4
+ 727              	.LVL68:
+ 728              		.loc 1 73 5 view .LVU193
+ 729 000c 0C30     		adds	r0, r0, #12
+ 730              	.LVL69:
+ 731              		.loc 1 73 5 view .LVU194
+ 732 000e FFF7FEFF 		bl	matrix_init
+ 733              	.LVL70:
+  74:Core/Src/kalman.c ****     matrix_init(&kfm->R, num_measurements, num_measurements, R);
+ 734              		.loc 1 74 5 is_stmt 1 view .LVU195
+ 735 0012 059B     		ldr	r3, [sp, #20]
+ 736 0014 2246     		mov	r2, r4
+ 737 0016 2146     		mov	r1, r4
+ 738 0018 05F11800 		add	r0, r5, #24
+ 739 001c FFF7FEFF 		bl	matrix_init
+ 740              	.LVL71:
+  75:Core/Src/kalman.c ****     matrix_init(&kfm->z, num_measurements, 1, z);
+ 741              		.loc 1 75 5 view .LVU196
+ 742 0020 049B     		ldr	r3, [sp, #16]
+ 743 0022 0122     		movs	r2, #1
+ 744 0024 2146     		mov	r1, r4
+ 745 0026 2846     		mov	r0, r5
+ 746 0028 FFF7FEFF 		bl	matrix_init
+ 747              	.LVL72:
+  76:Core/Src/kalman.c **** 
+  77:Core/Src/kalman.c ****     matrix_init(&kfm->K, num_states, num_measurements, K);
+ 748              		.loc 1 77 5 view .LVU197
+ 749 002c 089B     		ldr	r3, [sp, #32]
+ 750 002e 2246     		mov	r2, r4
+ 751 0030 3146     		mov	r1, r6
+ 752 0032 05F13C00 		add	r0, r5, #60
+ 753 0036 FFF7FEFF 		bl	matrix_init
+ 754              	.LVL73:
+  78:Core/Src/kalman.c ****     matrix_init(&kfm->S, num_measurements, num_measurements, S);
+ 755              		.loc 1 78 5 view .LVU198
+ 756 003a 079B     		ldr	r3, [sp, #28]
+ 757 003c 2246     		mov	r2, r4
+ 758 003e 2146     		mov	r1, r4
+ 759 0040 05F13000 		add	r0, r5, #48
+ 760 0044 FFF7FEFF 		bl	matrix_init
+ 761              	.LVL74:
+  79:Core/Src/kalman.c ****     matrix_init(&kfm->y, num_measurements, 1, y);
+ 762              		.loc 1 79 5 view .LVU199
+ 763 0048 069B     		ldr	r3, [sp, #24]
+ 764 004a 0122     		movs	r2, #1
+ 765 004c 2146     		mov	r1, r4
+ 766 004e 05F12400 		add	r0, r5, #36
+ 767 0052 FFF7FEFF 		bl	matrix_init
+ 768              	.LVL75:
+  80:Core/Src/kalman.c **** 
+  81:Core/Src/kalman.c ****     // set auxiliary vector
+  82:Core/Src/kalman.c ****     kfm->temporary.aux = aux;
+ 769              		.loc 1 82 5 view .LVU200
+ 770              		.loc 1 82 24 is_stmt 0 view .LVU201
+ARM GAS  /tmp/ccQCvMrx.s 			page 21
+
+
+ 771 0056 099B     		ldr	r3, [sp, #36]
+ 772 0058 AB64     		str	r3, [r5, #72]
+  83:Core/Src/kalman.c **** 
+  84:Core/Src/kalman.c ****     // set inverted S matrix
+  85:Core/Src/kalman.c ****     matrix_init(&kfm->temporary.S_inv, num_measurements, num_measurements, S_inv);
+ 773              		.loc 1 85 5 is_stmt 1 view .LVU202
+ 774 005a 0A9B     		ldr	r3, [sp, #40]
+ 775 005c 2246     		mov	r2, r4
+ 776 005e 2146     		mov	r1, r4
+ 777 0060 05F14C00 		add	r0, r5, #76
+ 778 0064 FFF7FEFF 		bl	matrix_init
+ 779              	.LVL76:
+  86:Core/Src/kalman.c **** 
+  87:Core/Src/kalman.c ****     // set temporary HxP matrix
+  88:Core/Src/kalman.c ****     matrix_init(&kfm->temporary.HP, num_measurements, num_states, temp_HP);
+ 780              		.loc 1 88 5 view .LVU203
+ 781 0068 0B9B     		ldr	r3, [sp, #44]
+ 782 006a 3246     		mov	r2, r6
+ 783 006c 2146     		mov	r1, r4
+ 784 006e 05F15800 		add	r0, r5, #88
+ 785 0072 FFF7FEFF 		bl	matrix_init
+ 786              	.LVL77:
+  89:Core/Src/kalman.c **** 
+  90:Core/Src/kalman.c ****     // set temporary PxH' matrix
+  91:Core/Src/kalman.c ****     matrix_init(&kfm->temporary.PHt, num_states, num_measurements, temp_PHt);
+ 787              		.loc 1 91 5 view .LVU204
+ 788 0076 0C9B     		ldr	r3, [sp, #48]
+ 789 0078 2246     		mov	r2, r4
+ 790 007a 3146     		mov	r1, r6
+ 791 007c 05F17000 		add	r0, r5, #112
+ 792 0080 FFF7FEFF 		bl	matrix_init
+ 793              	.LVL78:
+  92:Core/Src/kalman.c **** 
+  93:Core/Src/kalman.c ****     // set temporary KxHxP matrix
+  94:Core/Src/kalman.c ****     matrix_init(&kfm->temporary.KHP, num_states, num_states, temp_KHP);
+ 794              		.loc 1 94 5 view .LVU205
+ 795 0084 0D9B     		ldr	r3, [sp, #52]
+ 796 0086 3246     		mov	r2, r6
+ 797 0088 3146     		mov	r1, r6
+ 798 008a 05F16400 		add	r0, r5, #100
+ 799 008e FFF7FEFF 		bl	matrix_init
+ 800              	.LVL79:
+  95:Core/Src/kalman.c **** }
+ 801              		.loc 1 95 1 is_stmt 0 view .LVU206
+ 802 0092 70BD     		pop	{r4, r5, r6, pc}
+ 803              		.loc 1 95 1 view .LVU207
+ 804              		.cfi_endproc
+ 805              	.LFE22:
+ 807              		.section	.text.kalman_predict_x,"ax",%progbits
+ 808              		.align	1
+ 809              		.global	kalman_predict_x
+ 810              		.syntax unified
+ 811              		.thumb
+ 812              		.thumb_func
+ 814              	kalman_predict_x:
+ 815              	.LVL80:
+ 816              	.LFB23:
+ARM GAS  /tmp/ccQCvMrx.s 			page 22
+
+
+  96:Core/Src/kalman.c **** 
+  97:Core/Src/kalman.c **** /*!
+  98:Core/Src/kalman.c **** * \brief Performs the time update / prediction step of only the state vector
+  99:Core/Src/kalman.c **** * \param[in] kf The Kalman Filter structure to predict with.
+ 100:Core/Src/kalman.c **** */
+ 101:Core/Src/kalman.c **** void kalman_predict_x(register kalman_t *const kf)
+ 102:Core/Src/kalman.c **** {
+ 817              		.loc 1 102 1 is_stmt 1 view -0
+ 818              		.cfi_startproc
+ 819              		@ args = 0, pretend = 0, frame = 0
+ 820              		@ frame_needed = 0, uses_anonymous_args = 0
+ 821              		.loc 1 102 1 is_stmt 0 view .LVU209
+ 822 0000 38B5     		push	{r3, r4, r5, lr}
+ 823              		.cfi_def_cfa_offset 16
+ 824              		.cfi_offset 3, -16
+ 825              		.cfi_offset 4, -12
+ 826              		.cfi_offset 5, -8
+ 827              		.cfi_offset 14, -4
+ 828 0002 0446     		mov	r4, r0
+ 103:Core/Src/kalman.c ****     // matrices and vectors
+ 104:Core/Src/kalman.c ****     const matrix_t *RESTRICT const A = &kf->A;
+ 829              		.loc 1 104 5 is_stmt 1 view .LVU210
+ 830              	.LVL81:
+ 105:Core/Src/kalman.c ****     matrix_t *RESTRICT const x = &kf->x;
+ 831              		.loc 1 105 5 view .LVU211
+ 106:Core/Src/kalman.c **** 
+ 107:Core/Src/kalman.c ****     // temporaries
+ 108:Core/Src/kalman.c ****     matrix_t *RESTRICT const xpredicted = &kf->temporary.predicted_x;
+ 832              		.loc 1 108 5 view .LVU212
+ 833              		.loc 1 108 30 is_stmt 0 view .LVU213
+ 834 0004 00F14C05 		add	r5, r0, #76
+ 835              	.LVL82:
+ 109:Core/Src/kalman.c **** 
+ 110:Core/Src/kalman.c ****     /************************************************************************/
+ 111:Core/Src/kalman.c ****     /* Predict next state using system dynamics                             */
+ 112:Core/Src/kalman.c ****     /* x = A*x                                                              */
+ 113:Core/Src/kalman.c ****     /************************************************************************/
+ 114:Core/Src/kalman.c **** 
+ 115:Core/Src/kalman.c ****     // x = A*x
+ 116:Core/Src/kalman.c ****     matrix_mult_rowvector(A, x, xpredicted);
+ 836              		.loc 1 116 5 is_stmt 1 view .LVU214
+ 837 0008 2A46     		mov	r2, r5
+ 838 000a 0146     		mov	r1, r0
+ 839 000c 0C30     		adds	r0, r0, #12
+ 840              	.LVL83:
+ 841              		.loc 1 116 5 is_stmt 0 view .LVU215
+ 842 000e FFF7FEFF 		bl	matrix_mult_rowvector
+ 843              	.LVL84:
+ 117:Core/Src/kalman.c ****     matrix_copy(xpredicted, x);
+ 844              		.loc 1 117 5 is_stmt 1 view .LVU216
+ 845 0012 2146     		mov	r1, r4
+ 846 0014 2846     		mov	r0, r5
+ 847 0016 FFF7FEFF 		bl	matrix_copy
+ 848              	.LVL85:
+ 118:Core/Src/kalman.c **** }
+ 849              		.loc 1 118 1 is_stmt 0 view .LVU217
+ 850 001a 38BD     		pop	{r3, r4, r5, pc}
+ARM GAS  /tmp/ccQCvMrx.s 			page 23
+
+
+ 851              		.loc 1 118 1 view .LVU218
+ 852              		.cfi_endproc
+ 853              	.LFE23:
+ 855              		.section	.text.kalman_predict_Q,"ax",%progbits
+ 856              		.align	1
+ 857              		.global	kalman_predict_Q
+ 858              		.syntax unified
+ 859              		.thumb
+ 860              		.thumb_func
+ 862              	kalman_predict_Q:
+ 863              	.LVL86:
+ 864              	.LFB24:
+ 119:Core/Src/kalman.c **** 
+ 120:Core/Src/kalman.c **** /*!
+ 121:Core/Src/kalman.c **** * \brief Performs the time update / prediction step of only the state covariance matrix
+ 122:Core/Src/kalman.c **** * \param[in] kf The Kalman Filter structure to predict with.
+ 123:Core/Src/kalman.c **** */
+ 124:Core/Src/kalman.c **** void kalman_predict_Q(register kalman_t *const kf)
+ 125:Core/Src/kalman.c **** {
+ 865              		.loc 1 125 1 is_stmt 1 view -0
+ 866              		.cfi_startproc
+ 867              		@ args = 0, pretend = 0, frame = 0
+ 868              		@ frame_needed = 0, uses_anonymous_args = 0
+ 869              		.loc 1 125 1 is_stmt 0 view .LVU220
+ 870 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 871              		.cfi_def_cfa_offset 32
+ 872              		.cfi_offset 4, -32
+ 873              		.cfi_offset 5, -28
+ 874              		.cfi_offset 6, -24
+ 875              		.cfi_offset 7, -20
+ 876              		.cfi_offset 8, -16
+ 877              		.cfi_offset 9, -12
+ 878              		.cfi_offset 10, -8
+ 879              		.cfi_offset 14, -4
+ 880 0004 0446     		mov	r4, r0
+ 126:Core/Src/kalman.c ****     // matrices and vectors
+ 127:Core/Src/kalman.c ****     const matrix_t *RESTRICT const A = &kf->A;
+ 881              		.loc 1 127 5 is_stmt 1 view .LVU221
+ 882              		.loc 1 127 36 is_stmt 0 view .LVU222
+ 883 0006 00F10C07 		add	r7, r0, #12
+ 884              	.LVL87:
+ 128:Core/Src/kalman.c ****     const matrix_t *RESTRICT const B = &kf->B;
+ 885              		.loc 1 128 5 is_stmt 1 view .LVU223
+ 886              		.loc 1 128 36 is_stmt 0 view .LVU224
+ 887 000a 00F1300A 		add	r10, r0, #48
+ 888              	.LVL88:
+ 129:Core/Src/kalman.c ****     matrix_t *RESTRICT const P = &kf->P;
+ 889              		.loc 1 129 5 is_stmt 1 view .LVU225
+ 890              		.loc 1 129 30 is_stmt 0 view .LVU226
+ 891 000e 00F11805 		add	r5, r0, #24
+ 892              	.LVL89:
+ 130:Core/Src/kalman.c **** 
+ 131:Core/Src/kalman.c ****     // temporaries
+ 132:Core/Src/kalman.c ****     matrix_data_t *RESTRICT const aux = kf->temporary.aux;
+ 893              		.loc 1 132 5 is_stmt 1 view .LVU227
+ 894              		.loc 1 132 35 is_stmt 0 view .LVU228
+ 895 0012 D0F84880 		ldr	r8, [r0, #72]
+ARM GAS  /tmp/ccQCvMrx.s 			page 24
+
+
+ 896              	.LVL90:
+ 133:Core/Src/kalman.c ****     matrix_t *RESTRICT const P_temp = &kf->temporary.P;
+ 897              		.loc 1 133 5 is_stmt 1 view .LVU229
+ 898              		.loc 1 133 30 is_stmt 0 view .LVU230
+ 899 0016 00F15806 		add	r6, r0, #88
+ 900              	.LVL91:
+ 134:Core/Src/kalman.c ****     matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
+ 901              		.loc 1 134 5 is_stmt 1 view .LVU231
+ 902              		.loc 1 134 30 is_stmt 0 view .LVU232
+ 903 001a 00F16409 		add	r9, r0, #100
+ 904              	.LVL92:
+ 135:Core/Src/kalman.c **** 
+ 136:Core/Src/kalman.c ****     /************************************************************************/
+ 137:Core/Src/kalman.c ****     /* Predict next covariance using system dynamics and input              */
+ 138:Core/Src/kalman.c ****     /* P = A*P*A' + B*Q*B'                                                  */
+ 139:Core/Src/kalman.c ****     /************************************************************************/
+ 140:Core/Src/kalman.c **** 
+ 141:Core/Src/kalman.c ****     // P = A*P*A'
+ 142:Core/Src/kalman.c ****     matrix_mult(A, P, P_temp, aux);                 // temp = A*P
+ 905              		.loc 1 142 5 is_stmt 1 view .LVU233
+ 906 001e 4346     		mov	r3, r8
+ 907 0020 3246     		mov	r2, r6
+ 908 0022 2946     		mov	r1, r5
+ 909 0024 3846     		mov	r0, r7
+ 910              	.LVL93:
+ 911              		.loc 1 142 5 is_stmt 0 view .LVU234
+ 912 0026 FFF7FEFF 		bl	matrix_mult
+ 913              	.LVL94:
+ 143:Core/Src/kalman.c ****     matrix_mult_transb(P_temp, A, P);               // P = temp*A'
+ 914              		.loc 1 143 5 is_stmt 1 view .LVU235
+ 915 002a 2A46     		mov	r2, r5
+ 916 002c 3946     		mov	r1, r7
+ 917 002e 3046     		mov	r0, r6
+ 918 0030 FFF7FEFF 		bl	matrix_mult_transb
+ 919              	.LVL95:
+ 144:Core/Src/kalman.c **** 
+ 145:Core/Src/kalman.c ****     // P = P + B*Q*B'
+ 146:Core/Src/kalman.c ****     if (kf->B.rows > 0)
+ 920              		.loc 1 146 5 view .LVU236
+ 921              		.loc 1 146 14 is_stmt 0 view .LVU237
+ 922 0034 236B     		ldr	r3, [r4, #48]
+ 923              		.loc 1 146 8 view .LVU238
+ 924 0036 0BB9     		cbnz	r3, .L38
+ 925              	.L35:
+ 147:Core/Src/kalman.c ****     {
+ 148:Core/Src/kalman.c ****         matrix_mult(B, &kf->Q, BQ_temp, aux);       // temp = B*Q
+ 149:Core/Src/kalman.c ****         matrix_multadd_transb(BQ_temp, B, P);       // P += temp*B'
+ 150:Core/Src/kalman.c ****     }
+ 151:Core/Src/kalman.c **** }
+ 926              		.loc 1 151 1 view .LVU239
+ 927 0038 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 928              	.LVL96:
+ 929              	.L38:
+ 148:Core/Src/kalman.c ****         matrix_multadd_transb(BQ_temp, B, P);       // P += temp*B'
+ 930              		.loc 1 148 9 is_stmt 1 view .LVU240
+ 931 003c 4346     		mov	r3, r8
+ 932 003e 4A46     		mov	r2, r9
+ARM GAS  /tmp/ccQCvMrx.s 			page 25
+
+
+ 933 0040 04F13C01 		add	r1, r4, #60
+ 934 0044 5046     		mov	r0, r10
+ 935 0046 FFF7FEFF 		bl	matrix_mult
+ 936              	.LVL97:
+ 149:Core/Src/kalman.c ****     }
+ 937              		.loc 1 149 9 view .LVU241
+ 938 004a 2A46     		mov	r2, r5
+ 939 004c 5146     		mov	r1, r10
+ 940 004e 4846     		mov	r0, r9
+ 941 0050 FFF7FEFF 		bl	matrix_multadd_transb
+ 942              	.LVL98:
+ 943              		.loc 1 151 1 is_stmt 0 view .LVU242
+ 944 0054 F0E7     		b	.L35
+ 945              		.cfi_endproc
+ 946              	.LFE24:
+ 948              		.section	.text.kalman_predict_Q_tuned,"ax",%progbits
+ 949              		.align	1
+ 950              		.global	kalman_predict_Q_tuned
+ 951              		.syntax unified
+ 952              		.thumb
+ 953              		.thumb_func
+ 955              	kalman_predict_Q_tuned:
+ 956              	.LVL99:
+ 957              	.LFB25:
+ 152:Core/Src/kalman.c **** 
+ 153:Core/Src/kalman.c **** /*!
+ 154:Core/Src/kalman.c **** * \brief Performs the time update / prediction step of only the state covariance matrix
+ 155:Core/Src/kalman.c **** * \param[in] kf The Kalman Filter structure to predict with.
+ 156:Core/Src/kalman.c **** */
+ 157:Core/Src/kalman.c **** void kalman_predict_Q_tuned(register kalman_t *const kf, matrix_data_t lambda)
+ 158:Core/Src/kalman.c **** {
+ 958              		.loc 1 158 1 is_stmt 1 view -0
+ 959              		.cfi_startproc
+ 960              		@ args = 0, pretend = 0, frame = 0
+ 961              		@ frame_needed = 0, uses_anonymous_args = 0
+ 962              		.loc 1 158 1 is_stmt 0 view .LVU244
+ 963 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 964              		.cfi_def_cfa_offset 32
+ 965              		.cfi_offset 4, -32
+ 966              		.cfi_offset 5, -28
+ 967              		.cfi_offset 6, -24
+ 968              		.cfi_offset 7, -20
+ 969              		.cfi_offset 8, -16
+ 970              		.cfi_offset 9, -12
+ 971              		.cfi_offset 10, -8
+ 972              		.cfi_offset 14, -4
+ 973 0004 2DED028B 		vpush.64	{d8}
+ 974              		.cfi_def_cfa_offset 40
+ 975              		.cfi_offset 80, -40
+ 976              		.cfi_offset 81, -36
+ 977 0008 0446     		mov	r4, r0
+ 159:Core/Src/kalman.c ****     // matrices and vectors
+ 160:Core/Src/kalman.c ****     const matrix_t *RESTRICT const A = &kf->A;
+ 978              		.loc 1 160 5 is_stmt 1 view .LVU245
+ 979              		.loc 1 160 36 is_stmt 0 view .LVU246
+ 980 000a 00F10C07 		add	r7, r0, #12
+ 981              	.LVL100:
+ARM GAS  /tmp/ccQCvMrx.s 			page 26
+
+
+ 161:Core/Src/kalman.c ****     const matrix_t *RESTRICT const B = &kf->B;
+ 982              		.loc 1 161 5 is_stmt 1 view .LVU247
+ 983              		.loc 1 161 36 is_stmt 0 view .LVU248
+ 984 000e 00F1300A 		add	r10, r0, #48
+ 985              	.LVL101:
+ 162:Core/Src/kalman.c ****     matrix_t *RESTRICT const P = &kf->P;
+ 986              		.loc 1 162 5 is_stmt 1 view .LVU249
+ 987              		.loc 1 162 30 is_stmt 0 view .LVU250
+ 988 0012 00F11805 		add	r5, r0, #24
+ 989              	.LVL102:
+ 163:Core/Src/kalman.c **** 
+ 164:Core/Src/kalman.c ****     // temporaries
+ 165:Core/Src/kalman.c ****     matrix_data_t *RESTRICT const aux = kf->temporary.aux;
+ 990              		.loc 1 165 5 is_stmt 1 view .LVU251
+ 991              		.loc 1 165 35 is_stmt 0 view .LVU252
+ 992 0016 D0F84880 		ldr	r8, [r0, #72]
+ 993              	.LVL103:
+ 166:Core/Src/kalman.c ****     matrix_t *RESTRICT const P_temp = &kf->temporary.P;
+ 994              		.loc 1 166 5 is_stmt 1 view .LVU253
+ 995              		.loc 1 166 30 is_stmt 0 view .LVU254
+ 996 001a 00F15806 		add	r6, r0, #88
+ 997              	.LVL104:
+ 167:Core/Src/kalman.c ****     matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
+ 998              		.loc 1 167 5 is_stmt 1 view .LVU255
+ 999              		.loc 1 167 30 is_stmt 0 view .LVU256
+ 1000 001e 00F16409 		add	r9, r0, #100
+ 1001              	.LVL105:
+ 168:Core/Src/kalman.c **** 
+ 169:Core/Src/kalman.c ****     /************************************************************************/
+ 170:Core/Src/kalman.c ****     /* Predict next covariance using system dynamics and input              */
+ 171:Core/Src/kalman.c ****     /* P = A*P*A' * 1/lambda^2 + B*Q*B'                                     */
+ 172:Core/Src/kalman.c ****     /************************************************************************/
+ 173:Core/Src/kalman.c **** 
+ 174:Core/Src/kalman.c ****     // lambda = 1/lambda^2
+ 175:Core/Src/kalman.c ****     lambda = (matrix_data_t)1.0 / (lambda * lambda); // TODO: This should be precalculated, e.g. us
+ 1002              		.loc 1 175 5 is_stmt 1 view .LVU257
+ 1003              		.loc 1 175 43 is_stmt 0 view .LVU258
+ 1004 0022 20EE000A 		vmul.f32	s0, s0, s0
+ 1005              	.LVL106:
+ 1006              		.loc 1 175 12 view .LVU259
+ 1007 0026 F7EE007A 		vmov.f32	s15, #1.0e+0
+ 1008 002a 87EE808A 		vdiv.f32	s16, s15, s0
+ 1009              	.LVL107:
+ 176:Core/Src/kalman.c **** 
+ 177:Core/Src/kalman.c ****     // P = A*P*A'
+ 178:Core/Src/kalman.c ****     matrix_mult(A, P, P_temp, aux);                 // temp = A*P
+ 1010              		.loc 1 178 5 is_stmt 1 view .LVU260
+ 1011 002e 4346     		mov	r3, r8
+ 1012 0030 3246     		mov	r2, r6
+ 1013 0032 2946     		mov	r1, r5
+ 1014 0034 3846     		mov	r0, r7
+ 1015              	.LVL108:
+ 1016              		.loc 1 178 5 is_stmt 0 view .LVU261
+ 1017 0036 FFF7FEFF 		bl	matrix_mult
+ 1018              	.LVL109:
+ 179:Core/Src/kalman.c ****     matrix_multscale_transb(P_temp, A, lambda, P);   // P = temp*A' * 1/(lambda^2)
+ 1019              		.loc 1 179 5 is_stmt 1 view .LVU262
+ARM GAS  /tmp/ccQCvMrx.s 			page 27
+
+
+ 1020 003a 2A46     		mov	r2, r5
+ 1021 003c B0EE480A 		vmov.f32	s0, s16
+ 1022 0040 3946     		mov	r1, r7
+ 1023 0042 3046     		mov	r0, r6
+ 1024 0044 FFF7FEFF 		bl	matrix_multscale_transb
+ 1025              	.LVL110:
+ 180:Core/Src/kalman.c **** 
+ 181:Core/Src/kalman.c ****     // P = P + B*Q*B'
+ 182:Core/Src/kalman.c ****     if (kf->B.rows > 0)
+ 1026              		.loc 1 182 5 view .LVU263
+ 1027              		.loc 1 182 14 is_stmt 0 view .LVU264
+ 1028 0048 236B     		ldr	r3, [r4, #48]
+ 1029              		.loc 1 182 8 view .LVU265
+ 1030 004a 1BB9     		cbnz	r3, .L42
+ 1031              	.L39:
+ 183:Core/Src/kalman.c ****     {
+ 184:Core/Src/kalman.c ****         matrix_mult(B, &kf->Q, BQ_temp, aux);       // temp = B*Q
+ 185:Core/Src/kalman.c ****         matrix_multadd_transb(BQ_temp, B, P);        // P += temp*B'
+ 186:Core/Src/kalman.c ****     }
+ 187:Core/Src/kalman.c **** }
+ 1032              		.loc 1 187 1 view .LVU266
+ 1033 004c BDEC028B 		vldm	sp!, {d8}
+ 1034              		.cfi_remember_state
+ 1035              		.cfi_restore 80
+ 1036              		.cfi_restore 81
+ 1037              		.cfi_def_cfa_offset 32
+ 1038              	.LVL111:
+ 1039              		.loc 1 187 1 view .LVU267
+ 1040 0050 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1041              	.LVL112:
+ 1042              	.L42:
+ 1043              		.cfi_restore_state
+ 184:Core/Src/kalman.c ****         matrix_multadd_transb(BQ_temp, B, P);        // P += temp*B'
+ 1044              		.loc 1 184 9 is_stmt 1 view .LVU268
+ 1045 0054 4346     		mov	r3, r8
+ 1046 0056 4A46     		mov	r2, r9
+ 1047 0058 04F13C01 		add	r1, r4, #60
+ 1048 005c 5046     		mov	r0, r10
+ 1049 005e FFF7FEFF 		bl	matrix_mult
+ 1050              	.LVL113:
+ 185:Core/Src/kalman.c ****     }
+ 1051              		.loc 1 185 9 view .LVU269
+ 1052 0062 2A46     		mov	r2, r5
+ 1053 0064 5146     		mov	r1, r10
+ 1054 0066 4846     		mov	r0, r9
+ 1055 0068 FFF7FEFF 		bl	matrix_multadd_transb
+ 1056              	.LVL114:
+ 1057              		.loc 1 187 1 is_stmt 0 view .LVU270
+ 1058 006c EEE7     		b	.L39
+ 1059              		.cfi_endproc
+ 1060              	.LFE25:
+ 1062              		.section	.text.kalman_correct,"ax",%progbits
+ 1063              		.align	1
+ 1064              		.global	kalman_correct
+ 1065              		.syntax unified
+ 1066              		.thumb
+ 1067              		.thumb_func
+ARM GAS  /tmp/ccQCvMrx.s 			page 28
+
+
+ 1069              	kalman_correct:
+ 1070              	.LVL115:
+ 1071              	.LFB26:
+ 188:Core/Src/kalman.c **** 
+ 189:Core/Src/kalman.c **** /*!
+ 190:Core/Src/kalman.c **** * \brief Performs the measurement update step.
+ 191:Core/Src/kalman.c **** * \param[in] kf The Kalman Filter structure to correct.
+ 192:Core/Src/kalman.c **** */
+ 193:Core/Src/kalman.c **** void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
+ 194:Core/Src/kalman.c **** {
+ 1072              		.loc 1 194 1 is_stmt 1 view -0
+ 1073              		.cfi_startproc
+ 1074              		@ args = 0, pretend = 0, frame = 16
+ 1075              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1076              		.loc 1 194 1 is_stmt 0 view .LVU272
+ 1077 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1078              		.cfi_def_cfa_offset 36
+ 1079              		.cfi_offset 4, -36
+ 1080              		.cfi_offset 5, -32
+ 1081              		.cfi_offset 6, -28
+ 1082              		.cfi_offset 7, -24
+ 1083              		.cfi_offset 8, -20
+ 1084              		.cfi_offset 9, -16
+ 1085              		.cfi_offset 10, -12
+ 1086              		.cfi_offset 11, -8
+ 1087              		.cfi_offset 14, -4
+ 1088 0004 85B0     		sub	sp, sp, #20
+ 1089              		.cfi_def_cfa_offset 56
+ 1090 0006 0346     		mov	r3, r0
+ 1091 0008 0C46     		mov	r4, r1
+ 195:Core/Src/kalman.c ****     matrix_t *RESTRICT const P = &kf->P;
+ 1092              		.loc 1 195 5 is_stmt 1 view .LVU273
+ 1093              		.loc 1 195 30 is_stmt 0 view .LVU274
+ 1094 000a 00F11805 		add	r5, r0, #24
+ 1095              	.LVL116:
+ 196:Core/Src/kalman.c ****     const matrix_t *RESTRICT const H = &kfm->H;
+ 1096              		.loc 1 196 5 is_stmt 1 view .LVU275
+ 1097              		.loc 1 196 36 is_stmt 0 view .LVU276
+ 1098 000e 01F10C06 		add	r6, r1, #12
+ 1099              	.LVL117:
+ 197:Core/Src/kalman.c ****     matrix_t *RESTRICT const K = &kfm->K;
+ 1100              		.loc 1 197 5 is_stmt 1 view .LVU277
+ 1101              		.loc 1 197 30 is_stmt 0 view .LVU278
+ 1102 0012 01F13C09 		add	r9, r1, #60
+ 1103              	.LVL118:
+ 198:Core/Src/kalman.c ****     matrix_t *RESTRICT const S = &kfm->S;
+ 1104              		.loc 1 198 5 is_stmt 1 view .LVU279
+ 1105              		.loc 1 198 30 is_stmt 0 view .LVU280
+ 1106 0016 01F13008 		add	r8, r1, #48
+ 1107              	.LVL119:
+ 199:Core/Src/kalman.c ****     matrix_t *RESTRICT const y = &kfm->y;
+ 1108              		.loc 1 199 5 is_stmt 1 view .LVU281
+ 1109              		.loc 1 199 30 is_stmt 0 view .LVU282
+ 1110 001a 01F1240A 		add	r10, r1, #36
+ 1111              	.LVL120:
+ 200:Core/Src/kalman.c ****     matrix_t *RESTRICT const x = &kf->x;
+ 1112              		.loc 1 200 5 is_stmt 1 view .LVU283
+ARM GAS  /tmp/ccQCvMrx.s 			page 29
+
+
+ 201:Core/Src/kalman.c **** 
+ 202:Core/Src/kalman.c ****     // temporaries
+ 203:Core/Src/kalman.c ****     matrix_data_t *RESTRICT const aux = kfm->temporary.aux;
+ 1113              		.loc 1 203 5 view .LVU284
+ 1114              		.loc 1 203 35 is_stmt 0 view .LVU285
+ 1115 001e D1F848B0 		ldr	fp, [r1, #72]
+ 1116              	.LVL121:
+ 204:Core/Src/kalman.c ****     matrix_t *RESTRICT const Sinv = &kfm->temporary.S_inv;
+ 1117              		.loc 1 204 5 is_stmt 1 view .LVU286
+ 1118              		.loc 1 204 30 is_stmt 0 view .LVU287
+ 1119 0022 01F14C02 		add	r2, r1, #76
+ 1120 0026 0092     		str	r2, [sp]
+ 1121              	.LVL122:
+ 205:Core/Src/kalman.c ****     matrix_t *RESTRICT const temp_HP = &kfm->temporary.HP;
+ 1122              		.loc 1 205 5 is_stmt 1 view .LVU288
+ 1123              		.loc 1 205 30 is_stmt 0 view .LVU289
+ 1124 0028 01F15807 		add	r7, r1, #88
+ 1125              	.LVL123:
+ 206:Core/Src/kalman.c ****     matrix_t *RESTRICT const temp_KHP = &kfm->temporary.KHP;
+ 1126              		.loc 1 206 5 is_stmt 1 view .LVU290
+ 1127              		.loc 1 206 30 is_stmt 0 view .LVU291
+ 1128 002c 6431     		adds	r1, r1, #100
+ 1129              	.LVL124:
+ 1130              		.loc 1 206 30 view .LVU292
+ 1131 002e 0191     		str	r1, [sp, #4]
+ 1132              	.LVL125:
+ 207:Core/Src/kalman.c ****     matrix_t *RESTRICT const temp_PHt = &kfm->temporary.PHt;
+ 1133              		.loc 1 207 5 is_stmt 1 view .LVU293
+ 1134              		.loc 1 207 30 is_stmt 0 view .LVU294
+ 1135 0030 04F17000 		add	r0, r4, #112
+ 1136              	.LVL126:
+ 1137              		.loc 1 207 30 view .LVU295
+ 1138 0034 0290     		str	r0, [sp, #8]
+ 1139              	.LVL127:
+ 208:Core/Src/kalman.c **** 
+ 209:Core/Src/kalman.c ****     /************************************************************************/
+ 210:Core/Src/kalman.c ****     /* Calculate innovation and residual covariance                         */
+ 211:Core/Src/kalman.c ****     /* y = z - H*x                                                          */
+ 212:Core/Src/kalman.c ****     /* S = H*P*H' + R                                                       */
+ 213:Core/Src/kalman.c ****     /************************************************************************/
+ 214:Core/Src/kalman.c **** 
+ 215:Core/Src/kalman.c ****     // y = z - H*x
+ 216:Core/Src/kalman.c ****     matrix_mult_rowvector(H, x, y);
+ 1140              		.loc 1 216 5 is_stmt 1 view .LVU296
+ 1141 0036 5246     		mov	r2, r10
+ 1142              	.LVL128:
+ 1143              		.loc 1 216 5 is_stmt 0 view .LVU297
+ 1144 0038 0393     		str	r3, [sp, #12]
+ 1145 003a 1946     		mov	r1, r3
+ 1146              	.LVL129:
+ 1147              		.loc 1 216 5 view .LVU298
+ 1148 003c 3046     		mov	r0, r6
+ 1149              	.LVL130:
+ 1150              		.loc 1 216 5 view .LVU299
+ 1151 003e FFF7FEFF 		bl	matrix_mult_rowvector
+ 1152              	.LVL131:
+ 217:Core/Src/kalman.c ****     matrix_sub_inplace_b(&kfm->z, y);
+ARM GAS  /tmp/ccQCvMrx.s 			page 30
+
+
+ 1153              		.loc 1 217 5 is_stmt 1 view .LVU300
+ 1154 0042 5146     		mov	r1, r10
+ 1155 0044 2046     		mov	r0, r4
+ 1156 0046 FFF7FEFF 		bl	matrix_sub_inplace_b
+ 1157              	.LVL132:
+ 218:Core/Src/kalman.c **** 
+ 219:Core/Src/kalman.c ****     // S = H*P*H' + R
+ 220:Core/Src/kalman.c ****     matrix_mult(H, P, temp_HP, aux);            // temp = H*P
+ 1158              		.loc 1 220 5 view .LVU301
+ 1159 004a 5B46     		mov	r3, fp
+ 1160 004c 3A46     		mov	r2, r7
+ 1161 004e 2946     		mov	r1, r5
+ 1162 0050 3046     		mov	r0, r6
+ 1163 0052 FFF7FEFF 		bl	matrix_mult
+ 1164              	.LVL133:
+ 221:Core/Src/kalman.c ****     matrix_mult_transb(temp_HP, H, S);          // S = temp*H'
+ 1165              		.loc 1 221 5 view .LVU302
+ 1166 0056 4246     		mov	r2, r8
+ 1167 0058 3146     		mov	r1, r6
+ 1168 005a 3846     		mov	r0, r7
+ 1169 005c FFF7FEFF 		bl	matrix_mult_transb
+ 1170              	.LVL134:
+ 222:Core/Src/kalman.c ****     matrix_add_inplace(S, &kfm->R);             // S += R
+ 1171              		.loc 1 222 5 view .LVU303
+ 1172 0060 04F11801 		add	r1, r4, #24
+ 1173 0064 4046     		mov	r0, r8
+ 1174 0066 FFF7FEFF 		bl	matrix_add_inplace
+ 1175              	.LVL135:
+ 223:Core/Src/kalman.c **** 
+ 224:Core/Src/kalman.c ****     /************************************************************************/
+ 225:Core/Src/kalman.c ****     /* Calculate Kalman gain                                                */
+ 226:Core/Src/kalman.c ****     /* K = P*H' * S^-1                                                      */
+ 227:Core/Src/kalman.c ****     /************************************************************************/
+ 228:Core/Src/kalman.c **** 
+ 229:Core/Src/kalman.c ****     // K = P*H' * S^-1
+ 230:Core/Src/kalman.c ****     cholesky_decompose_lower(S);
+ 1176              		.loc 1 230 5 view .LVU304
+ 1177 006a 4046     		mov	r0, r8
+ 1178 006c FFF7FEFF 		bl	cholesky_decompose_lower
+ 1179              	.LVL136:
+ 231:Core/Src/kalman.c ****     matrix_invert_lower(S, Sinv);               // Sinv = S^-1
+ 1180              		.loc 1 231 5 view .LVU305
+ 1181 0070 009C     		ldr	r4, [sp]
+ 1182              	.LVL137:
+ 1183              		.loc 1 231 5 is_stmt 0 view .LVU306
+ 1184 0072 2146     		mov	r1, r4
+ 1185 0074 4046     		mov	r0, r8
+ 1186 0076 FFF7FEFF 		bl	matrix_invert_lower
+ 1187              	.LVL138:
+ 232:Core/Src/kalman.c ****     // NOTE that to allow aliasing of Sinv and temp_PHt, a copy must be performed here
+ 233:Core/Src/kalman.c ****     matrix_mult_transb(P, H, temp_PHt);         // temp = P*H'
+ 1188              		.loc 1 233 5 is_stmt 1 view .LVU307
+ 1189 007a DDF80880 		ldr	r8, [sp, #8]
+ 1190              	.LVL139:
+ 1191              		.loc 1 233 5 is_stmt 0 view .LVU308
+ 1192 007e 4246     		mov	r2, r8
+ 1193 0080 3146     		mov	r1, r6
+ARM GAS  /tmp/ccQCvMrx.s 			page 31
+
+
+ 1194 0082 2846     		mov	r0, r5
+ 1195 0084 FFF7FEFF 		bl	matrix_mult_transb
+ 1196              	.LVL140:
+ 234:Core/Src/kalman.c ****     matrix_mult(temp_PHt, Sinv, K, aux);        // K = temp*Sinv
+ 1197              		.loc 1 234 5 is_stmt 1 view .LVU309
+ 1198 0088 5B46     		mov	r3, fp
+ 1199 008a 4A46     		mov	r2, r9
+ 1200 008c 2146     		mov	r1, r4
+ 1201 008e 4046     		mov	r0, r8
+ 1202 0090 FFF7FEFF 		bl	matrix_mult
+ 1203              	.LVL141:
+ 235:Core/Src/kalman.c **** 
+ 236:Core/Src/kalman.c ****     /************************************************************************/
+ 237:Core/Src/kalman.c ****     /* Correct state prediction                                             */
+ 238:Core/Src/kalman.c ****     /* x = x + K*y                                                          */
+ 239:Core/Src/kalman.c ****     /************************************************************************/
+ 240:Core/Src/kalman.c **** 
+ 241:Core/Src/kalman.c ****     // x = x + K*y
+ 242:Core/Src/kalman.c ****     matrix_multadd_rowvector(K, y, x);
+ 1204              		.loc 1 242 5 view .LVU310
+ 1205 0094 039A     		ldr	r2, [sp, #12]
+ 1206 0096 5146     		mov	r1, r10
+ 1207 0098 4846     		mov	r0, r9
+ 1208 009a FFF7FEFF 		bl	matrix_multadd_rowvector
+ 1209              	.LVL142:
+ 243:Core/Src/kalman.c **** 
+ 244:Core/Src/kalman.c ****     /************************************************************************/
+ 245:Core/Src/kalman.c ****     /* Correct state covariances                                            */
+ 246:Core/Src/kalman.c ****     /* P = (I-K*H) * P                                                      */
+ 247:Core/Src/kalman.c ****     /*   = P - K*(H*P)                                                      */
+ 248:Core/Src/kalman.c ****     /************************************************************************/
+ 249:Core/Src/kalman.c **** 
+ 250:Core/Src/kalman.c ****     // P = P - K*(H*P)
+ 251:Core/Src/kalman.c ****     matrix_mult(H, P, temp_HP, aux);            // temp_HP = H*P
+ 1210              		.loc 1 251 5 view .LVU311
+ 1211 009e 5B46     		mov	r3, fp
+ 1212 00a0 3A46     		mov	r2, r7
+ 1213 00a2 2946     		mov	r1, r5
+ 1214 00a4 3046     		mov	r0, r6
+ 1215 00a6 FFF7FEFF 		bl	matrix_mult
+ 1216              	.LVL143:
+ 252:Core/Src/kalman.c ****     matrix_mult(K, temp_HP, temp_KHP, aux);     // temp_KHP = K*temp_HP
+ 1217              		.loc 1 252 5 view .LVU312
+ 1218 00aa 5B46     		mov	r3, fp
+ 1219 00ac 019C     		ldr	r4, [sp, #4]
+ 1220 00ae 2246     		mov	r2, r4
+ 1221 00b0 3946     		mov	r1, r7
+ 1222 00b2 4846     		mov	r0, r9
+ 1223 00b4 FFF7FEFF 		bl	matrix_mult
+ 1224              	.LVL144:
+ 253:Core/Src/kalman.c ****     matrix_sub(P, temp_KHP, P);                 // P -= temp_KHP
+ 1225              		.loc 1 253 5 view .LVU313
+ 1226 00b8 2A46     		mov	r2, r5
+ 1227 00ba 2146     		mov	r1, r4
+ 1228 00bc 2846     		mov	r0, r5
+ 1229 00be FFF7FEFF 		bl	matrix_sub
+ 1230              	.LVL145:
+ARM GAS  /tmp/ccQCvMrx.s 			page 32
+
+
+ 254:Core/Src/kalman.c **** }
+ 1231              		.loc 1 254 1 is_stmt 0 view .LVU314
+ 1232 00c2 05B0     		add	sp, sp, #20
+ 1233              		.cfi_def_cfa_offset 36
+ 1234              	.LVL146:
+ 1235              		.loc 1 254 1 view .LVU315
+ 1236              		@ sp needed
+ 1237 00c4 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1238              		.loc 1 254 1 view .LVU316
+ 1239              		.cfi_endproc
+ 1240              	.LFE26:
+ 1242              		.text
+ 1243              	.Letext0:
+ 1244              		.file 3 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 1245              		.file 4 "Core/Inc/kalman.h"
+ 1246              		.file 5 "Core/Inc/cholesky.h"
+ARM GAS  /tmp/ccQCvMrx.s 			page 33
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 kalman.c
+     /tmp/ccQCvMrx.s:21     .text.matrix_get:00000000 $t
+     /tmp/ccQCvMrx.s:27     .text.matrix_get:00000000 matrix_get
+     /tmp/ccQCvMrx.s:54     .text.matrix_set:00000000 $t
+     /tmp/ccQCvMrx.s:60     .text.matrix_set:00000000 matrix_set
+     /tmp/ccQCvMrx.s:87     .text.matrix_set_symmetric:00000000 $t
+     /tmp/ccQCvMrx.s:93     .text.matrix_set_symmetric:00000000 matrix_set_symmetric
+     /tmp/ccQCvMrx.s:138    .text.matrix_get_row_pointer:00000000 $t
+     /tmp/ccQCvMrx.s:144    .text.matrix_get_row_pointer:00000000 matrix_get_row_pointer
+     /tmp/ccQCvMrx.s:172    .text.matrix_get_column_copy:00000000 $t
+     /tmp/ccQCvMrx.s:178    .text.matrix_get_column_copy:00000000 matrix_get_column_copy
+     /tmp/ccQCvMrx.s:245    .text.matrix_get_row_copy:00000000 $t
+     /tmp/ccQCvMrx.s:251    .text.matrix_get_row_copy:00000000 matrix_get_row_copy
+     /tmp/ccQCvMrx.s:319    .text.matrix_copy:00000000 $t
+     /tmp/ccQCvMrx.s:325    .text.matrix_copy:00000000 matrix_copy
+     /tmp/ccQCvMrx.s:388    .text.matrix_sub:00000000 $t
+     /tmp/ccQCvMrx.s:394    .text.matrix_sub:00000000 matrix_sub
+     /tmp/ccQCvMrx.s:466    .text.matrix_sub_inplace_b:00000000 $t
+     /tmp/ccQCvMrx.s:472    .text.matrix_sub_inplace_b:00000000 matrix_sub_inplace_b
+     /tmp/ccQCvMrx.s:529    .text.matrix_add_inplace:00000000 $t
+     /tmp/ccQCvMrx.s:535    .text.matrix_add_inplace:00000000 matrix_add_inplace
+     /tmp/ccQCvMrx.s:600    .text.kalman_filter_initialize:00000000 $t
+     /tmp/ccQCvMrx.s:606    .text.kalman_filter_initialize:00000000 kalman_filter_initialize
+     /tmp/ccQCvMrx.s:699    .text.kalman_measurement_initialize:00000000 $t
+     /tmp/ccQCvMrx.s:705    .text.kalman_measurement_initialize:00000000 kalman_measurement_initialize
+     /tmp/ccQCvMrx.s:808    .text.kalman_predict_x:00000000 $t
+     /tmp/ccQCvMrx.s:814    .text.kalman_predict_x:00000000 kalman_predict_x
+     /tmp/ccQCvMrx.s:856    .text.kalman_predict_Q:00000000 $t
+     /tmp/ccQCvMrx.s:862    .text.kalman_predict_Q:00000000 kalman_predict_Q
+     /tmp/ccQCvMrx.s:949    .text.kalman_predict_Q_tuned:00000000 $t
+     /tmp/ccQCvMrx.s:955    .text.kalman_predict_Q_tuned:00000000 kalman_predict_Q_tuned
+     /tmp/ccQCvMrx.s:1063   .text.kalman_correct:00000000 $t
+     /tmp/ccQCvMrx.s:1069   .text.kalman_correct:00000000 kalman_correct
+
+UNDEFINED SYMBOLS
+matrix_init
+matrix_mult_rowvector
+matrix_mult
+matrix_mult_transb
+matrix_multadd_transb
+matrix_multscale_transb
+cholesky_decompose_lower
+matrix_invert_lower
+matrix_multadd_rowvector

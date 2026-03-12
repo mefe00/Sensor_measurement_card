@@ -1,12 +1,12 @@
 #include "can_manager.h"
 #include <stdio.h>
 
-// mian.c'de bulunna handle yapısını kullanmak için extern ediyoruz
-extern CAN_HandleTypeDef hcan1;
+// mian.c'de bulunna handle yapısını kullanmak için extern ediyoruz (İPTAL EDİLDİ - Modülerlik için parametre olarak alıyoruz)
+// extern CAN_HandleTypeDef hcan1; 
 
-// Gönderme işlemi için gerekli yapılar 
-static CAN_TxHeaderTypeDef pHeader;
-static uint32_t pTxDatabox;
+// Gönderme işlemi için gerekli yapılar (İPTAL EDİLDİ - Race Condition önlemek için fonksiyon içine alındı)
+// static CAN_TxHeaderTypeDef pHeader;
+// static uint32_t pTxDatabox; 
 
 // Burada CAN hattı için geçerli filtre ayarlarını yapıyoruz.
 void CAN_Config_Init(CAN_HandleTypeDef *hcan) {
@@ -47,30 +47,28 @@ void CAN_Config_Init(CAN_HandleTypeDef *hcan) {
 }
 
 
-uint8_t CAN_Send_Message(uint32_t id, uint8_t *data, uint8_t len) {
+uint8_t CAN_Send_Message(CAN_HandleTypeDef *hcan, uint32_t id, uint8_t *data, uint8_t len) {
+    // DEĞİŞİKLİK: Race condition (çakışma) olmaması için değişkenler local (yerel) tanımlandı.
+    CAN_TxHeaderTypeDef pHeader;
+    uint32_t pTxMailbox; // pTxDatabox yazım hatası düzeltildi
+
     pHeader.StdId = id;
     pHeader.IDE = CAN_ID_STD;
     pHeader.RTR = CAN_RTR_DATA;
     pHeader.DLC = len;
     pHeader.TransmitGlobalTime = DISABLE;
 
-    // --- GÜNCELLEME: BOŞ KUTU BEKLEME ---
-    // Eğer 3 kutu da doluysa, hemen pes etme. Biraz bekle.
-    // CAN hattı çok yoğunsa bu döngü hayat kurtarır.
+    // --- GÜNCELLEME: BOŞ KUTU BEKLEME (NON-BLOCKING) ---
+    // FreeRTOS kullanacağımız için while(1) ile işlemciyi burada hapsetmiyoruz!
+    // Eğer kutular doluysa direkt başarısız dönüyoruz, tekrar deneme işini Task'e bırakıyoruz.
+    uint32_t freeLevel = HAL_CAN_GetTxMailboxesFreeLevel(hcan);
     
-    uint32_t freeLevel = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);
-    uint32_t timeout = 0;
-
-    while (freeLevel == 0) {
-        freeLevel = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);
-        timeout++;
-        // Yaklaşık 1-2ms bekleme süresi (timeout değerini deneyerek buluruz)
-        if (timeout > 10000) { 
-            return 0; // Hat koptu veya çok yoğun, veri kaybı!
-        }
+    if (freeLevel == 0) {
+        return 0; // Hat çok yoğun, kutular dolu! (Task içinde osDelay yapıp tekrar denenecek)
     }
 
-    if (HAL_CAN_AddTxMessage(&hcan1, &pHeader, data, &pTxMailbox) != HAL_OK) {
+    // hcan1 yerine parametre olarak gelen hcan kullanıldı (Modülerlik)
+    if (HAL_CAN_AddTxMessage(hcan, &pHeader, data, &pTxMailbox) != HAL_OK) {
         return 0; // Donanımsal hata
     }
     return 1; // Başarılı
@@ -87,17 +85,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK)
     {
         // BURASI ÇOK ÖNEMLİ:
-        // Gelen veriyi burada işleyeceğiz.
-        // Örnek: Eğer gelen ID == 0x500 ise motoru durdur vs.
+        // Gelen veriyi burada İŞLEMİYORUZ (Çünkü burası Interrupt, sistemi dondurur).
+        // Örnek: Eğer gelen ID == 0x500 ise motoru durdur vs. mantığını 
+        // burada kurmak yerine mesajı FreeRTOS Queue (Kuyruk) yapısına fırlatacağız.
         
         // Şimdilik debug için boş bırakıyoruz veya bir LED yakabiliriz.
         // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13); // Mesaj gelince LED yak
+        
+        // İLERİDE EKLENECEK KOD: 
+        // xQueueSendFromISR(CAN_RxQueue, &rxData, &xHigherPriorityTaskWoken);
     }
 }
-
-
-
-
 
 // main.c içinde yani bu dosyaların kullanımı:
 // Öncelikle can_manager.h dosyasını include et 
@@ -118,10 +116,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     txData[2] = (counter >> 8)  & 0xFF;
     txData[3] = (counter)       & 0xFF; // En küçük parça
 
-    // ID: 0x100 (Sistem Durumu) olarak gönder
-    if(CAN_Send_Message(CAN_ID_SYSTEM_STATUS, txData, 8)) {
+    // ID: 0x100 (Sistem Durumu) olarak gönder (hcan1 referans olarak eklendi)
+    if(CAN_Send_Message(&hcan1, CAN_ID_SYSTEM_STATUS, txData, 8)) {
         printf("CAN Gonderildi: %lu\r\n", counter);
     } else {
+        // Kutular doluysa veya hata varsa burada biraz bekle ve tekrar dene
         printf("CAN Hatasi! (Mailbox Dolu Olabilir)\r\n");
     }
 
@@ -131,5 +130,3 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   // USER CODE END StartCanTask 
 }
   */
-
-// Eğer while içinde direkt bir kullanım senaryosu var ise Task içindeki yapıyı direkt aynı şekilde kullanabiliriz.

@@ -1,0 +1,212 @@
+ARM GAS  /tmp/ccEoNmgq.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"cholesky.c"
+  16              		.text
+  17              		.section	.rodata.cholesky_decompose_lower.str1.4,"aMS",%progbits,1
+  18              		.align	2
+  19              	.LC0:
+  20 0000 6D617420 		.ascii	"mat != (matrix_t*)0\000"
+  20      213D2028 
+  20      6D617472 
+  20      69785F74 
+  20      2A293000 
+  21              		.align	2
+  22              	.LC1:
+  23 0014 436F7265 		.ascii	"Core/Src/cholesky.c\000"
+  23      2F537263 
+  23      2F63686F 
+  23      6C65736B 
+  23      792E6300 
+  24              		.align	2
+  25              	.LC2:
+  26 0028 6D61742D 		.ascii	"mat->rows == mat->cols\000"
+  26      3E726F77 
+  26      73203D3D 
+  26      206D6174 
+  26      2D3E636F 
+  27 003f 00       		.align	2
+  28              	.LC3:
+  29 0040 6D61742D 		.ascii	"mat->rows > 0\000"
+  29      3E726F77 
+  29      73203E20 
+  29      3000
+  30              		.global	__aeabi_f2d
+  31              		.global	__aeabi_d2f
+  32              		.section	.text.cholesky_decompose_lower,"ax",%progbits
+  33              		.align	1
+  34              		.global	cholesky_decompose_lower
+  35              		.syntax unified
+  36              		.thumb
+  37              		.thumb_func
+  39              	cholesky_decompose_lower:
+  40              		@ args = 0, pretend = 0, frame = 0
+  41              		@ frame_needed = 0, uses_anonymous_args = 0
+  42 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  43 0002 0768     		ldr	r7, [r0]
+ARM GAS  /tmp/ccEoNmgq.s 			page 2
+
+
+  44 0004 8468     		ldr	r4, [r0, #8]
+  45 0006 38B1     		cbz	r0, .L20
+  46 0008 4368     		ldr	r3, [r0, #4]
+  47 000a BB42     		cmp	r3, r7
+  48 000c 0AD1     		bne	.L21
+  49 000e 7FB1     		cbz	r7, .L22
+  50 0010 9FED3A6A 		vldr.32	s12, .L28
+  51 0014 0026     		movs	r6, #0
+  52 0016 57E0     		b	.L4
+  53              	.L20:
+  54 0018 394B     		ldr	r3, .L28+4
+  55 001a 3A4A     		ldr	r2, .L28+8
+  56 001c 1821     		movs	r1, #24
+  57 001e 3A48     		ldr	r0, .L28+12
+  58 0020 FFF7FEFF 		bl	__assert_func
+  59              	.L21:
+  60 0024 394B     		ldr	r3, .L28+16
+  61 0026 374A     		ldr	r2, .L28+8
+  62 0028 1921     		movs	r1, #25
+  63 002a 3748     		ldr	r0, .L28+12
+  64 002c FFF7FEFF 		bl	__assert_func
+  65              	.L22:
+  66 0030 374B     		ldr	r3, .L28+20
+  67 0032 344A     		ldr	r2, .L28+8
+  68 0034 1A21     		movs	r1, #26
+  69 0036 3448     		ldr	r0, .L28+12
+  70 0038 FFF7FEFF 		bl	__assert_func
+  71              	.L6:
+  72 003c 04EB8301 		add	r1, r4, r3, lsl #2
+  73 0040 D1ED007A 		vldr.32	s15, [r1]
+  74 0044 04EB8201 		add	r1, r4, r2, lsl #2
+  75 0048 D1ED006A 		vldr.32	s13, [r1]
+  76 004c 67EEA67A 		vmul.f32	s15, s15, s13
+  77 0050 37EE677A 		vsub.f32	s14, s14, s15
+  78 0054 0133     		adds	r3, r3, #1
+  79 0056 0132     		adds	r2, r2, #1
+  80              	.L5:
+  81 0058 8342     		cmp	r3, r0
+  82 005a EFD3     		bcc	.L6
+  83 005c AE42     		cmp	r6, r5
+  84 005e 15D0     		beq	.L23
+  85 0060 B444     		add	ip, ip, r6
+  86 0062 04EB8C0C 		add	ip, r4, ip, lsl #2
+  87 0066 26EE077A 		vmul.f32	s14, s12, s14
+  88 006a 8CED007A 		vstr.32	s14, [ip]
+  89              	.L9:
+  90 006e 0135     		adds	r5, r5, #1
+  91              	.L11:
+  92 0070 BD42     		cmp	r5, r7
+  93 0072 28D2     		bcs	.L24
+  94 0074 07FB06F3 		mul	r3, r7, r6
+  95 0078 5A19     		adds	r2, r3, r5
+  96 007a 04EB8202 		add	r2, r4, r2, lsl #2
+  97 007e 92ED007A 		vldr.32	s14, [r2]
+  98 0082 07FB05FC 		mul	ip, r7, r5
+  99 0086 9819     		adds	r0, r3, r6
+ 100 0088 6246     		mov	r2, ip
+ARM GAS  /tmp/ccEoNmgq.s 			page 3
+
+
+ 101 008a E5E7     		b	.L5
+ 102              	.L23:
+ 103 008c B5EEC07A 		vcmpe.f32	s14, #0
+ 104 0090 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 105 0094 2FD9     		bls	.L17
+ 106 0096 17EE100A 		vmov	r0, s14
+ 107 009a FFF7FEFF 		bl	__aeabi_f2d
+ 108 009e 41EC100B 		vmov	d0, r0, r1
+ 109 00a2 FFF7FEFF 		bl	sqrt
+ 110 00a6 51EC100B 		vmov	r0, r1, d0
+ 111 00aa FFF7FEFF 		bl	__aeabi_d2f
+ 112 00ae 07EE900A 		vmov	s15, r0
+ 113 00b2 07FB0663 		mla	r3, r7, r6, r6
+ 114 00b6 04EB8303 		add	r3, r4, r3, lsl #2
+ 115 00ba 1860     		str	r0, [r3]	@ float
+ 116 00bc B7EE007A 		vmov.f32	s14, #1.0e+0
+ 117 00c0 87EE276A 		vdiv.f32	s12, s14, s15
+ 118 00c4 D3E7     		b	.L9
+ 119              	.L24:
+ 120 00c6 0136     		adds	r6, r6, #1
+ 121              	.L4:
+ 122 00c8 BE42     		cmp	r6, r7
+ 123 00ca 01D2     		bcs	.L25
+ 124 00cc 3546     		mov	r5, r6
+ 125 00ce CFE7     		b	.L11
+ 126              	.L25:
+ 127 00d0 0020     		movs	r0, #0
+ 128 00d2 00E0     		b	.L12
+ 129              	.L27:
+ 130 00d4 2846     		mov	r0, r5
+ 131              	.L12:
+ 132 00d6 B842     		cmp	r0, r7
+ 133 00d8 0BD2     		bcs	.L26
+ 134 00da 451C     		adds	r5, r0, #1
+ 135 00dc 2B46     		mov	r3, r5
+ 136              	.L13:
+ 137 00de BB42     		cmp	r3, r7
+ 138 00e0 F8D2     		bcs	.L27
+ 139 00e2 07FB0032 		mla	r2, r7, r0, r3
+ 140 00e6 04EB8202 		add	r2, r4, r2, lsl #2
+ 141 00ea 0021     		movs	r1, #0
+ 142 00ec 1160     		str	r1, [r2]	@ float
+ 143 00ee 0133     		adds	r3, r3, #1
+ 144 00f0 F5E7     		b	.L13
+ 145              	.L26:
+ 146 00f2 0020     		movs	r0, #0
+ 147 00f4 00E0     		b	.L1
+ 148              	.L17:
+ 149 00f6 0120     		movs	r0, #1
+ 150              	.L1:
+ 151 00f8 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 152              	.L29:
+ 153 00fa 00BF     		.align	2
+ 154              	.L28:
+ 155 00fc 00000000 		.word	0
+ 156 0100 00000000 		.word	.LC0
+ 157 0104 00000000 		.word	__func__.0
+ARM GAS  /tmp/ccEoNmgq.s 			page 4
+
+
+ 158 0108 14000000 		.word	.LC1
+ 159 010c 28000000 		.word	.LC2
+ 160 0110 40000000 		.word	.LC3
+ 162              		.section	.rodata.__func__.0,"a"
+ 163              		.align	2
+ 166              	__func__.0:
+ 167 0000 63686F6C 		.ascii	"cholesky_decompose_lower\000"
+ 167      65736B79 
+ 167      5F646563 
+ 167      6F6D706F 
+ 167      73655F6C 
+ 168              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/ccEoNmgq.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 cholesky.c
+     /tmp/ccEoNmgq.s:18     .rodata.cholesky_decompose_lower.str1.4:00000000 $d
+     /tmp/ccEoNmgq.s:33     .text.cholesky_decompose_lower:00000000 $t
+     /tmp/ccEoNmgq.s:39     .text.cholesky_decompose_lower:00000000 cholesky_decompose_lower
+     /tmp/ccEoNmgq.s:155    .text.cholesky_decompose_lower:000000fc $d
+     /tmp/ccEoNmgq.s:166    .rodata.__func__.0:00000000 __func__.0
+     /tmp/ccEoNmgq.s:163    .rodata.__func__.0:00000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_f2d
+__aeabi_d2f
+__assert_func
+sqrt

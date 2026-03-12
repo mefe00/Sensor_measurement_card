@@ -1,0 +1,4159 @@
+ARM GAS  /tmp/cc4BdNm7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"stm32f4xx_hal_uart.c"
+  16              		.text
+  17              		.section	.text.UART_EndTxTransfer,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	UART_EndTxTransfer:
+  24              		@ args = 0, pretend = 0, frame = 0
+  25              		@ frame_needed = 0, uses_anonymous_args = 0
+  26              		@ link register save eliminated.
+  27              	.L2:
+  28 0000 0268     		ldr	r2, [r0]
+  29 0002 02F10C03 		add	r3, r2, #12
+  30              		.syntax unified
+  31              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  32 0006 53E8003F 		ldrex r3, [r3]
+  33              	@ 0 "" 2
+  34              		.thumb
+  35              		.syntax unified
+  36 000a 23F0C003 		bic	r3, r3, #192
+  37 000e 0C32     		adds	r2, r2, #12
+  38              		.syntax unified
+  39              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  40 0010 42E80031 		strex r1, r3, [r2]
+  41              	@ 0 "" 2
+  42              		.thumb
+  43              		.syntax unified
+  44 0014 0029     		cmp	r1, #0
+  45 0016 F3D1     		bne	.L2
+  46 0018 2023     		movs	r3, #32
+  47 001a 80F84130 		strb	r3, [r0, #65]
+  48 001e 7047     		bx	lr
+  50              		.section	.text.UART_EndRxTransfer,"ax",%progbits
+  51              		.align	1
+  52              		.syntax unified
+  53              		.thumb
+  54              		.thumb_func
+  56              	UART_EndRxTransfer:
+  57              		@ args = 0, pretend = 0, frame = 0
+  58              		@ frame_needed = 0, uses_anonymous_args = 0
+  59              		@ link register save eliminated.
+  60              	.L4:
+ARM GAS  /tmp/cc4BdNm7.s 			page 2
+
+
+  61 0000 0268     		ldr	r2, [r0]
+  62 0002 02F10C03 		add	r3, r2, #12
+  63              		.syntax unified
+  64              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  65 0006 53E8003F 		ldrex r3, [r3]
+  66              	@ 0 "" 2
+  67              		.thumb
+  68              		.syntax unified
+  69 000a 23F49073 		bic	r3, r3, #288
+  70 000e 0C32     		adds	r2, r2, #12
+  71              		.syntax unified
+  72              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  73 0010 42E80031 		strex r1, r3, [r2]
+  74              	@ 0 "" 2
+  75              		.thumb
+  76              		.syntax unified
+  77 0014 0029     		cmp	r1, #0
+  78 0016 F3D1     		bne	.L4
+  79              	.L5:
+  80 0018 0268     		ldr	r2, [r0]
+  81 001a 02F11403 		add	r3, r2, #20
+  82              		.syntax unified
+  83              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  84 001e 53E8003F 		ldrex r3, [r3]
+  85              	@ 0 "" 2
+  86              		.thumb
+  87              		.syntax unified
+  88 0022 23F00103 		bic	r3, r3, #1
+  89 0026 1432     		adds	r2, r2, #20
+  90              		.syntax unified
+  91              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  92 0028 42E80031 		strex r1, r3, [r2]
+  93              	@ 0 "" 2
+  94              		.thumb
+  95              		.syntax unified
+  96 002c 0029     		cmp	r1, #0
+  97 002e F3D1     		bne	.L5
+  98 0030 036B     		ldr	r3, [r0, #48]
+  99 0032 012B     		cmp	r3, #1
+ 100 0034 05D0     		beq	.L7
+ 101              	.L6:
+ 102 0036 2023     		movs	r3, #32
+ 103 0038 80F84230 		strb	r3, [r0, #66]
+ 104 003c 0023     		movs	r3, #0
+ 105 003e 0363     		str	r3, [r0, #48]
+ 106 0040 7047     		bx	lr
+ 107              	.L7:
+ 108 0042 0268     		ldr	r2, [r0]
+ 109 0044 02F10C03 		add	r3, r2, #12
+ 110              		.syntax unified
+ 111              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 112 0048 53E8003F 		ldrex r3, [r3]
+ 113              	@ 0 "" 2
+ 114              		.thumb
+ 115              		.syntax unified
+ 116 004c 23F01003 		bic	r3, r3, #16
+ 117 0050 0C32     		adds	r2, r2, #12
+ARM GAS  /tmp/cc4BdNm7.s 			page 3
+
+
+ 118              		.syntax unified
+ 119              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 120 0052 42E80031 		strex r1, r3, [r2]
+ 121              	@ 0 "" 2
+ 122              		.thumb
+ 123              		.syntax unified
+ 124 0056 0029     		cmp	r1, #0
+ 125 0058 F3D1     		bne	.L7
+ 126 005a ECE7     		b	.L6
+ 128              		.section	.text.UART_Transmit_IT,"ax",%progbits
+ 129              		.align	1
+ 130              		.syntax unified
+ 131              		.thumb
+ 132              		.thumb_func
+ 134              	UART_Transmit_IT:
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137              		@ link register save eliminated.
+ 138 0000 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 139 0004 DBB2     		uxtb	r3, r3
+ 140 0006 212B     		cmp	r3, #33
+ 141 0008 01D0     		beq	.L14
+ 142 000a 0220     		movs	r0, #2
+ 143 000c 7047     		bx	lr
+ 144              	.L14:
+ 145 000e 8368     		ldr	r3, [r0, #8]
+ 146 0010 B3F5805F 		cmp	r3, #4096
+ 147 0014 17D0     		beq	.L15
+ 148              	.L10:
+ 149 0016 036A     		ldr	r3, [r0, #32]
+ 150 0018 5A1C     		adds	r2, r3, #1
+ 151 001a 0262     		str	r2, [r0, #32]
+ 152 001c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 153 001e 0368     		ldr	r3, [r0]
+ 154 0020 5A60     		str	r2, [r3, #4]
+ 155              	.L11:
+ 156 0022 C38C     		ldrh	r3, [r0, #38]
+ 157 0024 9BB2     		uxth	r3, r3
+ 158 0026 013B     		subs	r3, r3, #1
+ 159 0028 9BB2     		uxth	r3, r3
+ 160 002a C384     		strh	r3, [r0, #38]	@ movhi
+ 161 002c 4BB9     		cbnz	r3, .L12
+ 162 002e 0268     		ldr	r2, [r0]
+ 163 0030 D368     		ldr	r3, [r2, #12]
+ 164 0032 23F08003 		bic	r3, r3, #128
+ 165 0036 D360     		str	r3, [r2, #12]
+ 166 0038 0268     		ldr	r2, [r0]
+ 167 003a D368     		ldr	r3, [r2, #12]
+ 168 003c 43F04003 		orr	r3, r3, #64
+ 169 0040 D360     		str	r3, [r2, #12]
+ 170              	.L12:
+ 171 0042 0020     		movs	r0, #0
+ 172 0044 7047     		bx	lr
+ 173              	.L15:
+ 174 0046 0369     		ldr	r3, [r0, #16]
+ 175 0048 002B     		cmp	r3, #0
+ 176 004a E4D1     		bne	.L10
+ARM GAS  /tmp/cc4BdNm7.s 			page 4
+
+
+ 177 004c 036A     		ldr	r3, [r0, #32]
+ 178 004e 1B88     		ldrh	r3, [r3]
+ 179 0050 0268     		ldr	r2, [r0]
+ 180 0052 C3F30803 		ubfx	r3, r3, #0, #9
+ 181 0056 5360     		str	r3, [r2, #4]
+ 182 0058 036A     		ldr	r3, [r0, #32]
+ 183 005a 0233     		adds	r3, r3, #2
+ 184 005c 0362     		str	r3, [r0, #32]
+ 185 005e E0E7     		b	.L11
+ 187              		.global	__aeabi_uldivmod
+ 188              		.section	.text.UART_SetConfig,"ax",%progbits
+ 189              		.align	1
+ 190              		.syntax unified
+ 191              		.thumb
+ 192              		.thumb_func
+ 194              	UART_SetConfig:
+ 195              		@ args = 0, pretend = 0, frame = 0
+ 196              		@ frame_needed = 0, uses_anonymous_args = 0
+ 197 0000 10B5     		push	{r4, lr}
+ 198 0002 0446     		mov	r4, r0
+ 199 0004 0268     		ldr	r2, [r0]
+ 200 0006 1369     		ldr	r3, [r2, #16]
+ 201 0008 23F44053 		bic	r3, r3, #12288
+ 202 000c C168     		ldr	r1, [r0, #12]
+ 203 000e 0B43     		orrs	r3, r3, r1
+ 204 0010 1361     		str	r3, [r2, #16]
+ 205 0012 8368     		ldr	r3, [r0, #8]
+ 206 0014 0269     		ldr	r2, [r0, #16]
+ 207 0016 1A43     		orrs	r2, r2, r3
+ 208 0018 4369     		ldr	r3, [r0, #20]
+ 209 001a 1A43     		orrs	r2, r2, r3
+ 210 001c C369     		ldr	r3, [r0, #28]
+ 211 001e 1A43     		orrs	r2, r2, r3
+ 212 0020 0168     		ldr	r1, [r0]
+ 213 0022 CB68     		ldr	r3, [r1, #12]
+ 214 0024 23F41643 		bic	r3, r3, #38400
+ 215 0028 23F00C03 		bic	r3, r3, #12
+ 216 002c 1343     		orrs	r3, r3, r2
+ 217 002e CB60     		str	r3, [r1, #12]
+ 218 0030 0268     		ldr	r2, [r0]
+ 219 0032 5369     		ldr	r3, [r2, #20]
+ 220 0034 23F44073 		bic	r3, r3, #768
+ 221 0038 8169     		ldr	r1, [r0, #24]
+ 222 003a 0B43     		orrs	r3, r3, r1
+ 223 003c 5361     		str	r3, [r2, #20]
+ 224 003e 0368     		ldr	r3, [r0]
+ 225 0040 314A     		ldr	r2, .L24
+ 226 0042 9342     		cmp	r3, r2
+ 227 0044 06D0     		beq	.L17
+ 228 0046 02F58062 		add	r2, r2, #1024
+ 229 004a 9342     		cmp	r3, r2
+ 230 004c 02D0     		beq	.L17
+ 231 004e FFF7FEFF 		bl	HAL_RCC_GetPCLK1Freq
+ 232 0052 01E0     		b	.L19
+ 233              	.L17:
+ 234 0054 FFF7FEFF 		bl	HAL_RCC_GetPCLK2Freq
+ 235              	.L19:
+ARM GAS  /tmp/cc4BdNm7.s 			page 5
+
+
+ 236 0058 E369     		ldr	r3, [r4, #28]
+ 237 005a B3F5004F 		cmp	r3, #32768
+ 238 005e 29D0     		beq	.L23
+ 239 0060 0021     		movs	r1, #0
+ 240 0062 0318     		adds	r3, r0, r0
+ 241 0064 4941     		adcs	r1, r1, r1
+ 242 0066 1B18     		adds	r3, r3, r0
+ 243 0068 41F10001 		adc	r1, r1, #0
+ 244 006c C900     		lsls	r1, r1, #3
+ 245 006e 41EA5371 		orr	r1, r1, r3, lsr #29
+ 246 0072 DB00     		lsls	r3, r3, #3
+ 247 0074 1818     		adds	r0, r3, r0
+ 248 0076 6368     		ldr	r3, [r4, #4]
+ 249 0078 4FEA8302 		lsl	r2, r3, #2
+ 250 007c 4FEA9373 		lsr	r3, r3, #30
+ 251 0080 41F10001 		adc	r1, r1, #0
+ 252 0084 FFF7FEFF 		bl	__aeabi_uldivmod
+ 253 0088 204A     		ldr	r2, .L24+4
+ 254 008a A2FB0031 		umull	r3, r1, r2, r0
+ 255 008e 4909     		lsrs	r1, r1, #5
+ 256 0090 6423     		movs	r3, #100
+ 257 0092 03FB1103 		mls	r3, r3, r1, r0
+ 258 0096 1B01     		lsls	r3, r3, #4
+ 259 0098 3233     		adds	r3, r3, #50
+ 260 009a A2FB0323 		umull	r2, r3, r2, r3
+ 261 009e 5B09     		lsrs	r3, r3, #5
+ 262 00a0 03F0F002 		and	r2, r3, #240
+ 263 00a4 02EB0112 		add	r2, r2, r1, lsl #4
+ 264 00a8 03F00F03 		and	r3, r3, #15
+ 265 00ac 2168     		ldr	r1, [r4]
+ 266 00ae 1344     		add	r3, r3, r2
+ 267 00b0 8B60     		str	r3, [r1, #8]
+ 268              	.L16:
+ 269 00b2 10BD     		pop	{r4, pc}
+ 270              	.L23:
+ 271 00b4 0023     		movs	r3, #0
+ 272 00b6 0218     		adds	r2, r0, r0
+ 273 00b8 43EB0301 		adc	r1, r3, r3
+ 274 00bc 1218     		adds	r2, r2, r0
+ 275 00be 41F10001 		adc	r1, r1, #0
+ 276 00c2 C900     		lsls	r1, r1, #3
+ 277 00c4 41EA5271 		orr	r1, r1, r2, lsr #29
+ 278 00c8 D200     		lsls	r2, r2, #3
+ 279 00ca 1018     		adds	r0, r2, r0
+ 280 00cc 41F10001 		adc	r1, r1, #0
+ 281 00d0 6268     		ldr	r2, [r4, #4]
+ 282 00d2 9218     		adds	r2, r2, r2
+ 283 00d4 5B41     		adcs	r3, r3, r3
+ 284 00d6 FFF7FEFF 		bl	__aeabi_uldivmod
+ 285 00da 0C4A     		ldr	r2, .L24+4
+ 286 00dc A2FB0031 		umull	r3, r1, r2, r0
+ 287 00e0 4909     		lsrs	r1, r1, #5
+ 288 00e2 6423     		movs	r3, #100
+ 289 00e4 03FB1103 		mls	r3, r3, r1, r0
+ 290 00e8 DB00     		lsls	r3, r3, #3
+ 291 00ea 3233     		adds	r3, r3, #50
+ 292 00ec A2FB0323 		umull	r2, r3, r2, r3
+ARM GAS  /tmp/cc4BdNm7.s 			page 6
+
+
+ 293 00f0 5B09     		lsrs	r3, r3, #5
+ 294 00f2 5A00     		lsls	r2, r3, #1
+ 295 00f4 02F4F872 		and	r2, r2, #496
+ 296 00f8 02EB0112 		add	r2, r2, r1, lsl #4
+ 297 00fc 03F00703 		and	r3, r3, #7
+ 298 0100 2168     		ldr	r1, [r4]
+ 299 0102 1344     		add	r3, r3, r2
+ 300 0104 8B60     		str	r3, [r1, #8]
+ 301 0106 D4E7     		b	.L16
+ 302              	.L25:
+ 303              		.align	2
+ 304              	.L24:
+ 305 0108 00100140 		.word	1073811456
+ 306 010c 1F85EB51 		.word	1374389535
+ 308              		.section	.text.UART_WaitOnFlagUntilTimeout,"ax",%progbits
+ 309              		.align	1
+ 310              		.syntax unified
+ 311              		.thumb
+ 312              		.thumb_func
+ 314              	UART_WaitOnFlagUntilTimeout:
+ 315              		@ args = 4, pretend = 0, frame = 8
+ 316              		@ frame_needed = 0, uses_anonymous_args = 0
+ 317 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 318 0004 83B0     		sub	sp, sp, #12
+ 319 0006 0546     		mov	r5, r0
+ 320 0008 0E46     		mov	r6, r1
+ 321 000a 1746     		mov	r7, r2
+ 322 000c 9946     		mov	r9, r3
+ 323 000e DDF82880 		ldr	r8, [sp, #40]
+ 324              	.L28:
+ 325 0012 2B68     		ldr	r3, [r5]
+ 326 0014 1C68     		ldr	r4, [r3]
+ 327 0016 36EA0404 		bics	r4, r6, r4
+ 328 001a 0CBF     		ite	eq
+ 329 001c 0124     		moveq	r4, #1
+ 330 001e 0024     		movne	r4, #0
+ 331 0020 BC42     		cmp	r4, r7
+ 332 0022 28D1     		bne	.L34
+ 333 0024 B8F1FF3F 		cmp	r8, #-1
+ 334 0028 F3D0     		beq	.L28
+ 335 002a FFF7FEFF 		bl	HAL_GetTick
+ 336 002e A0EB0900 		sub	r0, r0, r9
+ 337 0032 4045     		cmp	r0, r8
+ 338 0034 23D8     		bhi	.L31
+ 339 0036 B8F1000F 		cmp	r8, #0
+ 340 003a 22D0     		beq	.L32
+ 341 003c 2B68     		ldr	r3, [r5]
+ 342 003e DA68     		ldr	r2, [r3, #12]
+ 343 0040 12F0040F 		tst	r2, #4
+ 344 0044 E5D0     		beq	.L28
+ 345 0046 802E     		cmp	r6, #128
+ 346 0048 E3D0     		beq	.L28
+ 347 004a 402E     		cmp	r6, #64
+ 348 004c E1D0     		beq	.L28
+ 349 004e 1A68     		ldr	r2, [r3]
+ 350 0050 12F0080F 		tst	r2, #8
+ 351 0054 DDD0     		beq	.L28
+ARM GAS  /tmp/cc4BdNm7.s 			page 7
+
+
+ 352 0056 0024     		movs	r4, #0
+ 353 0058 0194     		str	r4, [sp, #4]
+ 354 005a 1A68     		ldr	r2, [r3]
+ 355 005c 0192     		str	r2, [sp, #4]
+ 356 005e 5B68     		ldr	r3, [r3, #4]
+ 357 0060 0193     		str	r3, [sp, #4]
+ 358 0062 019B     		ldr	r3, [sp, #4]
+ 359 0064 2846     		mov	r0, r5
+ 360 0066 FFF7FEFF 		bl	UART_EndRxTransfer
+ 361 006a 0823     		movs	r3, #8
+ 362 006c 6B64     		str	r3, [r5, #68]
+ 363 006e 85F84040 		strb	r4, [r5, #64]
+ 364 0072 0120     		movs	r0, #1
+ 365 0074 00E0     		b	.L29
+ 366              	.L34:
+ 367 0076 0020     		movs	r0, #0
+ 368              	.L29:
+ 369 0078 03B0     		add	sp, sp, #12
+ 370              		@ sp needed
+ 371 007a BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 372              	.L31:
+ 373 007e 0320     		movs	r0, #3
+ 374 0080 FAE7     		b	.L29
+ 375              	.L32:
+ 376 0082 0320     		movs	r0, #3
+ 377 0084 F8E7     		b	.L29
+ 379              		.section	.text.HAL_UART_MspInit,"ax",%progbits
+ 380              		.align	1
+ 381              		.weak	HAL_UART_MspInit
+ 382              		.syntax unified
+ 383              		.thumb
+ 384              		.thumb_func
+ 386              	HAL_UART_MspInit:
+ 387              		@ args = 0, pretend = 0, frame = 0
+ 388              		@ frame_needed = 0, uses_anonymous_args = 0
+ 389              		@ link register save eliminated.
+ 390 0000 7047     		bx	lr
+ 392              		.section	.text.HAL_UART_Init,"ax",%progbits
+ 393              		.align	1
+ 394              		.global	HAL_UART_Init
+ 395              		.syntax unified
+ 396              		.thumb
+ 397              		.thumb_func
+ 399              	HAL_UART_Init:
+ 400              		@ args = 0, pretend = 0, frame = 0
+ 401              		@ frame_needed = 0, uses_anonymous_args = 0
+ 402 0000 60B3     		cbz	r0, .L39
+ 403 0002 10B5     		push	{r4, lr}
+ 404 0004 0446     		mov	r4, r0
+ 405 0006 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 406 000a 13B3     		cbz	r3, .L44
+ 407              	.L38:
+ 408 000c 2423     		movs	r3, #36
+ 409 000e 84F84130 		strb	r3, [r4, #65]
+ 410 0012 2268     		ldr	r2, [r4]
+ 411 0014 D368     		ldr	r3, [r2, #12]
+ 412 0016 23F40053 		bic	r3, r3, #8192
+ARM GAS  /tmp/cc4BdNm7.s 			page 8
+
+
+ 413 001a D360     		str	r3, [r2, #12]
+ 414 001c 2046     		mov	r0, r4
+ 415 001e FFF7FEFF 		bl	UART_SetConfig
+ 416 0022 2268     		ldr	r2, [r4]
+ 417 0024 1369     		ldr	r3, [r2, #16]
+ 418 0026 23F49043 		bic	r3, r3, #18432
+ 419 002a 1361     		str	r3, [r2, #16]
+ 420 002c 2268     		ldr	r2, [r4]
+ 421 002e 5369     		ldr	r3, [r2, #20]
+ 422 0030 23F02A03 		bic	r3, r3, #42
+ 423 0034 5361     		str	r3, [r2, #20]
+ 424 0036 2268     		ldr	r2, [r4]
+ 425 0038 D368     		ldr	r3, [r2, #12]
+ 426 003a 43F40053 		orr	r3, r3, #8192
+ 427 003e D360     		str	r3, [r2, #12]
+ 428 0040 0020     		movs	r0, #0
+ 429 0042 6064     		str	r0, [r4, #68]
+ 430 0044 2023     		movs	r3, #32
+ 431 0046 84F84130 		strb	r3, [r4, #65]
+ 432 004a 84F84230 		strb	r3, [r4, #66]
+ 433 004e 6063     		str	r0, [r4, #52]
+ 434 0050 10BD     		pop	{r4, pc}
+ 435              	.L44:
+ 436 0052 80F84030 		strb	r3, [r0, #64]
+ 437 0056 FFF7FEFF 		bl	HAL_UART_MspInit
+ 438 005a D7E7     		b	.L38
+ 439              	.L39:
+ 440 005c 0120     		movs	r0, #1
+ 441 005e 7047     		bx	lr
+ 443              		.section	.text.HAL_HalfDuplex_Init,"ax",%progbits
+ 444              		.align	1
+ 445              		.global	HAL_HalfDuplex_Init
+ 446              		.syntax unified
+ 447              		.thumb
+ 448              		.thumb_func
+ 450              	HAL_HalfDuplex_Init:
+ 451              		@ args = 0, pretend = 0, frame = 0
+ 452              		@ frame_needed = 0, uses_anonymous_args = 0
+ 453 0000 0028     		cmp	r0, #0
+ 454 0002 31D0     		beq	.L48
+ 455 0004 10B5     		push	{r4, lr}
+ 456 0006 0446     		mov	r4, r0
+ 457 0008 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 458 000c 3BB3     		cbz	r3, .L53
+ 459              	.L47:
+ 460 000e 2423     		movs	r3, #36
+ 461 0010 84F84130 		strb	r3, [r4, #65]
+ 462 0014 2268     		ldr	r2, [r4]
+ 463 0016 D368     		ldr	r3, [r2, #12]
+ 464 0018 23F40053 		bic	r3, r3, #8192
+ 465 001c D360     		str	r3, [r2, #12]
+ 466 001e 2046     		mov	r0, r4
+ 467 0020 FFF7FEFF 		bl	UART_SetConfig
+ 468 0024 2268     		ldr	r2, [r4]
+ 469 0026 1369     		ldr	r3, [r2, #16]
+ 470 0028 23F49043 		bic	r3, r3, #18432
+ 471 002c 1361     		str	r3, [r2, #16]
+ARM GAS  /tmp/cc4BdNm7.s 			page 9
+
+
+ 472 002e 2268     		ldr	r2, [r4]
+ 473 0030 5369     		ldr	r3, [r2, #20]
+ 474 0032 23F02203 		bic	r3, r3, #34
+ 475 0036 5361     		str	r3, [r2, #20]
+ 476 0038 2268     		ldr	r2, [r4]
+ 477 003a 5369     		ldr	r3, [r2, #20]
+ 478 003c 43F00803 		orr	r3, r3, #8
+ 479 0040 5361     		str	r3, [r2, #20]
+ 480 0042 2268     		ldr	r2, [r4]
+ 481 0044 D368     		ldr	r3, [r2, #12]
+ 482 0046 43F40053 		orr	r3, r3, #8192
+ 483 004a D360     		str	r3, [r2, #12]
+ 484 004c 0020     		movs	r0, #0
+ 485 004e 6064     		str	r0, [r4, #68]
+ 486 0050 2023     		movs	r3, #32
+ 487 0052 84F84130 		strb	r3, [r4, #65]
+ 488 0056 84F84230 		strb	r3, [r4, #66]
+ 489 005a 6063     		str	r0, [r4, #52]
+ 490 005c 10BD     		pop	{r4, pc}
+ 491              	.L53:
+ 492 005e 80F84030 		strb	r3, [r0, #64]
+ 493 0062 FFF7FEFF 		bl	HAL_UART_MspInit
+ 494 0066 D2E7     		b	.L47
+ 495              	.L48:
+ 496 0068 0120     		movs	r0, #1
+ 497 006a 7047     		bx	lr
+ 499              		.section	.text.HAL_LIN_Init,"ax",%progbits
+ 500              		.align	1
+ 501              		.global	HAL_LIN_Init
+ 502              		.syntax unified
+ 503              		.thumb
+ 504              		.thumb_func
+ 506              	HAL_LIN_Init:
+ 507              		@ args = 0, pretend = 0, frame = 0
+ 508              		@ frame_needed = 0, uses_anonymous_args = 0
+ 509 0000 0028     		cmp	r0, #0
+ 510 0002 3CD0     		beq	.L57
+ 511 0004 38B5     		push	{r3, r4, r5, lr}
+ 512 0006 0D46     		mov	r5, r1
+ 513 0008 0446     		mov	r4, r0
+ 514 000a 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 515 000e 002B     		cmp	r3, #0
+ 516 0010 30D0     		beq	.L62
+ 517              	.L56:
+ 518 0012 2423     		movs	r3, #36
+ 519 0014 84F84130 		strb	r3, [r4, #65]
+ 520 0018 2268     		ldr	r2, [r4]
+ 521 001a D368     		ldr	r3, [r2, #12]
+ 522 001c 23F40053 		bic	r3, r3, #8192
+ 523 0020 D360     		str	r3, [r2, #12]
+ 524 0022 2046     		mov	r0, r4
+ 525 0024 FFF7FEFF 		bl	UART_SetConfig
+ 526 0028 2268     		ldr	r2, [r4]
+ 527 002a 1369     		ldr	r3, [r2, #16]
+ 528 002c 23F40063 		bic	r3, r3, #2048
+ 529 0030 1361     		str	r3, [r2, #16]
+ 530 0032 2268     		ldr	r2, [r4]
+ARM GAS  /tmp/cc4BdNm7.s 			page 10
+
+
+ 531 0034 5369     		ldr	r3, [r2, #20]
+ 532 0036 23F02A03 		bic	r3, r3, #42
+ 533 003a 5361     		str	r3, [r2, #20]
+ 534 003c 2268     		ldr	r2, [r4]
+ 535 003e 1369     		ldr	r3, [r2, #16]
+ 536 0040 43F48043 		orr	r3, r3, #16384
+ 537 0044 1361     		str	r3, [r2, #16]
+ 538 0046 2268     		ldr	r2, [r4]
+ 539 0048 1369     		ldr	r3, [r2, #16]
+ 540 004a 23F02003 		bic	r3, r3, #32
+ 541 004e 1361     		str	r3, [r2, #16]
+ 542 0050 2268     		ldr	r2, [r4]
+ 543 0052 1369     		ldr	r3, [r2, #16]
+ 544 0054 2B43     		orrs	r3, r3, r5
+ 545 0056 1361     		str	r3, [r2, #16]
+ 546 0058 2268     		ldr	r2, [r4]
+ 547 005a D368     		ldr	r3, [r2, #12]
+ 548 005c 43F40053 		orr	r3, r3, #8192
+ 549 0060 D360     		str	r3, [r2, #12]
+ 550 0062 0020     		movs	r0, #0
+ 551 0064 6064     		str	r0, [r4, #68]
+ 552 0066 2023     		movs	r3, #32
+ 553 0068 84F84130 		strb	r3, [r4, #65]
+ 554 006c 84F84230 		strb	r3, [r4, #66]
+ 555 0070 6063     		str	r0, [r4, #52]
+ 556 0072 38BD     		pop	{r3, r4, r5, pc}
+ 557              	.L62:
+ 558 0074 80F84030 		strb	r3, [r0, #64]
+ 559 0078 FFF7FEFF 		bl	HAL_UART_MspInit
+ 560 007c C9E7     		b	.L56
+ 561              	.L57:
+ 562 007e 0120     		movs	r0, #1
+ 563 0080 7047     		bx	lr
+ 565              		.section	.text.HAL_MultiProcessor_Init,"ax",%progbits
+ 566              		.align	1
+ 567              		.global	HAL_MultiProcessor_Init
+ 568              		.syntax unified
+ 569              		.thumb
+ 570              		.thumb_func
+ 572              	HAL_MultiProcessor_Init:
+ 573              		@ args = 0, pretend = 0, frame = 0
+ 574              		@ frame_needed = 0, uses_anonymous_args = 0
+ 575 0000 0028     		cmp	r0, #0
+ 576 0002 41D0     		beq	.L66
+ 577 0004 70B5     		push	{r4, r5, r6, lr}
+ 578 0006 0D46     		mov	r5, r1
+ 579 0008 1646     		mov	r6, r2
+ 580 000a 0446     		mov	r4, r0
+ 581 000c 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 582 0010 002B     		cmp	r3, #0
+ 583 0012 34D0     		beq	.L71
+ 584              	.L65:
+ 585 0014 2423     		movs	r3, #36
+ 586 0016 84F84130 		strb	r3, [r4, #65]
+ 587 001a 2268     		ldr	r2, [r4]
+ 588 001c D368     		ldr	r3, [r2, #12]
+ 589 001e 23F40053 		bic	r3, r3, #8192
+ARM GAS  /tmp/cc4BdNm7.s 			page 11
+
+
+ 590 0022 D360     		str	r3, [r2, #12]
+ 591 0024 2046     		mov	r0, r4
+ 592 0026 FFF7FEFF 		bl	UART_SetConfig
+ 593 002a 2268     		ldr	r2, [r4]
+ 594 002c 1369     		ldr	r3, [r2, #16]
+ 595 002e 23F49043 		bic	r3, r3, #18432
+ 596 0032 1361     		str	r3, [r2, #16]
+ 597 0034 2268     		ldr	r2, [r4]
+ 598 0036 5369     		ldr	r3, [r2, #20]
+ 599 0038 23F02A03 		bic	r3, r3, #42
+ 600 003c 5361     		str	r3, [r2, #20]
+ 601 003e 2268     		ldr	r2, [r4]
+ 602 0040 1369     		ldr	r3, [r2, #16]
+ 603 0042 23F00F03 		bic	r3, r3, #15
+ 604 0046 1361     		str	r3, [r2, #16]
+ 605 0048 2368     		ldr	r3, [r4]
+ 606 004a 1A69     		ldr	r2, [r3, #16]
+ 607 004c 1543     		orrs	r5, r5, r2
+ 608 004e 1D61     		str	r5, [r3, #16]
+ 609 0050 2268     		ldr	r2, [r4]
+ 610 0052 D368     		ldr	r3, [r2, #12]
+ 611 0054 23F40063 		bic	r3, r3, #2048
+ 612 0058 D360     		str	r3, [r2, #12]
+ 613 005a 2268     		ldr	r2, [r4]
+ 614 005c D368     		ldr	r3, [r2, #12]
+ 615 005e 3343     		orrs	r3, r3, r6
+ 616 0060 D360     		str	r3, [r2, #12]
+ 617 0062 2268     		ldr	r2, [r4]
+ 618 0064 D368     		ldr	r3, [r2, #12]
+ 619 0066 43F40053 		orr	r3, r3, #8192
+ 620 006a D360     		str	r3, [r2, #12]
+ 621 006c 0020     		movs	r0, #0
+ 622 006e 6064     		str	r0, [r4, #68]
+ 623 0070 2023     		movs	r3, #32
+ 624 0072 84F84130 		strb	r3, [r4, #65]
+ 625 0076 84F84230 		strb	r3, [r4, #66]
+ 626 007a 6063     		str	r0, [r4, #52]
+ 627 007c 70BD     		pop	{r4, r5, r6, pc}
+ 628              	.L71:
+ 629 007e 80F84030 		strb	r3, [r0, #64]
+ 630 0082 FFF7FEFF 		bl	HAL_UART_MspInit
+ 631 0086 C5E7     		b	.L65
+ 632              	.L66:
+ 633 0088 0120     		movs	r0, #1
+ 634 008a 7047     		bx	lr
+ 636              		.section	.text.HAL_UART_MspDeInit,"ax",%progbits
+ 637              		.align	1
+ 638              		.weak	HAL_UART_MspDeInit
+ 639              		.syntax unified
+ 640              		.thumb
+ 641              		.thumb_func
+ 643              	HAL_UART_MspDeInit:
+ 644              		@ args = 0, pretend = 0, frame = 0
+ 645              		@ frame_needed = 0, uses_anonymous_args = 0
+ 646              		@ link register save eliminated.
+ 647 0000 7047     		bx	lr
+ 649              		.section	.text.HAL_UART_DeInit,"ax",%progbits
+ARM GAS  /tmp/cc4BdNm7.s 			page 12
+
+
+ 650              		.align	1
+ 651              		.global	HAL_UART_DeInit
+ 652              		.syntax unified
+ 653              		.thumb
+ 654              		.thumb_func
+ 656              	HAL_UART_DeInit:
+ 657              		@ args = 0, pretend = 0, frame = 0
+ 658              		@ frame_needed = 0, uses_anonymous_args = 0
+ 659 0000 B0B1     		cbz	r0, .L75
+ 660 0002 10B5     		push	{r4, lr}
+ 661 0004 0446     		mov	r4, r0
+ 662 0006 2423     		movs	r3, #36
+ 663 0008 80F84130 		strb	r3, [r0, #65]
+ 664 000c 0268     		ldr	r2, [r0]
+ 665 000e D368     		ldr	r3, [r2, #12]
+ 666 0010 23F40053 		bic	r3, r3, #8192
+ 667 0014 D360     		str	r3, [r2, #12]
+ 668 0016 FFF7FEFF 		bl	HAL_UART_MspDeInit
+ 669 001a 0020     		movs	r0, #0
+ 670 001c 6064     		str	r0, [r4, #68]
+ 671 001e 84F84100 		strb	r0, [r4, #65]
+ 672 0022 84F84200 		strb	r0, [r4, #66]
+ 673 0026 2063     		str	r0, [r4, #48]
+ 674 0028 6063     		str	r0, [r4, #52]
+ 675 002a 84F84000 		strb	r0, [r4, #64]
+ 676 002e 10BD     		pop	{r4, pc}
+ 677              	.L75:
+ 678 0030 0120     		movs	r0, #1
+ 679 0032 7047     		bx	lr
+ 681              		.section	.text.HAL_UART_Transmit,"ax",%progbits
+ 682              		.align	1
+ 683              		.global	HAL_UART_Transmit
+ 684              		.syntax unified
+ 685              		.thumb
+ 686              		.thumb_func
+ 688              	HAL_UART_Transmit:
+ 689              		@ args = 0, pretend = 0, frame = 0
+ 690              		@ frame_needed = 0, uses_anonymous_args = 0
+ 691 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 692 0004 82B0     		sub	sp, sp, #8
+ 693 0006 1E46     		mov	r6, r3
+ 694 0008 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 695 000c DBB2     		uxtb	r3, r3
+ 696 000e 202B     		cmp	r3, #32
+ 697 0010 56D1     		bne	.L89
+ 698 0012 0446     		mov	r4, r0
+ 699 0014 0D46     		mov	r5, r1
+ 700 0016 9046     		mov	r8, r2
+ 701 0018 0029     		cmp	r1, #0
+ 702 001a 55D0     		beq	.L90
+ 703 001c 0AB9     		cbnz	r2, .L95
+ 704 001e 0120     		movs	r0, #1
+ 705 0020 4FE0     		b	.L81
+ 706              	.L95:
+ 707 0022 0023     		movs	r3, #0
+ 708 0024 4364     		str	r3, [r0, #68]
+ 709 0026 2123     		movs	r3, #33
+ARM GAS  /tmp/cc4BdNm7.s 			page 13
+
+
+ 710 0028 80F84130 		strb	r3, [r0, #65]
+ 711 002c FFF7FEFF 		bl	HAL_GetTick
+ 712 0030 0746     		mov	r7, r0
+ 713 0032 A4F82480 		strh	r8, [r4, #36]	@ movhi
+ 714 0036 A4F82680 		strh	r8, [r4, #38]	@ movhi
+ 715 003a A368     		ldr	r3, [r4, #8]
+ 716 003c B3F5805F 		cmp	r3, #4096
+ 717 0040 02D0     		beq	.L96
+ 718 0042 4FF00008 		mov	r8, #0
+ 719 0046 14E0     		b	.L86
+ 720              	.L96:
+ 721 0048 2369     		ldr	r3, [r4, #16]
+ 722 004a 2BB3     		cbz	r3, .L93
+ 723 004c 4FF00008 		mov	r8, #0
+ 724 0050 0FE0     		b	.L86
+ 725              	.L98:
+ 726 0052 2023     		movs	r3, #32
+ 727 0054 84F84130 		strb	r3, [r4, #65]
+ 728 0058 0320     		movs	r0, #3
+ 729 005a 32E0     		b	.L81
+ 730              	.L99:
+ 731 005c 38F8023B 		ldrh	r3, [r8], #2
+ 732 0060 2268     		ldr	r2, [r4]
+ 733 0062 C3F30803 		ubfx	r3, r3, #0, #9
+ 734 0066 5360     		str	r3, [r2, #4]
+ 735              	.L85:
+ 736 0068 E28C     		ldrh	r2, [r4, #38]
+ 737 006a 92B2     		uxth	r2, r2
+ 738 006c 013A     		subs	r2, r2, #1
+ 739 006e 92B2     		uxth	r2, r2
+ 740 0070 E284     		strh	r2, [r4, #38]	@ movhi
+ 741              	.L86:
+ 742 0072 E38C     		ldrh	r3, [r4, #38]
+ 743 0074 9BB2     		uxth	r3, r3
+ 744 0076 93B1     		cbz	r3, .L97
+ 745 0078 0096     		str	r6, [sp]
+ 746 007a 3B46     		mov	r3, r7
+ 747 007c 0022     		movs	r2, #0
+ 748 007e 8021     		movs	r1, #128
+ 749 0080 2046     		mov	r0, r4
+ 750 0082 FFF7FEFF 		bl	UART_WaitOnFlagUntilTimeout
+ 751 0086 0028     		cmp	r0, #0
+ 752 0088 E3D1     		bne	.L98
+ 753 008a 002D     		cmp	r5, #0
+ 754 008c E6D0     		beq	.L99
+ 755 008e 15F8012B 		ldrb	r2, [r5], #1	@ zero_extendqisi2
+ 756 0092 2368     		ldr	r3, [r4]
+ 757 0094 5A60     		str	r2, [r3, #4]
+ 758 0096 E7E7     		b	.L85
+ 759              	.L93:
+ 760 0098 A846     		mov	r8, r5
+ 761 009a 0025     		movs	r5, #0
+ 762 009c E9E7     		b	.L86
+ 763              	.L97:
+ 764 009e 0096     		str	r6, [sp]
+ 765 00a0 3B46     		mov	r3, r7
+ 766 00a2 0022     		movs	r2, #0
+ARM GAS  /tmp/cc4BdNm7.s 			page 14
+
+
+ 767 00a4 4021     		movs	r1, #64
+ 768 00a6 2046     		mov	r0, r4
+ 769 00a8 FFF7FEFF 		bl	UART_WaitOnFlagUntilTimeout
+ 770 00ac 18B9     		cbnz	r0, .L100
+ 771 00ae 2023     		movs	r3, #32
+ 772 00b0 84F84130 		strb	r3, [r4, #65]
+ 773 00b4 05E0     		b	.L81
+ 774              	.L100:
+ 775 00b6 2023     		movs	r3, #32
+ 776 00b8 84F84130 		strb	r3, [r4, #65]
+ 777 00bc 0320     		movs	r0, #3
+ 778 00be 00E0     		b	.L81
+ 779              	.L89:
+ 780 00c0 0220     		movs	r0, #2
+ 781              	.L81:
+ 782 00c2 02B0     		add	sp, sp, #8
+ 783              		@ sp needed
+ 784 00c4 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 785              	.L90:
+ 786 00c8 0120     		movs	r0, #1
+ 787 00ca FAE7     		b	.L81
+ 789              		.section	.text.HAL_UART_Receive,"ax",%progbits
+ 790              		.align	1
+ 791              		.global	HAL_UART_Receive
+ 792              		.syntax unified
+ 793              		.thumb
+ 794              		.thumb_func
+ 796              	HAL_UART_Receive:
+ 797              		@ args = 0, pretend = 0, frame = 0
+ 798              		@ frame_needed = 0, uses_anonymous_args = 0
+ 799 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 800 0004 82B0     		sub	sp, sp, #8
+ 801 0006 1E46     		mov	r6, r3
+ 802 0008 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 803 000c DBB2     		uxtb	r3, r3
+ 804 000e 202B     		cmp	r3, #32
+ 805 0010 59D1     		bne	.L112
+ 806 0012 0446     		mov	r4, r0
+ 807 0014 0D46     		mov	r5, r1
+ 808 0016 9046     		mov	r8, r2
+ 809 0018 0029     		cmp	r1, #0
+ 810 001a 58D0     		beq	.L113
+ 811 001c 0AB9     		cbnz	r2, .L118
+ 812 001e 0120     		movs	r0, #1
+ 813 0020 52E0     		b	.L102
+ 814              	.L118:
+ 815 0022 0023     		movs	r3, #0
+ 816 0024 4364     		str	r3, [r0, #68]
+ 817 0026 2222     		movs	r2, #34
+ 818 0028 80F84220 		strb	r2, [r0, #66]
+ 819 002c 0363     		str	r3, [r0, #48]
+ 820 002e FFF7FEFF 		bl	HAL_GetTick
+ 821 0032 0746     		mov	r7, r0
+ 822 0034 A4F82C80 		strh	r8, [r4, #44]	@ movhi
+ 823 0038 A4F82E80 		strh	r8, [r4, #46]	@ movhi
+ 824 003c A368     		ldr	r3, [r4, #8]
+ 825 003e B3F5805F 		cmp	r3, #4096
+ARM GAS  /tmp/cc4BdNm7.s 			page 15
+
+
+ 826 0042 02D0     		beq	.L119
+ 827 0044 4FF00008 		mov	r8, #0
+ 828 0048 1CE0     		b	.L104
+ 829              	.L119:
+ 830 004a 2369     		ldr	r3, [r4, #16]
+ 831 004c 13B1     		cbz	r3, .L116
+ 832 004e 4FF00008 		mov	r8, #0
+ 833 0052 17E0     		b	.L104
+ 834              	.L116:
+ 835 0054 A846     		mov	r8, r5
+ 836 0056 0025     		movs	r5, #0
+ 837 0058 14E0     		b	.L104
+ 838              	.L121:
+ 839 005a 2023     		movs	r3, #32
+ 840 005c 84F84230 		strb	r3, [r4, #66]
+ 841 0060 0320     		movs	r0, #3
+ 842 0062 31E0     		b	.L102
+ 843              	.L122:
+ 844 0064 2368     		ldr	r3, [r4]
+ 845 0066 5B68     		ldr	r3, [r3, #4]
+ 846 0068 C3F30803 		ubfx	r3, r3, #0, #9
+ 847 006c 28F8023B 		strh	r3, [r8], #2	@ movhi
+ 848 0070 03E0     		b	.L107
+ 849              	.L108:
+ 850 0072 2368     		ldr	r3, [r4]
+ 851 0074 5B68     		ldr	r3, [r3, #4]
+ 852 0076 2B70     		strb	r3, [r5]
+ 853              	.L110:
+ 854 0078 0135     		adds	r5, r5, #1
+ 855              	.L107:
+ 856 007a E28D     		ldrh	r2, [r4, #46]
+ 857 007c 92B2     		uxth	r2, r2
+ 858 007e 013A     		subs	r2, r2, #1
+ 859 0080 92B2     		uxth	r2, r2
+ 860 0082 E285     		strh	r2, [r4, #46]	@ movhi
+ 861              	.L104:
+ 862 0084 E38D     		ldrh	r3, [r4, #46]
+ 863 0086 9BB2     		uxth	r3, r3
+ 864 0088 C3B1     		cbz	r3, .L120
+ 865 008a 0096     		str	r6, [sp]
+ 866 008c 3B46     		mov	r3, r7
+ 867 008e 0022     		movs	r2, #0
+ 868 0090 2021     		movs	r1, #32
+ 869 0092 2046     		mov	r0, r4
+ 870 0094 FFF7FEFF 		bl	UART_WaitOnFlagUntilTimeout
+ 871 0098 0028     		cmp	r0, #0
+ 872 009a DED1     		bne	.L121
+ 873 009c 002D     		cmp	r5, #0
+ 874 009e E1D0     		beq	.L122
+ 875 00a0 A368     		ldr	r3, [r4, #8]
+ 876 00a2 B3F5805F 		cmp	r3, #4096
+ 877 00a6 E4D0     		beq	.L108
+ 878 00a8 13B9     		cbnz	r3, .L109
+ 879 00aa 2369     		ldr	r3, [r4, #16]
+ 880 00ac 002B     		cmp	r3, #0
+ 881 00ae E0D0     		beq	.L108
+ 882              	.L109:
+ARM GAS  /tmp/cc4BdNm7.s 			page 16
+
+
+ 883 00b0 2368     		ldr	r3, [r4]
+ 884 00b2 5B68     		ldr	r3, [r3, #4]
+ 885 00b4 03F07F03 		and	r3, r3, #127
+ 886 00b8 2B70     		strb	r3, [r5]
+ 887 00ba DDE7     		b	.L110
+ 888              	.L120:
+ 889 00bc 2023     		movs	r3, #32
+ 890 00be 84F84230 		strb	r3, [r4, #66]
+ 891 00c2 0020     		movs	r0, #0
+ 892 00c4 00E0     		b	.L102
+ 893              	.L112:
+ 894 00c6 0220     		movs	r0, #2
+ 895              	.L102:
+ 896 00c8 02B0     		add	sp, sp, #8
+ 897              		@ sp needed
+ 898 00ca BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 899              	.L113:
+ 900 00ce 0120     		movs	r0, #1
+ 901 00d0 FAE7     		b	.L102
+ 903              		.section	.text.HAL_UART_Transmit_IT,"ax",%progbits
+ 904              		.align	1
+ 905              		.global	HAL_UART_Transmit_IT
+ 906              		.syntax unified
+ 907              		.thumb
+ 908              		.thumb_func
+ 910              	HAL_UART_Transmit_IT:
+ 911              		@ args = 0, pretend = 0, frame = 0
+ 912              		@ frame_needed = 0, uses_anonymous_args = 0
+ 913              		@ link register save eliminated.
+ 914 0000 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 915 0004 DBB2     		uxtb	r3, r3
+ 916 0006 202B     		cmp	r3, #32
+ 917 0008 10D1     		bne	.L125
+ 918 000a 89B1     		cbz	r1, .L126
+ 919 000c 92B1     		cbz	r2, .L127
+ 920 000e 0162     		str	r1, [r0, #32]
+ 921 0010 8284     		strh	r2, [r0, #36]	@ movhi
+ 922 0012 C284     		strh	r2, [r0, #38]	@ movhi
+ 923 0014 0023     		movs	r3, #0
+ 924 0016 4364     		str	r3, [r0, #68]
+ 925 0018 2122     		movs	r2, #33
+ 926 001a 80F84120 		strb	r2, [r0, #65]
+ 927 001e 0168     		ldr	r1, [r0]
+ 928 0020 CA68     		ldr	r2, [r1, #12]
+ 929 0022 42F08002 		orr	r2, r2, #128
+ 930 0026 CA60     		str	r2, [r1, #12]
+ 931 0028 1846     		mov	r0, r3
+ 932 002a 7047     		bx	lr
+ 933              	.L125:
+ 934 002c 0220     		movs	r0, #2
+ 935 002e 7047     		bx	lr
+ 936              	.L126:
+ 937 0030 0120     		movs	r0, #1
+ 938 0032 7047     		bx	lr
+ 939              	.L127:
+ 940 0034 0120     		movs	r0, #1
+ 941 0036 7047     		bx	lr
+ARM GAS  /tmp/cc4BdNm7.s 			page 17
+
+
+ 943              		.section	.text.HAL_UART_Transmit_DMA,"ax",%progbits
+ 944              		.align	1
+ 945              		.global	HAL_UART_Transmit_DMA
+ 946              		.syntax unified
+ 947              		.thumb
+ 948              		.thumb_func
+ 950              	HAL_UART_Transmit_DMA:
+ 951              		@ args = 0, pretend = 0, frame = 0
+ 952              		@ frame_needed = 0, uses_anonymous_args = 0
+ 953 0000 38B5     		push	{r3, r4, r5, lr}
+ 954 0002 1346     		mov	r3, r2
+ 955 0004 90F84120 		ldrb	r2, [r0, #65]	@ zero_extendqisi2
+ 956 0008 D2B2     		uxtb	r2, r2
+ 957 000a 202A     		cmp	r2, #32
+ 958 000c 36D1     		bne	.L132
+ 959 000e 0446     		mov	r4, r0
+ 960 0010 0029     		cmp	r1, #0
+ 961 0012 35D0     		beq	.L133
+ 962 0014 0BB9     		cbnz	r3, .L136
+ 963 0016 0120     		movs	r0, #1
+ 964 0018 31E0     		b	.L129
+ 965              	.L136:
+ 966 001a 0162     		str	r1, [r0, #32]
+ 967 001c 8384     		strh	r3, [r0, #36]	@ movhi
+ 968 001e C384     		strh	r3, [r0, #38]	@ movhi
+ 969 0020 0022     		movs	r2, #0
+ 970 0022 4264     		str	r2, [r0, #68]
+ 971 0024 2120     		movs	r0, #33
+ 972 0026 84F84100 		strb	r0, [r4, #65]
+ 973 002a A06B     		ldr	r0, [r4, #56]
+ 974 002c 154D     		ldr	r5, .L137
+ 975 002e C563     		str	r5, [r0, #60]
+ 976 0030 A06B     		ldr	r0, [r4, #56]
+ 977 0032 154D     		ldr	r5, .L137+4
+ 978 0034 0564     		str	r5, [r0, #64]
+ 979 0036 A06B     		ldr	r0, [r4, #56]
+ 980 0038 144D     		ldr	r5, .L137+8
+ 981 003a C564     		str	r5, [r0, #76]
+ 982 003c A06B     		ldr	r0, [r4, #56]
+ 983 003e 0265     		str	r2, [r0, #80]
+ 984 0040 2268     		ldr	r2, [r4]
+ 985 0042 0432     		adds	r2, r2, #4
+ 986 0044 A06B     		ldr	r0, [r4, #56]
+ 987 0046 FFF7FEFF 		bl	HAL_DMA_Start_IT
+ 988 004a 30B1     		cbz	r0, .L130
+ 989 004c 1023     		movs	r3, #16
+ 990 004e 6364     		str	r3, [r4, #68]
+ 991 0050 2023     		movs	r3, #32
+ 992 0052 84F84130 		strb	r3, [r4, #65]
+ 993 0056 0120     		movs	r0, #1
+ 994 0058 11E0     		b	.L129
+ 995              	.L130:
+ 996 005a 2368     		ldr	r3, [r4]
+ 997 005c 6FF04002 		mvn	r2, #64
+ 998 0060 1A60     		str	r2, [r3]
+ 999              	.L131:
+ 1000 0062 2268     		ldr	r2, [r4]
+ARM GAS  /tmp/cc4BdNm7.s 			page 18
+
+
+ 1001 0064 02F11403 		add	r3, r2, #20
+ 1002              		.syntax unified
+ 1003              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1004 0068 53E8003F 		ldrex r3, [r3]
+ 1005              	@ 0 "" 2
+ 1006              		.thumb
+ 1007              		.syntax unified
+ 1008 006c 43F08003 		orr	r3, r3, #128
+ 1009 0070 1432     		adds	r2, r2, #20
+ 1010              		.syntax unified
+ 1011              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1012 0072 42E80031 		strex r1, r3, [r2]
+ 1013              	@ 0 "" 2
+ 1014              		.thumb
+ 1015              		.syntax unified
+ 1016 0076 0029     		cmp	r1, #0
+ 1017 0078 F3D1     		bne	.L131
+ 1018 007a 00E0     		b	.L129
+ 1019              	.L132:
+ 1020 007c 0220     		movs	r0, #2
+ 1021              	.L129:
+ 1022 007e 38BD     		pop	{r3, r4, r5, pc}
+ 1023              	.L133:
+ 1024 0080 0120     		movs	r0, #1
+ 1025 0082 FCE7     		b	.L129
+ 1026              	.L138:
+ 1027              		.align	2
+ 1028              	.L137:
+ 1029 0084 00000000 		.word	UART_DMATransmitCplt
+ 1030 0088 00000000 		.word	UART_DMATxHalfCplt
+ 1031 008c 00000000 		.word	UART_DMAError
+ 1033              		.section	.text.HAL_UART_DMAPause,"ax",%progbits
+ 1034              		.align	1
+ 1035              		.global	HAL_UART_DMAPause
+ 1036              		.syntax unified
+ 1037              		.thumb
+ 1038              		.thumb_func
+ 1040              	HAL_UART_DMAPause:
+ 1041              		@ args = 0, pretend = 0, frame = 0
+ 1042              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1043              		@ link register save eliminated.
+ 1044 0000 0368     		ldr	r3, [r0]
+ 1045 0002 5A69     		ldr	r2, [r3, #20]
+ 1046 0004 02F08002 		and	r2, r2, #128
+ 1047 0008 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 1048 000c DBB2     		uxtb	r3, r3
+ 1049 000e 212B     		cmp	r3, #33
+ 1050 0010 0AD0     		beq	.L146
+ 1051              	.L140:
+ 1052 0012 0368     		ldr	r3, [r0]
+ 1053 0014 5A69     		ldr	r2, [r3, #20]
+ 1054 0016 02F04002 		and	r2, r2, #64
+ 1055 001a 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 1056 001e DBB2     		uxtb	r3, r3
+ 1057 0020 222B     		cmp	r3, #34
+ 1058 0022 10D0     		beq	.L147
+ 1059              	.L142:
+ARM GAS  /tmp/cc4BdNm7.s 			page 19
+
+
+ 1060 0024 0020     		movs	r0, #0
+ 1061 0026 7047     		bx	lr
+ 1062              	.L146:
+ 1063 0028 002A     		cmp	r2, #0
+ 1064 002a F2D0     		beq	.L140
+ 1065              	.L141:
+ 1066 002c 0268     		ldr	r2, [r0]
+ 1067 002e 02F11403 		add	r3, r2, #20
+ 1068              		.syntax unified
+ 1069              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1070 0032 53E8003F 		ldrex r3, [r3]
+ 1071              	@ 0 "" 2
+ 1072              		.thumb
+ 1073              		.syntax unified
+ 1074 0036 23F08003 		bic	r3, r3, #128
+ 1075 003a 1432     		adds	r2, r2, #20
+ 1076              		.syntax unified
+ 1077              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1078 003c 42E80031 		strex r1, r3, [r2]
+ 1079              	@ 0 "" 2
+ 1080              		.thumb
+ 1081              		.syntax unified
+ 1082 0040 0029     		cmp	r1, #0
+ 1083 0042 F3D1     		bne	.L141
+ 1084 0044 E5E7     		b	.L140
+ 1085              	.L147:
+ 1086 0046 002A     		cmp	r2, #0
+ 1087 0048 ECD0     		beq	.L142
+ 1088              	.L143:
+ 1089 004a 0268     		ldr	r2, [r0]
+ 1090 004c 02F10C03 		add	r3, r2, #12
+ 1091              		.syntax unified
+ 1092              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1093 0050 53E8003F 		ldrex r3, [r3]
+ 1094              	@ 0 "" 2
+ 1095              		.thumb
+ 1096              		.syntax unified
+ 1097 0054 23F48073 		bic	r3, r3, #256
+ 1098 0058 0C32     		adds	r2, r2, #12
+ 1099              		.syntax unified
+ 1100              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1101 005a 42E80031 		strex r1, r3, [r2]
+ 1102              	@ 0 "" 2
+ 1103              		.thumb
+ 1104              		.syntax unified
+ 1105 005e 0029     		cmp	r1, #0
+ 1106 0060 F3D1     		bne	.L143
+ 1107              	.L144:
+ 1108 0062 0268     		ldr	r2, [r0]
+ 1109 0064 02F11403 		add	r3, r2, #20
+ 1110              		.syntax unified
+ 1111              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1112 0068 53E8003F 		ldrex r3, [r3]
+ 1113              	@ 0 "" 2
+ 1114              		.thumb
+ 1115              		.syntax unified
+ 1116 006c 23F00103 		bic	r3, r3, #1
+ARM GAS  /tmp/cc4BdNm7.s 			page 20
+
+
+ 1117 0070 1432     		adds	r2, r2, #20
+ 1118              		.syntax unified
+ 1119              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1120 0072 42E80031 		strex r1, r3, [r2]
+ 1121              	@ 0 "" 2
+ 1122              		.thumb
+ 1123              		.syntax unified
+ 1124 0076 0029     		cmp	r1, #0
+ 1125 0078 F3D1     		bne	.L144
+ 1126              	.L145:
+ 1127 007a 0268     		ldr	r2, [r0]
+ 1128 007c 02F11403 		add	r3, r2, #20
+ 1129              		.syntax unified
+ 1130              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1131 0080 53E8003F 		ldrex r3, [r3]
+ 1132              	@ 0 "" 2
+ 1133              		.thumb
+ 1134              		.syntax unified
+ 1135 0084 23F04003 		bic	r3, r3, #64
+ 1136 0088 1432     		adds	r2, r2, #20
+ 1137              		.syntax unified
+ 1138              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1139 008a 42E80031 		strex r1, r3, [r2]
+ 1140              	@ 0 "" 2
+ 1141              		.thumb
+ 1142              		.syntax unified
+ 1143 008e 0029     		cmp	r1, #0
+ 1144 0090 F3D1     		bne	.L145
+ 1145 0092 C7E7     		b	.L142
+ 1147              		.section	.text.HAL_UART_DMAResume,"ax",%progbits
+ 1148              		.align	1
+ 1149              		.global	HAL_UART_DMAResume
+ 1150              		.syntax unified
+ 1151              		.thumb
+ 1152              		.thumb_func
+ 1154              	HAL_UART_DMAResume:
+ 1155              		@ args = 0, pretend = 0, frame = 8
+ 1156              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1157              		@ link register save eliminated.
+ 1158 0000 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 1159 0004 DBB2     		uxtb	r3, r3
+ 1160 0006 212B     		cmp	r3, #33
+ 1161 0008 06D0     		beq	.L150
+ 1162              	.L149:
+ 1163 000a 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 1164 000e DBB2     		uxtb	r3, r3
+ 1165 0010 222B     		cmp	r3, #34
+ 1166 0012 0ED0     		beq	.L160
+ 1167 0014 0020     		movs	r0, #0
+ 1168 0016 7047     		bx	lr
+ 1169              	.L150:
+ 1170 0018 0268     		ldr	r2, [r0]
+ 1171 001a 02F11403 		add	r3, r2, #20
+ 1172              		.syntax unified
+ 1173              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1174 001e 53E8003F 		ldrex r3, [r3]
+ 1175              	@ 0 "" 2
+ARM GAS  /tmp/cc4BdNm7.s 			page 21
+
+
+ 1176              		.thumb
+ 1177              		.syntax unified
+ 1178 0022 43F08003 		orr	r3, r3, #128
+ 1179 0026 1432     		adds	r2, r2, #20
+ 1180              		.syntax unified
+ 1181              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1182 0028 42E80031 		strex r1, r3, [r2]
+ 1183              	@ 0 "" 2
+ 1184              		.thumb
+ 1185              		.syntax unified
+ 1186 002c 0029     		cmp	r1, #0
+ 1187 002e F3D1     		bne	.L150
+ 1188 0030 EBE7     		b	.L149
+ 1189              	.L160:
+ 1190 0032 82B0     		sub	sp, sp, #8
+ 1191 0034 0023     		movs	r3, #0
+ 1192 0036 0193     		str	r3, [sp, #4]
+ 1193 0038 0368     		ldr	r3, [r0]
+ 1194 003a 1A68     		ldr	r2, [r3]
+ 1195 003c 0192     		str	r2, [sp, #4]
+ 1196 003e 5B68     		ldr	r3, [r3, #4]
+ 1197 0040 0193     		str	r3, [sp, #4]
+ 1198 0042 019B     		ldr	r3, [sp, #4]
+ 1199 0044 0369     		ldr	r3, [r0, #16]
+ 1200 0046 5BB1     		cbz	r3, .L154
+ 1201              	.L153:
+ 1202 0048 0268     		ldr	r2, [r0]
+ 1203 004a 02F10C03 		add	r3, r2, #12
+ 1204              		.syntax unified
+ 1205              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1206 004e 53E8003F 		ldrex r3, [r3]
+ 1207              	@ 0 "" 2
+ 1208              		.thumb
+ 1209              		.syntax unified
+ 1210 0052 43F48073 		orr	r3, r3, #256
+ 1211 0056 0C32     		adds	r2, r2, #12
+ 1212              		.syntax unified
+ 1213              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1214 0058 42E80031 		strex r1, r3, [r2]
+ 1215              	@ 0 "" 2
+ 1216              		.thumb
+ 1217              		.syntax unified
+ 1218 005c 0029     		cmp	r1, #0
+ 1219 005e F3D1     		bne	.L153
+ 1220              	.L154:
+ 1221 0060 0268     		ldr	r2, [r0]
+ 1222 0062 02F11403 		add	r3, r2, #20
+ 1223              		.syntax unified
+ 1224              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1225 0066 53E8003F 		ldrex r3, [r3]
+ 1226              	@ 0 "" 2
+ 1227              		.thumb
+ 1228              		.syntax unified
+ 1229 006a 43F00103 		orr	r3, r3, #1
+ 1230 006e 1432     		adds	r2, r2, #20
+ 1231              		.syntax unified
+ 1232              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ARM GAS  /tmp/cc4BdNm7.s 			page 22
+
+
+ 1233 0070 42E80031 		strex r1, r3, [r2]
+ 1234              	@ 0 "" 2
+ 1235              		.thumb
+ 1236              		.syntax unified
+ 1237 0074 0029     		cmp	r1, #0
+ 1238 0076 F3D1     		bne	.L154
+ 1239              	.L155:
+ 1240 0078 0268     		ldr	r2, [r0]
+ 1241 007a 02F11403 		add	r3, r2, #20
+ 1242              		.syntax unified
+ 1243              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1244 007e 53E8003F 		ldrex r3, [r3]
+ 1245              	@ 0 "" 2
+ 1246              		.thumb
+ 1247              		.syntax unified
+ 1248 0082 43F04003 		orr	r3, r3, #64
+ 1249 0086 1432     		adds	r2, r2, #20
+ 1250              		.syntax unified
+ 1251              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1252 0088 42E80031 		strex r1, r3, [r2]
+ 1253              	@ 0 "" 2
+ 1254              		.thumb
+ 1255              		.syntax unified
+ 1256 008c 0029     		cmp	r1, #0
+ 1257 008e F3D1     		bne	.L155
+ 1258 0090 0020     		movs	r0, #0
+ 1259 0092 02B0     		add	sp, sp, #8
+ 1260              		@ sp needed
+ 1261 0094 7047     		bx	lr
+ 1263              		.section	.text.HAL_UART_DMAStop,"ax",%progbits
+ 1264              		.align	1
+ 1265              		.global	HAL_UART_DMAStop
+ 1266              		.syntax unified
+ 1267              		.thumb
+ 1268              		.thumb_func
+ 1270              	HAL_UART_DMAStop:
+ 1271              		@ args = 0, pretend = 0, frame = 0
+ 1272              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1273 0000 10B5     		push	{r4, lr}
+ 1274 0002 0446     		mov	r4, r0
+ 1275 0004 0368     		ldr	r3, [r0]
+ 1276 0006 5A69     		ldr	r2, [r3, #20]
+ 1277 0008 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 1278 000c DBB2     		uxtb	r3, r3
+ 1279 000e 212B     		cmp	r3, #33
+ 1280 0010 0AD0     		beq	.L169
+ 1281              	.L162:
+ 1282 0012 2368     		ldr	r3, [r4]
+ 1283 0014 5A69     		ldr	r2, [r3, #20]
+ 1284 0016 02F04002 		and	r2, r2, #64
+ 1285 001a 94F84230 		ldrb	r3, [r4, #66]	@ zero_extendqisi2
+ 1286 001e DBB2     		uxtb	r3, r3
+ 1287 0020 222B     		cmp	r3, #34
+ 1288 0022 19D0     		beq	.L170
+ 1289              	.L165:
+ 1290 0024 0020     		movs	r0, #0
+ 1291 0026 10BD     		pop	{r4, pc}
+ARM GAS  /tmp/cc4BdNm7.s 			page 23
+
+
+ 1292              	.L169:
+ 1293 0028 02F08002 		and	r2, r2, #128
+ 1294 002c 002A     		cmp	r2, #0
+ 1295 002e F0D0     		beq	.L162
+ 1296              	.L163:
+ 1297 0030 2268     		ldr	r2, [r4]
+ 1298 0032 02F11403 		add	r3, r2, #20
+ 1299              		.syntax unified
+ 1300              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1301 0036 53E8003F 		ldrex r3, [r3]
+ 1302              	@ 0 "" 2
+ 1303              		.thumb
+ 1304              		.syntax unified
+ 1305 003a 23F08003 		bic	r3, r3, #128
+ 1306 003e 1432     		adds	r2, r2, #20
+ 1307              		.syntax unified
+ 1308              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1309 0040 42E80031 		strex r1, r3, [r2]
+ 1310              	@ 0 "" 2
+ 1311              		.thumb
+ 1312              		.syntax unified
+ 1313 0044 0029     		cmp	r1, #0
+ 1314 0046 F3D1     		bne	.L163
+ 1315 0048 A06B     		ldr	r0, [r4, #56]
+ 1316 004a 08B1     		cbz	r0, .L164
+ 1317 004c FFF7FEFF 		bl	HAL_DMA_Abort
+ 1318              	.L164:
+ 1319 0050 2046     		mov	r0, r4
+ 1320 0052 FFF7FEFF 		bl	UART_EndTxTransfer
+ 1321 0056 DCE7     		b	.L162
+ 1322              	.L170:
+ 1323 0058 002A     		cmp	r2, #0
+ 1324 005a E3D0     		beq	.L165
+ 1325              	.L166:
+ 1326 005c 2268     		ldr	r2, [r4]
+ 1327 005e 02F11403 		add	r3, r2, #20
+ 1328              		.syntax unified
+ 1329              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1330 0062 53E8003F 		ldrex r3, [r3]
+ 1331              	@ 0 "" 2
+ 1332              		.thumb
+ 1333              		.syntax unified
+ 1334 0066 23F04003 		bic	r3, r3, #64
+ 1335 006a 1432     		adds	r2, r2, #20
+ 1336              		.syntax unified
+ 1337              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1338 006c 42E80031 		strex r1, r3, [r2]
+ 1339              	@ 0 "" 2
+ 1340              		.thumb
+ 1341              		.syntax unified
+ 1342 0070 0029     		cmp	r1, #0
+ 1343 0072 F3D1     		bne	.L166
+ 1344 0074 E06B     		ldr	r0, [r4, #60]
+ 1345 0076 08B1     		cbz	r0, .L167
+ 1346 0078 FFF7FEFF 		bl	HAL_DMA_Abort
+ 1347              	.L167:
+ 1348 007c 2046     		mov	r0, r4
+ARM GAS  /tmp/cc4BdNm7.s 			page 24
+
+
+ 1349 007e FFF7FEFF 		bl	UART_EndRxTransfer
+ 1350 0082 CFE7     		b	.L165
+ 1352              		.section	.text.HAL_UARTEx_ReceiveToIdle,"ax",%progbits
+ 1353              		.align	1
+ 1354              		.global	HAL_UARTEx_ReceiveToIdle
+ 1355              		.syntax unified
+ 1356              		.thumb
+ 1357              		.thumb_func
+ 1359              	HAL_UARTEx_ReceiveToIdle:
+ 1360              		@ args = 4, pretend = 0, frame = 8
+ 1361              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1362 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 1363 0004 83B0     		sub	sp, sp, #12
+ 1364 0006 1E46     		mov	r6, r3
+ 1365 0008 0A9F     		ldr	r7, [sp, #40]
+ 1366 000a 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 1367 000e DBB2     		uxtb	r3, r3
+ 1368 0010 202B     		cmp	r3, #32
+ 1369 0012 7FD1     		bne	.L185
+ 1370 0014 0446     		mov	r4, r0
+ 1371 0016 0D46     		mov	r5, r1
+ 1372 0018 9146     		mov	r9, r2
+ 1373 001a 0029     		cmp	r1, #0
+ 1374 001c 7ED0     		beq	.L186
+ 1375 001e 0AB9     		cbnz	r2, .L191
+ 1376 0020 0120     		movs	r0, #1
+ 1377 0022 78E0     		b	.L172
+ 1378              	.L191:
+ 1379 0024 0023     		movs	r3, #0
+ 1380 0026 4364     		str	r3, [r0, #68]
+ 1381 0028 2222     		movs	r2, #34
+ 1382 002a 80F84220 		strb	r2, [r0, #66]
+ 1383 002e 0122     		movs	r2, #1
+ 1384 0030 0263     		str	r2, [r0, #48]
+ 1385 0032 4363     		str	r3, [r0, #52]
+ 1386 0034 FFF7FEFF 		bl	HAL_GetTick
+ 1387 0038 8046     		mov	r8, r0
+ 1388 003a A4F82C90 		strh	r9, [r4, #44]	@ movhi
+ 1389 003e A4F82E90 		strh	r9, [r4, #46]	@ movhi
+ 1390 0042 A368     		ldr	r3, [r4, #8]
+ 1391 0044 B3F5805F 		cmp	r3, #4096
+ 1392 0048 04D0     		beq	.L192
+ 1393 004a 4FF00009 		mov	r9, #0
+ 1394              	.L173:
+ 1395 004e 0023     		movs	r3, #0
+ 1396 0050 3380     		strh	r3, [r6]	@ movhi
+ 1397 0052 22E0     		b	.L174
+ 1398              	.L192:
+ 1399 0054 2369     		ldr	r3, [r4, #16]
+ 1400 0056 13B1     		cbz	r3, .L189
+ 1401 0058 4FF00009 		mov	r9, #0
+ 1402 005c F7E7     		b	.L173
+ 1403              	.L189:
+ 1404 005e A946     		mov	r9, r5
+ 1405 0060 0025     		movs	r5, #0
+ 1406 0062 F4E7     		b	.L173
+ 1407              	.L195:
+ARM GAS  /tmp/cc4BdNm7.s 			page 25
+
+
+ 1408 0064 0223     		movs	r3, #2
+ 1409 0066 6363     		str	r3, [r4, #52]
+ 1410 0068 2023     		movs	r3, #32
+ 1411 006a 84F84230 		strb	r3, [r4, #66]
+ 1412 006e 0020     		movs	r0, #0
+ 1413 0070 51E0     		b	.L172
+ 1414              	.L196:
+ 1415 0072 5368     		ldr	r3, [r2, #4]
+ 1416 0074 C3F30803 		ubfx	r3, r3, #0, #9
+ 1417 0078 29F8023B 		strh	r3, [r9], #2	@ movhi
+ 1418 007c 02E0     		b	.L178
+ 1419              	.L179:
+ 1420 007e 5368     		ldr	r3, [r2, #4]
+ 1421 0080 2B70     		strb	r3, [r5]
+ 1422              	.L181:
+ 1423 0082 0135     		adds	r5, r5, #1
+ 1424              	.L178:
+ 1425 0084 3388     		ldrh	r3, [r6]
+ 1426 0086 0133     		adds	r3, r3, #1
+ 1427 0088 3380     		strh	r3, [r6]	@ movhi
+ 1428 008a E38D     		ldrh	r3, [r4, #46]
+ 1429 008c 9BB2     		uxth	r3, r3
+ 1430 008e 013B     		subs	r3, r3, #1
+ 1431 0090 9BB2     		uxth	r3, r3
+ 1432 0092 E385     		strh	r3, [r4, #46]	@ movhi
+ 1433              	.L176:
+ 1434 0094 B7F1FF3F 		cmp	r7, #-1
+ 1435 0098 25D1     		bne	.L193
+ 1436              	.L174:
+ 1437 009a E28D     		ldrh	r2, [r4, #46]
+ 1438 009c 92B2     		uxth	r2, r2
+ 1439 009e 002A     		cmp	r2, #0
+ 1440 00a0 2ED0     		beq	.L194
+ 1441 00a2 2268     		ldr	r2, [r4]
+ 1442 00a4 1368     		ldr	r3, [r2]
+ 1443 00a6 13F0100F 		tst	r3, #16
+ 1444 00aa 09D0     		beq	.L175
+ 1445 00ac 0023     		movs	r3, #0
+ 1446 00ae 0193     		str	r3, [sp, #4]
+ 1447 00b0 1368     		ldr	r3, [r2]
+ 1448 00b2 0193     		str	r3, [sp, #4]
+ 1449 00b4 5368     		ldr	r3, [r2, #4]
+ 1450 00b6 0193     		str	r3, [sp, #4]
+ 1451 00b8 019B     		ldr	r3, [sp, #4]
+ 1452 00ba 3388     		ldrh	r3, [r6]
+ 1453 00bc 002B     		cmp	r3, #0
+ 1454 00be D1D1     		bne	.L195
+ 1455              	.L175:
+ 1456 00c0 1368     		ldr	r3, [r2]
+ 1457 00c2 13F0200F 		tst	r3, #32
+ 1458 00c6 E5D0     		beq	.L176
+ 1459 00c8 002D     		cmp	r5, #0
+ 1460 00ca D2D0     		beq	.L196
+ 1461 00cc A368     		ldr	r3, [r4, #8]
+ 1462 00ce B3F5805F 		cmp	r3, #4096
+ 1463 00d2 D4D0     		beq	.L179
+ 1464 00d4 13B9     		cbnz	r3, .L180
+ARM GAS  /tmp/cc4BdNm7.s 			page 26
+
+
+ 1465 00d6 2369     		ldr	r3, [r4, #16]
+ 1466 00d8 002B     		cmp	r3, #0
+ 1467 00da D0D0     		beq	.L179
+ 1468              	.L180:
+ 1469 00dc 5368     		ldr	r3, [r2, #4]
+ 1470 00de 03F07F03 		and	r3, r3, #127
+ 1471 00e2 2B70     		strb	r3, [r5]
+ 1472 00e4 CDE7     		b	.L181
+ 1473              	.L193:
+ 1474 00e6 FFF7FEFF 		bl	HAL_GetTick
+ 1475 00ea A0EB0800 		sub	r0, r0, r8
+ 1476 00ee B842     		cmp	r0, r7
+ 1477 00f0 01D8     		bhi	.L183
+ 1478 00f2 002F     		cmp	r7, #0
+ 1479 00f4 D1D1     		bne	.L174
+ 1480              	.L183:
+ 1481 00f6 2023     		movs	r3, #32
+ 1482 00f8 84F84230 		strb	r3, [r4, #66]
+ 1483 00fc 0320     		movs	r0, #3
+ 1484 00fe 0AE0     		b	.L172
+ 1485              	.L194:
+ 1486 0100 A38D     		ldrh	r3, [r4, #44]
+ 1487 0102 E28D     		ldrh	r2, [r4, #46]
+ 1488 0104 92B2     		uxth	r2, r2
+ 1489 0106 9B1A     		subs	r3, r3, r2
+ 1490 0108 3380     		strh	r3, [r6]	@ movhi
+ 1491 010a 2023     		movs	r3, #32
+ 1492 010c 84F84230 		strb	r3, [r4, #66]
+ 1493 0110 0020     		movs	r0, #0
+ 1494 0112 00E0     		b	.L172
+ 1495              	.L185:
+ 1496 0114 0220     		movs	r0, #2
+ 1497              	.L172:
+ 1498 0116 03B0     		add	sp, sp, #12
+ 1499              		@ sp needed
+ 1500 0118 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 1501              	.L186:
+ 1502 011c 0120     		movs	r0, #1
+ 1503 011e FAE7     		b	.L172
+ 1505              		.section	.text.HAL_UARTEx_GetRxEventType,"ax",%progbits
+ 1506              		.align	1
+ 1507              		.global	HAL_UARTEx_GetRxEventType
+ 1508              		.syntax unified
+ 1509              		.thumb
+ 1510              		.thumb_func
+ 1512              	HAL_UARTEx_GetRxEventType:
+ 1513              		@ args = 0, pretend = 0, frame = 0
+ 1514              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1515              		@ link register save eliminated.
+ 1516 0000 406B     		ldr	r0, [r0, #52]
+ 1517 0002 7047     		bx	lr
+ 1519              		.section	.text.HAL_UART_Abort,"ax",%progbits
+ 1520              		.align	1
+ 1521              		.global	HAL_UART_Abort
+ 1522              		.syntax unified
+ 1523              		.thumb
+ 1524              		.thumb_func
+ARM GAS  /tmp/cc4BdNm7.s 			page 27
+
+
+ 1526              	HAL_UART_Abort:
+ 1527              		@ args = 0, pretend = 0, frame = 0
+ 1528              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1529 0000 10B5     		push	{r4, lr}
+ 1530 0002 0446     		mov	r4, r0
+ 1531              	.L199:
+ 1532 0004 2268     		ldr	r2, [r4]
+ 1533 0006 02F10C03 		add	r3, r2, #12
+ 1534              		.syntax unified
+ 1535              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1536 000a 53E8003F 		ldrex r3, [r3]
+ 1537              	@ 0 "" 2
+ 1538              		.thumb
+ 1539              		.syntax unified
+ 1540 000e 23F4F073 		bic	r3, r3, #480
+ 1541 0012 0C32     		adds	r2, r2, #12
+ 1542              		.syntax unified
+ 1543              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1544 0014 42E80031 		strex r1, r3, [r2]
+ 1545              	@ 0 "" 2
+ 1546              		.thumb
+ 1547              		.syntax unified
+ 1548 0018 0029     		cmp	r1, #0
+ 1549 001a F3D1     		bne	.L199
+ 1550              	.L200:
+ 1551 001c 2268     		ldr	r2, [r4]
+ 1552 001e 02F11403 		add	r3, r2, #20
+ 1553              		.syntax unified
+ 1554              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1555 0022 53E8003F 		ldrex r3, [r3]
+ 1556              	@ 0 "" 2
+ 1557              		.thumb
+ 1558              		.syntax unified
+ 1559 0026 23F00103 		bic	r3, r3, #1
+ 1560 002a 1432     		adds	r2, r2, #20
+ 1561              		.syntax unified
+ 1562              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1563 002c 42E80031 		strex r1, r3, [r2]
+ 1564              	@ 0 "" 2
+ 1565              		.thumb
+ 1566              		.syntax unified
+ 1567 0030 0029     		cmp	r1, #0
+ 1568 0032 F3D1     		bne	.L200
+ 1569 0034 236B     		ldr	r3, [r4, #48]
+ 1570 0036 012B     		cmp	r3, #1
+ 1571 0038 3CD0     		beq	.L202
+ 1572              	.L201:
+ 1573 003a 2368     		ldr	r3, [r4]
+ 1574 003c 5B69     		ldr	r3, [r3, #20]
+ 1575 003e 13F0800F 		tst	r3, #128
+ 1576 0042 13D0     		beq	.L203
+ 1577              	.L204:
+ 1578 0044 2268     		ldr	r2, [r4]
+ 1579 0046 02F11403 		add	r3, r2, #20
+ 1580              		.syntax unified
+ 1581              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1582 004a 53E8003F 		ldrex r3, [r3]
+ARM GAS  /tmp/cc4BdNm7.s 			page 28
+
+
+ 1583              	@ 0 "" 2
+ 1584              		.thumb
+ 1585              		.syntax unified
+ 1586 004e 23F08003 		bic	r3, r3, #128
+ 1587 0052 1432     		adds	r2, r2, #20
+ 1588              		.syntax unified
+ 1589              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1590 0054 42E80031 		strex r1, r3, [r2]
+ 1591              	@ 0 "" 2
+ 1592              		.thumb
+ 1593              		.syntax unified
+ 1594 0058 0029     		cmp	r1, #0
+ 1595 005a F3D1     		bne	.L204
+ 1596 005c A36B     		ldr	r3, [r4, #56]
+ 1597 005e 2BB1     		cbz	r3, .L203
+ 1598 0060 0022     		movs	r2, #0
+ 1599 0062 1A65     		str	r2, [r3, #80]
+ 1600 0064 A06B     		ldr	r0, [r4, #56]
+ 1601 0066 FFF7FEFF 		bl	HAL_DMA_Abort
+ 1602 006a 80BB     		cbnz	r0, .L209
+ 1603              	.L203:
+ 1604 006c 2368     		ldr	r3, [r4]
+ 1605 006e 5B69     		ldr	r3, [r3, #20]
+ 1606 0070 13F0400F 		tst	r3, #64
+ 1607 0074 13D0     		beq	.L206
+ 1608              	.L207:
+ 1609 0076 2268     		ldr	r2, [r4]
+ 1610 0078 02F11403 		add	r3, r2, #20
+ 1611              		.syntax unified
+ 1612              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1613 007c 53E8003F 		ldrex r3, [r3]
+ 1614              	@ 0 "" 2
+ 1615              		.thumb
+ 1616              		.syntax unified
+ 1617 0080 23F04003 		bic	r3, r3, #64
+ 1618 0084 1432     		adds	r2, r2, #20
+ 1619              		.syntax unified
+ 1620              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1621 0086 42E80031 		strex r1, r3, [r2]
+ 1622              	@ 0 "" 2
+ 1623              		.thumb
+ 1624              		.syntax unified
+ 1625 008a 0029     		cmp	r1, #0
+ 1626 008c F3D1     		bne	.L207
+ 1627 008e E36B     		ldr	r3, [r4, #60]
+ 1628 0090 2BB1     		cbz	r3, .L206
+ 1629 0092 0022     		movs	r2, #0
+ 1630 0094 1A65     		str	r2, [r3, #80]
+ 1631 0096 E06B     		ldr	r0, [r4, #60]
+ 1632 0098 FFF7FEFF 		bl	HAL_DMA_Abort
+ 1633 009c 00BB     		cbnz	r0, .L210
+ 1634              	.L206:
+ 1635 009e 0020     		movs	r0, #0
+ 1636 00a0 E084     		strh	r0, [r4, #38]	@ movhi
+ 1637 00a2 E085     		strh	r0, [r4, #46]	@ movhi
+ 1638 00a4 6064     		str	r0, [r4, #68]
+ 1639 00a6 2023     		movs	r3, #32
+ARM GAS  /tmp/cc4BdNm7.s 			page 29
+
+
+ 1640 00a8 84F84230 		strb	r3, [r4, #66]
+ 1641 00ac 84F84130 		strb	r3, [r4, #65]
+ 1642 00b0 2063     		str	r0, [r4, #48]
+ 1643              	.L205:
+ 1644 00b2 10BD     		pop	{r4, pc}
+ 1645              	.L202:
+ 1646 00b4 2268     		ldr	r2, [r4]
+ 1647 00b6 02F10C03 		add	r3, r2, #12
+ 1648              		.syntax unified
+ 1649              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1650 00ba 53E8003F 		ldrex r3, [r3]
+ 1651              	@ 0 "" 2
+ 1652              		.thumb
+ 1653              		.syntax unified
+ 1654 00be 23F01003 		bic	r3, r3, #16
+ 1655 00c2 0C32     		adds	r2, r2, #12
+ 1656              		.syntax unified
+ 1657              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1658 00c4 42E80031 		strex r1, r3, [r2]
+ 1659              	@ 0 "" 2
+ 1660              		.thumb
+ 1661              		.syntax unified
+ 1662 00c8 0029     		cmp	r1, #0
+ 1663 00ca F3D1     		bne	.L202
+ 1664 00cc B5E7     		b	.L201
+ 1665              	.L209:
+ 1666 00ce A06B     		ldr	r0, [r4, #56]
+ 1667 00d0 FFF7FEFF 		bl	HAL_DMA_GetError
+ 1668 00d4 2028     		cmp	r0, #32
+ 1669 00d6 C9D1     		bne	.L203
+ 1670 00d8 1023     		movs	r3, #16
+ 1671 00da 6364     		str	r3, [r4, #68]
+ 1672 00dc 0320     		movs	r0, #3
+ 1673 00de E8E7     		b	.L205
+ 1674              	.L210:
+ 1675 00e0 E06B     		ldr	r0, [r4, #60]
+ 1676 00e2 FFF7FEFF 		bl	HAL_DMA_GetError
+ 1677 00e6 2028     		cmp	r0, #32
+ 1678 00e8 D9D1     		bne	.L206
+ 1679 00ea 1023     		movs	r3, #16
+ 1680 00ec 6364     		str	r3, [r4, #68]
+ 1681 00ee 0320     		movs	r0, #3
+ 1682 00f0 DFE7     		b	.L205
+ 1684              		.section	.text.HAL_UART_AbortTransmit,"ax",%progbits
+ 1685              		.align	1
+ 1686              		.global	HAL_UART_AbortTransmit
+ 1687              		.syntax unified
+ 1688              		.thumb
+ 1689              		.thumb_func
+ 1691              	HAL_UART_AbortTransmit:
+ 1692              		@ args = 0, pretend = 0, frame = 0
+ 1693              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1694 0000 10B5     		push	{r4, lr}
+ 1695 0002 0446     		mov	r4, r0
+ 1696              	.L212:
+ 1697 0004 2268     		ldr	r2, [r4]
+ 1698 0006 02F10C03 		add	r3, r2, #12
+ARM GAS  /tmp/cc4BdNm7.s 			page 30
+
+
+ 1699              		.syntax unified
+ 1700              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1701 000a 53E8003F 		ldrex r3, [r3]
+ 1702              	@ 0 "" 2
+ 1703              		.thumb
+ 1704              		.syntax unified
+ 1705 000e 23F0C003 		bic	r3, r3, #192
+ 1706 0012 0C32     		adds	r2, r2, #12
+ 1707              		.syntax unified
+ 1708              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1709 0014 42E80031 		strex r1, r3, [r2]
+ 1710              	@ 0 "" 2
+ 1711              		.thumb
+ 1712              		.syntax unified
+ 1713 0018 0029     		cmp	r1, #0
+ 1714 001a F3D1     		bne	.L212
+ 1715 001c 2368     		ldr	r3, [r4]
+ 1716 001e 5B69     		ldr	r3, [r3, #20]
+ 1717 0020 13F0800F 		tst	r3, #128
+ 1718 0024 13D0     		beq	.L213
+ 1719              	.L214:
+ 1720 0026 2268     		ldr	r2, [r4]
+ 1721 0028 02F11403 		add	r3, r2, #20
+ 1722              		.syntax unified
+ 1723              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1724 002c 53E8003F 		ldrex r3, [r3]
+ 1725              	@ 0 "" 2
+ 1726              		.thumb
+ 1727              		.syntax unified
+ 1728 0030 23F08003 		bic	r3, r3, #128
+ 1729 0034 1432     		adds	r2, r2, #20
+ 1730              		.syntax unified
+ 1731              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1732 0036 42E80031 		strex r1, r3, [r2]
+ 1733              	@ 0 "" 2
+ 1734              		.thumb
+ 1735              		.syntax unified
+ 1736 003a 0029     		cmp	r1, #0
+ 1737 003c F3D1     		bne	.L214
+ 1738 003e A36B     		ldr	r3, [r4, #56]
+ 1739 0040 2BB1     		cbz	r3, .L213
+ 1740 0042 0022     		movs	r2, #0
+ 1741 0044 1A65     		str	r2, [r3, #80]
+ 1742 0046 A06B     		ldr	r0, [r4, #56]
+ 1743 0048 FFF7FEFF 		bl	HAL_DMA_Abort
+ 1744 004c 28B9     		cbnz	r0, .L217
+ 1745              	.L213:
+ 1746 004e 0020     		movs	r0, #0
+ 1747 0050 E084     		strh	r0, [r4, #38]	@ movhi
+ 1748 0052 2023     		movs	r3, #32
+ 1749 0054 84F84130 		strb	r3, [r4, #65]
+ 1750              	.L215:
+ 1751 0058 10BD     		pop	{r4, pc}
+ 1752              	.L217:
+ 1753 005a A06B     		ldr	r0, [r4, #56]
+ 1754 005c FFF7FEFF 		bl	HAL_DMA_GetError
+ 1755 0060 2028     		cmp	r0, #32
+ARM GAS  /tmp/cc4BdNm7.s 			page 31
+
+
+ 1756 0062 F4D1     		bne	.L213
+ 1757 0064 1023     		movs	r3, #16
+ 1758 0066 6364     		str	r3, [r4, #68]
+ 1759 0068 0320     		movs	r0, #3
+ 1760 006a F5E7     		b	.L215
+ 1762              		.section	.text.HAL_UART_AbortReceive,"ax",%progbits
+ 1763              		.align	1
+ 1764              		.global	HAL_UART_AbortReceive
+ 1765              		.syntax unified
+ 1766              		.thumb
+ 1767              		.thumb_func
+ 1769              	HAL_UART_AbortReceive:
+ 1770              		@ args = 0, pretend = 0, frame = 0
+ 1771              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1772 0000 10B5     		push	{r4, lr}
+ 1773 0002 0446     		mov	r4, r0
+ 1774              	.L219:
+ 1775 0004 2268     		ldr	r2, [r4]
+ 1776 0006 02F10C03 		add	r3, r2, #12
+ 1777              		.syntax unified
+ 1778              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1779 000a 53E8003F 		ldrex r3, [r3]
+ 1780              	@ 0 "" 2
+ 1781              		.thumb
+ 1782              		.syntax unified
+ 1783 000e 23F49073 		bic	r3, r3, #288
+ 1784 0012 0C32     		adds	r2, r2, #12
+ 1785              		.syntax unified
+ 1786              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1787 0014 42E80031 		strex r1, r3, [r2]
+ 1788              	@ 0 "" 2
+ 1789              		.thumb
+ 1790              		.syntax unified
+ 1791 0018 0029     		cmp	r1, #0
+ 1792 001a F3D1     		bne	.L219
+ 1793              	.L220:
+ 1794 001c 2268     		ldr	r2, [r4]
+ 1795 001e 02F11403 		add	r3, r2, #20
+ 1796              		.syntax unified
+ 1797              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1798 0022 53E8003F 		ldrex r3, [r3]
+ 1799              	@ 0 "" 2
+ 1800              		.thumb
+ 1801              		.syntax unified
+ 1802 0026 23F00103 		bic	r3, r3, #1
+ 1803 002a 1432     		adds	r2, r2, #20
+ 1804              		.syntax unified
+ 1805              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1806 002c 42E80031 		strex r1, r3, [r2]
+ 1807              	@ 0 "" 2
+ 1808              		.thumb
+ 1809              		.syntax unified
+ 1810 0030 0029     		cmp	r1, #0
+ 1811 0032 F3D1     		bne	.L220
+ 1812 0034 236B     		ldr	r3, [r4, #48]
+ 1813 0036 012B     		cmp	r3, #1
+ 1814 0038 1FD0     		beq	.L222
+ARM GAS  /tmp/cc4BdNm7.s 			page 32
+
+
+ 1815              	.L221:
+ 1816 003a 2368     		ldr	r3, [r4]
+ 1817 003c 5B69     		ldr	r3, [r3, #20]
+ 1818 003e 13F0400F 		tst	r3, #64
+ 1819 0042 13D0     		beq	.L223
+ 1820              	.L224:
+ 1821 0044 2268     		ldr	r2, [r4]
+ 1822 0046 02F11403 		add	r3, r2, #20
+ 1823              		.syntax unified
+ 1824              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1825 004a 53E8003F 		ldrex r3, [r3]
+ 1826              	@ 0 "" 2
+ 1827              		.thumb
+ 1828              		.syntax unified
+ 1829 004e 23F04003 		bic	r3, r3, #64
+ 1830 0052 1432     		adds	r2, r2, #20
+ 1831              		.syntax unified
+ 1832              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1833 0054 42E80031 		strex r1, r3, [r2]
+ 1834              	@ 0 "" 2
+ 1835              		.thumb
+ 1836              		.syntax unified
+ 1837 0058 0029     		cmp	r1, #0
+ 1838 005a F3D1     		bne	.L224
+ 1839 005c E36B     		ldr	r3, [r4, #60]
+ 1840 005e 2BB1     		cbz	r3, .L223
+ 1841 0060 0022     		movs	r2, #0
+ 1842 0062 1A65     		str	r2, [r3, #80]
+ 1843 0064 E06B     		ldr	r0, [r4, #60]
+ 1844 0066 FFF7FEFF 		bl	HAL_DMA_Abort
+ 1845 006a 98B9     		cbnz	r0, .L227
+ 1846              	.L223:
+ 1847 006c 0020     		movs	r0, #0
+ 1848 006e E085     		strh	r0, [r4, #46]	@ movhi
+ 1849 0070 2023     		movs	r3, #32
+ 1850 0072 84F84230 		strb	r3, [r4, #66]
+ 1851 0076 2063     		str	r0, [r4, #48]
+ 1852              	.L225:
+ 1853 0078 10BD     		pop	{r4, pc}
+ 1854              	.L222:
+ 1855 007a 2268     		ldr	r2, [r4]
+ 1856 007c 02F10C03 		add	r3, r2, #12
+ 1857              		.syntax unified
+ 1858              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1859 0080 53E8003F 		ldrex r3, [r3]
+ 1860              	@ 0 "" 2
+ 1861              		.thumb
+ 1862              		.syntax unified
+ 1863 0084 23F01003 		bic	r3, r3, #16
+ 1864 0088 0C32     		adds	r2, r2, #12
+ 1865              		.syntax unified
+ 1866              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1867 008a 42E80031 		strex r1, r3, [r2]
+ 1868              	@ 0 "" 2
+ 1869              		.thumb
+ 1870              		.syntax unified
+ 1871 008e 0029     		cmp	r1, #0
+ARM GAS  /tmp/cc4BdNm7.s 			page 33
+
+
+ 1872 0090 F3D1     		bne	.L222
+ 1873 0092 D2E7     		b	.L221
+ 1874              	.L227:
+ 1875 0094 E06B     		ldr	r0, [r4, #60]
+ 1876 0096 FFF7FEFF 		bl	HAL_DMA_GetError
+ 1877 009a 2028     		cmp	r0, #32
+ 1878 009c E6D1     		bne	.L223
+ 1879 009e 1023     		movs	r3, #16
+ 1880 00a0 6364     		str	r3, [r4, #68]
+ 1881 00a2 0320     		movs	r0, #3
+ 1882 00a4 E8E7     		b	.L225
+ 1884              		.section	.text.HAL_UART_TxCpltCallback,"ax",%progbits
+ 1885              		.align	1
+ 1886              		.weak	HAL_UART_TxCpltCallback
+ 1887              		.syntax unified
+ 1888              		.thumb
+ 1889              		.thumb_func
+ 1891              	HAL_UART_TxCpltCallback:
+ 1892              		@ args = 0, pretend = 0, frame = 0
+ 1893              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1894              		@ link register save eliminated.
+ 1895 0000 7047     		bx	lr
+ 1897              		.section	.text.UART_DMATransmitCplt,"ax",%progbits
+ 1898              		.align	1
+ 1899              		.syntax unified
+ 1900              		.thumb
+ 1901              		.thumb_func
+ 1903              	UART_DMATransmitCplt:
+ 1904              		@ args = 0, pretend = 0, frame = 0
+ 1905              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1906 0000 08B5     		push	{r3, lr}
+ 1907 0002 0346     		mov	r3, r0
+ 1908 0004 806B     		ldr	r0, [r0, #56]
+ 1909 0006 1B68     		ldr	r3, [r3]
+ 1910 0008 1B68     		ldr	r3, [r3]
+ 1911 000a 13F4807F 		tst	r3, #256
+ 1912 000e 1AD1     		bne	.L230
+ 1913 0010 0023     		movs	r3, #0
+ 1914 0012 C384     		strh	r3, [r0, #38]	@ movhi
+ 1915              	.L231:
+ 1916 0014 0268     		ldr	r2, [r0]
+ 1917 0016 02F11403 		add	r3, r2, #20
+ 1918              		.syntax unified
+ 1919              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1920 001a 53E8003F 		ldrex r3, [r3]
+ 1921              	@ 0 "" 2
+ 1922              		.thumb
+ 1923              		.syntax unified
+ 1924 001e 23F08003 		bic	r3, r3, #128
+ 1925 0022 1432     		adds	r2, r2, #20
+ 1926              		.syntax unified
+ 1927              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1928 0024 42E80031 		strex r1, r3, [r2]
+ 1929              	@ 0 "" 2
+ 1930              		.thumb
+ 1931              		.syntax unified
+ 1932 0028 0029     		cmp	r1, #0
+ARM GAS  /tmp/cc4BdNm7.s 			page 34
+
+
+ 1933 002a F3D1     		bne	.L231
+ 1934              	.L232:
+ 1935 002c 0268     		ldr	r2, [r0]
+ 1936 002e 02F10C03 		add	r3, r2, #12
+ 1937              		.syntax unified
+ 1938              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1939 0032 53E8003F 		ldrex r3, [r3]
+ 1940              	@ 0 "" 2
+ 1941              		.thumb
+ 1942              		.syntax unified
+ 1943 0036 43F04003 		orr	r3, r3, #64
+ 1944 003a 0C32     		adds	r2, r2, #12
+ 1945              		.syntax unified
+ 1946              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1947 003c 42E80031 		strex r1, r3, [r2]
+ 1948              	@ 0 "" 2
+ 1949              		.thumb
+ 1950              		.syntax unified
+ 1951 0040 0029     		cmp	r1, #0
+ 1952 0042 F3D1     		bne	.L232
+ 1953              	.L229:
+ 1954 0044 08BD     		pop	{r3, pc}
+ 1955              	.L230:
+ 1956 0046 FFF7FEFF 		bl	HAL_UART_TxCpltCallback
+ 1957 004a FBE7     		b	.L229
+ 1959              		.section	.text.UART_EndTransmit_IT,"ax",%progbits
+ 1960              		.align	1
+ 1961              		.syntax unified
+ 1962              		.thumb
+ 1963              		.thumb_func
+ 1965              	UART_EndTransmit_IT:
+ 1966              		@ args = 0, pretend = 0, frame = 0
+ 1967              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1968 0000 08B5     		push	{r3, lr}
+ 1969 0002 0168     		ldr	r1, [r0]
+ 1970 0004 CA68     		ldr	r2, [r1, #12]
+ 1971 0006 22F04002 		bic	r2, r2, #64
+ 1972 000a CA60     		str	r2, [r1, #12]
+ 1973 000c 2022     		movs	r2, #32
+ 1974 000e 80F84120 		strb	r2, [r0, #65]
+ 1975 0012 FFF7FEFF 		bl	HAL_UART_TxCpltCallback
+ 1976 0016 0020     		movs	r0, #0
+ 1977 0018 08BD     		pop	{r3, pc}
+ 1979              		.section	.text.HAL_UART_TxHalfCpltCallback,"ax",%progbits
+ 1980              		.align	1
+ 1981              		.weak	HAL_UART_TxHalfCpltCallback
+ 1982              		.syntax unified
+ 1983              		.thumb
+ 1984              		.thumb_func
+ 1986              	HAL_UART_TxHalfCpltCallback:
+ 1987              		@ args = 0, pretend = 0, frame = 0
+ 1988              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1989              		@ link register save eliminated.
+ 1990 0000 7047     		bx	lr
+ 1992              		.section	.text.UART_DMATxHalfCplt,"ax",%progbits
+ 1993              		.align	1
+ 1994              		.syntax unified
+ARM GAS  /tmp/cc4BdNm7.s 			page 35
+
+
+ 1995              		.thumb
+ 1996              		.thumb_func
+ 1998              	UART_DMATxHalfCplt:
+ 1999              		@ args = 0, pretend = 0, frame = 0
+ 2000              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2001 0000 08B5     		push	{r3, lr}
+ 2002 0002 806B     		ldr	r0, [r0, #56]
+ 2003 0004 FFF7FEFF 		bl	HAL_UART_TxHalfCpltCallback
+ 2004 0008 08BD     		pop	{r3, pc}
+ 2006              		.section	.text.HAL_UART_RxCpltCallback,"ax",%progbits
+ 2007              		.align	1
+ 2008              		.weak	HAL_UART_RxCpltCallback
+ 2009              		.syntax unified
+ 2010              		.thumb
+ 2011              		.thumb_func
+ 2013              	HAL_UART_RxCpltCallback:
+ 2014              		@ args = 0, pretend = 0, frame = 0
+ 2015              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2016              		@ link register save eliminated.
+ 2017 0000 7047     		bx	lr
+ 2019              		.section	.text.HAL_UART_RxHalfCpltCallback,"ax",%progbits
+ 2020              		.align	1
+ 2021              		.weak	HAL_UART_RxHalfCpltCallback
+ 2022              		.syntax unified
+ 2023              		.thumb
+ 2024              		.thumb_func
+ 2026              	HAL_UART_RxHalfCpltCallback:
+ 2027              		@ args = 0, pretend = 0, frame = 0
+ 2028              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2029              		@ link register save eliminated.
+ 2030 0000 7047     		bx	lr
+ 2032              		.section	.text.HAL_UART_ErrorCallback,"ax",%progbits
+ 2033              		.align	1
+ 2034              		.weak	HAL_UART_ErrorCallback
+ 2035              		.syntax unified
+ 2036              		.thumb
+ 2037              		.thumb_func
+ 2039              	HAL_UART_ErrorCallback:
+ 2040              		@ args = 0, pretend = 0, frame = 0
+ 2041              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2042              		@ link register save eliminated.
+ 2043 0000 7047     		bx	lr
+ 2045              		.section	.text.UART_DMAError,"ax",%progbits
+ 2046              		.align	1
+ 2047              		.syntax unified
+ 2048              		.thumb
+ 2049              		.thumb_func
+ 2051              	UART_DMAError:
+ 2052              		@ args = 0, pretend = 0, frame = 0
+ 2053              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2054 0000 10B5     		push	{r4, lr}
+ 2055 0002 846B     		ldr	r4, [r0, #56]
+ 2056 0004 2368     		ldr	r3, [r4]
+ 2057 0006 5A69     		ldr	r2, [r3, #20]
+ 2058 0008 94F84130 		ldrb	r3, [r4, #65]	@ zero_extendqisi2
+ 2059 000c DBB2     		uxtb	r3, r3
+ 2060 000e 212B     		cmp	r3, #33
+ARM GAS  /tmp/cc4BdNm7.s 			page 36
+
+
+ 2061 0010 10D0     		beq	.L247
+ 2062              	.L244:
+ 2063 0012 2368     		ldr	r3, [r4]
+ 2064 0014 5A69     		ldr	r2, [r3, #20]
+ 2065 0016 02F04002 		and	r2, r2, #64
+ 2066 001a 94F84230 		ldrb	r3, [r4, #66]	@ zero_extendqisi2
+ 2067 001e DBB2     		uxtb	r3, r3
+ 2068 0020 222B     		cmp	r3, #34
+ 2069 0022 11D0     		beq	.L248
+ 2070              	.L245:
+ 2071 0024 636C     		ldr	r3, [r4, #68]
+ 2072 0026 43F01003 		orr	r3, r3, #16
+ 2073 002a 6364     		str	r3, [r4, #68]
+ 2074 002c 2046     		mov	r0, r4
+ 2075 002e FFF7FEFF 		bl	HAL_UART_ErrorCallback
+ 2076 0032 10BD     		pop	{r4, pc}
+ 2077              	.L247:
+ 2078 0034 02F08002 		and	r2, r2, #128
+ 2079 0038 002A     		cmp	r2, #0
+ 2080 003a EAD0     		beq	.L244
+ 2081 003c 0023     		movs	r3, #0
+ 2082 003e E384     		strh	r3, [r4, #38]	@ movhi
+ 2083 0040 2046     		mov	r0, r4
+ 2084 0042 FFF7FEFF 		bl	UART_EndTxTransfer
+ 2085 0046 E4E7     		b	.L244
+ 2086              	.L248:
+ 2087 0048 002A     		cmp	r2, #0
+ 2088 004a EBD0     		beq	.L245
+ 2089 004c 0023     		movs	r3, #0
+ 2090 004e E385     		strh	r3, [r4, #46]	@ movhi
+ 2091 0050 2046     		mov	r0, r4
+ 2092 0052 FFF7FEFF 		bl	UART_EndRxTransfer
+ 2093 0056 E5E7     		b	.L245
+ 2095              		.section	.text.UART_DMAAbortOnError,"ax",%progbits
+ 2096              		.align	1
+ 2097              		.syntax unified
+ 2098              		.thumb
+ 2099              		.thumb_func
+ 2101              	UART_DMAAbortOnError:
+ 2102              		@ args = 0, pretend = 0, frame = 0
+ 2103              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2104 0000 08B5     		push	{r3, lr}
+ 2105 0002 806B     		ldr	r0, [r0, #56]
+ 2106 0004 0023     		movs	r3, #0
+ 2107 0006 C385     		strh	r3, [r0, #46]	@ movhi
+ 2108 0008 FFF7FEFF 		bl	HAL_UART_ErrorCallback
+ 2109 000c 08BD     		pop	{r3, pc}
+ 2111              		.section	.text.HAL_UART_AbortCpltCallback,"ax",%progbits
+ 2112              		.align	1
+ 2113              		.weak	HAL_UART_AbortCpltCallback
+ 2114              		.syntax unified
+ 2115              		.thumb
+ 2116              		.thumb_func
+ 2118              	HAL_UART_AbortCpltCallback:
+ 2119              		@ args = 0, pretend = 0, frame = 0
+ 2120              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2121              		@ link register save eliminated.
+ARM GAS  /tmp/cc4BdNm7.s 			page 37
+
+
+ 2122 0000 7047     		bx	lr
+ 2124              		.section	.text.HAL_UART_Abort_IT,"ax",%progbits
+ 2125              		.align	1
+ 2126              		.global	HAL_UART_Abort_IT
+ 2127              		.syntax unified
+ 2128              		.thumb
+ 2129              		.thumb_func
+ 2131              	HAL_UART_Abort_IT:
+ 2132              		@ args = 0, pretend = 0, frame = 0
+ 2133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2134 0000 38B5     		push	{r3, r4, r5, lr}
+ 2135 0002 0446     		mov	r4, r0
+ 2136              	.L253:
+ 2137 0004 2268     		ldr	r2, [r4]
+ 2138 0006 02F10C03 		add	r3, r2, #12
+ 2139              		.syntax unified
+ 2140              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2141 000a 53E8003F 		ldrex r3, [r3]
+ 2142              	@ 0 "" 2
+ 2143              		.thumb
+ 2144              		.syntax unified
+ 2145 000e 23F4F073 		bic	r3, r3, #480
+ 2146 0012 0C32     		adds	r2, r2, #12
+ 2147              		.syntax unified
+ 2148              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2149 0014 42E80031 		strex r1, r3, [r2]
+ 2150              	@ 0 "" 2
+ 2151              		.thumb
+ 2152              		.syntax unified
+ 2153 0018 0029     		cmp	r1, #0
+ 2154 001a F3D1     		bne	.L253
+ 2155              	.L254:
+ 2156 001c 2268     		ldr	r2, [r4]
+ 2157 001e 02F11403 		add	r3, r2, #20
+ 2158              		.syntax unified
+ 2159              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2160 0022 53E8003F 		ldrex r3, [r3]
+ 2161              	@ 0 "" 2
+ 2162              		.thumb
+ 2163              		.syntax unified
+ 2164 0026 23F00103 		bic	r3, r3, #1
+ 2165 002a 1432     		adds	r2, r2, #20
+ 2166              		.syntax unified
+ 2167              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2168 002c 42E80031 		strex r1, r3, [r2]
+ 2169              	@ 0 "" 2
+ 2170              		.thumb
+ 2171              		.syntax unified
+ 2172 0030 0029     		cmp	r1, #0
+ 2173 0032 F3D1     		bne	.L254
+ 2174 0034 236B     		ldr	r3, [r4, #48]
+ 2175 0036 012B     		cmp	r3, #1
+ 2176 0038 2ED0     		beq	.L256
+ 2177              	.L255:
+ 2178 003a A36B     		ldr	r3, [r4, #56]
+ 2179 003c 33B1     		cbz	r3, .L257
+ 2180 003e 2268     		ldr	r2, [r4]
+ARM GAS  /tmp/cc4BdNm7.s 			page 38
+
+
+ 2181 0040 5269     		ldr	r2, [r2, #20]
+ 2182 0042 12F0800F 		tst	r2, #128
+ 2183 0046 34D0     		beq	.L258
+ 2184 0048 344A     		ldr	r2, .L270
+ 2185 004a 1A65     		str	r2, [r3, #80]
+ 2186              	.L257:
+ 2187 004c E36B     		ldr	r3, [r4, #60]
+ 2188 004e 33B1     		cbz	r3, .L259
+ 2189 0050 2268     		ldr	r2, [r4]
+ 2190 0052 5269     		ldr	r2, [r2, #20]
+ 2191 0054 12F0400F 		tst	r2, #64
+ 2192 0058 2ED0     		beq	.L260
+ 2193 005a 314A     		ldr	r2, .L270+4
+ 2194 005c 1A65     		str	r2, [r3, #80]
+ 2195              	.L259:
+ 2196 005e 2368     		ldr	r3, [r4]
+ 2197 0060 5B69     		ldr	r3, [r3, #20]
+ 2198 0062 13F0800F 		tst	r3, #128
+ 2199 0066 2AD0     		beq	.L267
+ 2200              	.L262:
+ 2201 0068 2168     		ldr	r1, [r4]
+ 2202 006a 01F11403 		add	r3, r1, #20
+ 2203              		.syntax unified
+ 2204              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2205 006e 53E8003F 		ldrex r3, [r3]
+ 2206              	@ 0 "" 2
+ 2207              		.thumb
+ 2208              		.syntax unified
+ 2209 0072 23F08003 		bic	r3, r3, #128
+ 2210 0076 1431     		adds	r1, r1, #20
+ 2211              		.syntax unified
+ 2212              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2213 0078 41E80032 		strex r2, r3, [r1]
+ 2214              	@ 0 "" 2
+ 2215              		.thumb
+ 2216              		.syntax unified
+ 2217 007c 1546     		mov	r5, r2
+ 2218 007e 002A     		cmp	r2, #0
+ 2219 0080 F2D1     		bne	.L262
+ 2220 0082 A06B     		ldr	r0, [r4, #56]
+ 2221 0084 0028     		cmp	r0, #0
+ 2222 0086 42D0     		beq	.L268
+ 2223 0088 FFF7FEFF 		bl	HAL_DMA_Abort_IT
+ 2224 008c C0B1     		cbz	r0, .L261
+ 2225 008e A36B     		ldr	r3, [r4, #56]
+ 2226 0090 0022     		movs	r2, #0
+ 2227 0092 1A65     		str	r2, [r3, #80]
+ 2228 0094 0125     		movs	r5, #1
+ 2229 0096 13E0     		b	.L261
+ 2230              	.L256:
+ 2231 0098 2268     		ldr	r2, [r4]
+ 2232 009a 02F10C03 		add	r3, r2, #12
+ 2233              		.syntax unified
+ 2234              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2235 009e 53E8003F 		ldrex r3, [r3]
+ 2236              	@ 0 "" 2
+ 2237              		.thumb
+ARM GAS  /tmp/cc4BdNm7.s 			page 39
+
+
+ 2238              		.syntax unified
+ 2239 00a2 23F01003 		bic	r3, r3, #16
+ 2240 00a6 0C32     		adds	r2, r2, #12
+ 2241              		.syntax unified
+ 2242              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2243 00a8 42E80031 		strex r1, r3, [r2]
+ 2244              	@ 0 "" 2
+ 2245              		.thumb
+ 2246              		.syntax unified
+ 2247 00ac 0029     		cmp	r1, #0
+ 2248 00ae F3D1     		bne	.L256
+ 2249 00b0 C3E7     		b	.L255
+ 2250              	.L258:
+ 2251 00b2 0022     		movs	r2, #0
+ 2252 00b4 1A65     		str	r2, [r3, #80]
+ 2253 00b6 C9E7     		b	.L257
+ 2254              	.L260:
+ 2255 00b8 0022     		movs	r2, #0
+ 2256 00ba 1A65     		str	r2, [r3, #80]
+ 2257 00bc CFE7     		b	.L259
+ 2258              	.L267:
+ 2259 00be 0125     		movs	r5, #1
+ 2260              	.L261:
+ 2261 00c0 2368     		ldr	r3, [r4]
+ 2262 00c2 5B69     		ldr	r3, [r3, #20]
+ 2263 00c4 13F0400F 		tst	r3, #64
+ 2264 00c8 23D0     		beq	.L263
+ 2265              	.L264:
+ 2266 00ca 2268     		ldr	r2, [r4]
+ 2267 00cc 02F11403 		add	r3, r2, #20
+ 2268              		.syntax unified
+ 2269              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2270 00d0 53E8003F 		ldrex r3, [r3]
+ 2271              	@ 0 "" 2
+ 2272              		.thumb
+ 2273              		.syntax unified
+ 2274 00d4 23F04003 		bic	r3, r3, #64
+ 2275 00d8 1432     		adds	r2, r2, #20
+ 2276              		.syntax unified
+ 2277              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2278 00da 42E80031 		strex r1, r3, [r2]
+ 2279              	@ 0 "" 2
+ 2280              		.thumb
+ 2281              		.syntax unified
+ 2282 00de 0029     		cmp	r1, #0
+ 2283 00e0 F3D1     		bne	.L264
+ 2284 00e2 E06B     		ldr	r0, [r4, #60]
+ 2285 00e4 A8B1     		cbz	r0, .L263
+ 2286 00e6 FFF7FEFF 		bl	HAL_DMA_Abort_IT
+ 2287 00ea A0B1     		cbz	r0, .L265
+ 2288 00ec E36B     		ldr	r3, [r4, #60]
+ 2289 00ee 0022     		movs	r2, #0
+ 2290 00f0 1A65     		str	r2, [r3, #80]
+ 2291              	.L266:
+ 2292 00f2 0023     		movs	r3, #0
+ 2293 00f4 E384     		strh	r3, [r4, #38]	@ movhi
+ 2294 00f6 E385     		strh	r3, [r4, #46]	@ movhi
+ARM GAS  /tmp/cc4BdNm7.s 			page 40
+
+
+ 2295 00f8 6364     		str	r3, [r4, #68]
+ 2296 00fa 2022     		movs	r2, #32
+ 2297 00fc 84F84120 		strb	r2, [r4, #65]
+ 2298 0100 84F84220 		strb	r2, [r4, #66]
+ 2299 0104 2363     		str	r3, [r4, #48]
+ 2300 0106 2046     		mov	r0, r4
+ 2301 0108 FFF7FEFF 		bl	HAL_UART_AbortCpltCallback
+ 2302 010c 03E0     		b	.L265
+ 2303              	.L268:
+ 2304 010e 0125     		movs	r5, #1
+ 2305 0110 D6E7     		b	.L261
+ 2306              	.L263:
+ 2307 0112 012D     		cmp	r5, #1
+ 2308 0114 EDD0     		beq	.L266
+ 2309              	.L265:
+ 2310 0116 0020     		movs	r0, #0
+ 2311 0118 38BD     		pop	{r3, r4, r5, pc}
+ 2312              	.L271:
+ 2313 011a 00BF     		.align	2
+ 2314              	.L270:
+ 2315 011c 00000000 		.word	UART_DMATxAbortCallback
+ 2316 0120 00000000 		.word	UART_DMARxAbortCallback
+ 2318              		.section	.text.UART_DMARxAbortCallback,"ax",%progbits
+ 2319              		.align	1
+ 2320              		.syntax unified
+ 2321              		.thumb
+ 2322              		.thumb_func
+ 2324              	UART_DMARxAbortCallback:
+ 2325              		@ args = 0, pretend = 0, frame = 0
+ 2326              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2327 0000 08B5     		push	{r3, lr}
+ 2328 0002 806B     		ldr	r0, [r0, #56]
+ 2329 0004 C36B     		ldr	r3, [r0, #60]
+ 2330 0006 0022     		movs	r2, #0
+ 2331 0008 1A65     		str	r2, [r3, #80]
+ 2332 000a 836B     		ldr	r3, [r0, #56]
+ 2333 000c 0BB1     		cbz	r3, .L273
+ 2334 000e 1B6D     		ldr	r3, [r3, #80]
+ 2335 0010 5BB9     		cbnz	r3, .L272
+ 2336              	.L273:
+ 2337 0012 0023     		movs	r3, #0
+ 2338 0014 C384     		strh	r3, [r0, #38]	@ movhi
+ 2339 0016 C385     		strh	r3, [r0, #46]	@ movhi
+ 2340 0018 4364     		str	r3, [r0, #68]
+ 2341 001a 2022     		movs	r2, #32
+ 2342 001c 80F84120 		strb	r2, [r0, #65]
+ 2343 0020 80F84220 		strb	r2, [r0, #66]
+ 2344 0024 0363     		str	r3, [r0, #48]
+ 2345 0026 FFF7FEFF 		bl	HAL_UART_AbortCpltCallback
+ 2346              	.L272:
+ 2347 002a 08BD     		pop	{r3, pc}
+ 2349              		.section	.text.UART_DMATxAbortCallback,"ax",%progbits
+ 2350              		.align	1
+ 2351              		.syntax unified
+ 2352              		.thumb
+ 2353              		.thumb_func
+ 2355              	UART_DMATxAbortCallback:
+ARM GAS  /tmp/cc4BdNm7.s 			page 41
+
+
+ 2356              		@ args = 0, pretend = 0, frame = 0
+ 2357              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2358 0000 08B5     		push	{r3, lr}
+ 2359 0002 806B     		ldr	r0, [r0, #56]
+ 2360 0004 836B     		ldr	r3, [r0, #56]
+ 2361 0006 0022     		movs	r2, #0
+ 2362 0008 1A65     		str	r2, [r3, #80]
+ 2363 000a C36B     		ldr	r3, [r0, #60]
+ 2364 000c 0BB1     		cbz	r3, .L277
+ 2365 000e 1B6D     		ldr	r3, [r3, #80]
+ 2366 0010 5BB9     		cbnz	r3, .L276
+ 2367              	.L277:
+ 2368 0012 0023     		movs	r3, #0
+ 2369 0014 C384     		strh	r3, [r0, #38]	@ movhi
+ 2370 0016 C385     		strh	r3, [r0, #46]	@ movhi
+ 2371 0018 4364     		str	r3, [r0, #68]
+ 2372 001a 2022     		movs	r2, #32
+ 2373 001c 80F84120 		strb	r2, [r0, #65]
+ 2374 0020 80F84220 		strb	r2, [r0, #66]
+ 2375 0024 0363     		str	r3, [r0, #48]
+ 2376 0026 FFF7FEFF 		bl	HAL_UART_AbortCpltCallback
+ 2377              	.L276:
+ 2378 002a 08BD     		pop	{r3, pc}
+ 2380              		.section	.text.HAL_UART_AbortTransmitCpltCallback,"ax",%progbits
+ 2381              		.align	1
+ 2382              		.weak	HAL_UART_AbortTransmitCpltCallback
+ 2383              		.syntax unified
+ 2384              		.thumb
+ 2385              		.thumb_func
+ 2387              	HAL_UART_AbortTransmitCpltCallback:
+ 2388              		@ args = 0, pretend = 0, frame = 0
+ 2389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2390              		@ link register save eliminated.
+ 2391 0000 7047     		bx	lr
+ 2393              		.section	.text.HAL_UART_AbortTransmit_IT,"ax",%progbits
+ 2394              		.align	1
+ 2395              		.global	HAL_UART_AbortTransmit_IT
+ 2396              		.syntax unified
+ 2397              		.thumb
+ 2398              		.thumb_func
+ 2400              	HAL_UART_AbortTransmit_IT:
+ 2401              		@ args = 0, pretend = 0, frame = 0
+ 2402              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2403 0000 10B5     		push	{r4, lr}
+ 2404 0002 0446     		mov	r4, r0
+ 2405              	.L282:
+ 2406 0004 2268     		ldr	r2, [r4]
+ 2407 0006 02F10C03 		add	r3, r2, #12
+ 2408              		.syntax unified
+ 2409              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2410 000a 53E8003F 		ldrex r3, [r3]
+ 2411              	@ 0 "" 2
+ 2412              		.thumb
+ 2413              		.syntax unified
+ 2414 000e 23F0C003 		bic	r3, r3, #192
+ 2415 0012 0C32     		adds	r2, r2, #12
+ 2416              		.syntax unified
+ARM GAS  /tmp/cc4BdNm7.s 			page 42
+
+
+ 2417              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2418 0014 42E80031 		strex r1, r3, [r2]
+ 2419              	@ 0 "" 2
+ 2420              		.thumb
+ 2421              		.syntax unified
+ 2422 0018 0029     		cmp	r1, #0
+ 2423 001a F3D1     		bne	.L282
+ 2424 001c 2368     		ldr	r3, [r4]
+ 2425 001e 5B69     		ldr	r3, [r3, #20]
+ 2426 0020 13F0800F 		tst	r3, #128
+ 2427 0024 20D0     		beq	.L283
+ 2428              	.L284:
+ 2429 0026 2268     		ldr	r2, [r4]
+ 2430 0028 02F11403 		add	r3, r2, #20
+ 2431              		.syntax unified
+ 2432              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2433 002c 53E8003F 		ldrex r3, [r3]
+ 2434              	@ 0 "" 2
+ 2435              		.thumb
+ 2436              		.syntax unified
+ 2437 0030 23F08003 		bic	r3, r3, #128
+ 2438 0034 1432     		adds	r2, r2, #20
+ 2439              		.syntax unified
+ 2440              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2441 0036 42E80031 		strex r1, r3, [r2]
+ 2442              	@ 0 "" 2
+ 2443              		.thumb
+ 2444              		.syntax unified
+ 2445 003a 0029     		cmp	r1, #0
+ 2446 003c F3D1     		bne	.L284
+ 2447 003e A36B     		ldr	r3, [r4, #56]
+ 2448 0040 4BB1     		cbz	r3, .L285
+ 2449 0042 0E4A     		ldr	r2, .L288
+ 2450 0044 1A65     		str	r2, [r3, #80]
+ 2451 0046 A06B     		ldr	r0, [r4, #56]
+ 2452 0048 FFF7FEFF 		bl	HAL_DMA_Abort_IT
+ 2453 004c A0B1     		cbz	r0, .L286
+ 2454 004e A06B     		ldr	r0, [r4, #56]
+ 2455 0050 036D     		ldr	r3, [r0, #80]
+ 2456 0052 9847     		blx	r3
+ 2457 0054 10E0     		b	.L286
+ 2458              	.L285:
+ 2459 0056 0023     		movs	r3, #0
+ 2460 0058 E384     		strh	r3, [r4, #38]	@ movhi
+ 2461 005a 2023     		movs	r3, #32
+ 2462 005c 84F84130 		strb	r3, [r4, #65]
+ 2463 0060 2046     		mov	r0, r4
+ 2464 0062 FFF7FEFF 		bl	HAL_UART_AbortTransmitCpltCallback
+ 2465 0066 07E0     		b	.L286
+ 2466              	.L283:
+ 2467 0068 0023     		movs	r3, #0
+ 2468 006a E384     		strh	r3, [r4, #38]	@ movhi
+ 2469 006c 2023     		movs	r3, #32
+ 2470 006e 84F84130 		strb	r3, [r4, #65]
+ 2471 0072 2046     		mov	r0, r4
+ 2472 0074 FFF7FEFF 		bl	HAL_UART_AbortTransmitCpltCallback
+ 2473              	.L286:
+ARM GAS  /tmp/cc4BdNm7.s 			page 43
+
+
+ 2474 0078 0020     		movs	r0, #0
+ 2475 007a 10BD     		pop	{r4, pc}
+ 2476              	.L289:
+ 2477              		.align	2
+ 2478              	.L288:
+ 2479 007c 00000000 		.word	UART_DMATxOnlyAbortCallback
+ 2481              		.section	.text.UART_DMATxOnlyAbortCallback,"ax",%progbits
+ 2482              		.align	1
+ 2483              		.syntax unified
+ 2484              		.thumb
+ 2485              		.thumb_func
+ 2487              	UART_DMATxOnlyAbortCallback:
+ 2488              		@ args = 0, pretend = 0, frame = 0
+ 2489              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2490 0000 08B5     		push	{r3, lr}
+ 2491 0002 806B     		ldr	r0, [r0, #56]
+ 2492 0004 0023     		movs	r3, #0
+ 2493 0006 C384     		strh	r3, [r0, #38]	@ movhi
+ 2494 0008 2023     		movs	r3, #32
+ 2495 000a 80F84130 		strb	r3, [r0, #65]
+ 2496 000e FFF7FEFF 		bl	HAL_UART_AbortTransmitCpltCallback
+ 2497 0012 08BD     		pop	{r3, pc}
+ 2499              		.section	.text.HAL_UART_AbortReceiveCpltCallback,"ax",%progbits
+ 2500              		.align	1
+ 2501              		.weak	HAL_UART_AbortReceiveCpltCallback
+ 2502              		.syntax unified
+ 2503              		.thumb
+ 2504              		.thumb_func
+ 2506              	HAL_UART_AbortReceiveCpltCallback:
+ 2507              		@ args = 0, pretend = 0, frame = 0
+ 2508              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2509              		@ link register save eliminated.
+ 2510 0000 7047     		bx	lr
+ 2512              		.section	.text.HAL_UART_AbortReceive_IT,"ax",%progbits
+ 2513              		.align	1
+ 2514              		.global	HAL_UART_AbortReceive_IT
+ 2515              		.syntax unified
+ 2516              		.thumb
+ 2517              		.thumb_func
+ 2519              	HAL_UART_AbortReceive_IT:
+ 2520              		@ args = 0, pretend = 0, frame = 0
+ 2521              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2522 0000 10B5     		push	{r4, lr}
+ 2523 0002 0446     		mov	r4, r0
+ 2524              	.L294:
+ 2525 0004 2268     		ldr	r2, [r4]
+ 2526 0006 02F10C03 		add	r3, r2, #12
+ 2527              		.syntax unified
+ 2528              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2529 000a 53E8003F 		ldrex r3, [r3]
+ 2530              	@ 0 "" 2
+ 2531              		.thumb
+ 2532              		.syntax unified
+ 2533 000e 23F49073 		bic	r3, r3, #288
+ 2534 0012 0C32     		adds	r2, r2, #12
+ 2535              		.syntax unified
+ 2536              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ARM GAS  /tmp/cc4BdNm7.s 			page 44
+
+
+ 2537 0014 42E80031 		strex r1, r3, [r2]
+ 2538              	@ 0 "" 2
+ 2539              		.thumb
+ 2540              		.syntax unified
+ 2541 0018 0029     		cmp	r1, #0
+ 2542 001a F3D1     		bne	.L294
+ 2543              	.L295:
+ 2544 001c 2268     		ldr	r2, [r4]
+ 2545 001e 02F11403 		add	r3, r2, #20
+ 2546              		.syntax unified
+ 2547              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2548 0022 53E8003F 		ldrex r3, [r3]
+ 2549              	@ 0 "" 2
+ 2550              		.thumb
+ 2551              		.syntax unified
+ 2552 0026 23F00103 		bic	r3, r3, #1
+ 2553 002a 1432     		adds	r2, r2, #20
+ 2554              		.syntax unified
+ 2555              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2556 002c 42E80031 		strex r1, r3, [r2]
+ 2557              	@ 0 "" 2
+ 2558              		.thumb
+ 2559              		.syntax unified
+ 2560 0030 0029     		cmp	r1, #0
+ 2561 0032 F3D1     		bne	.L295
+ 2562 0034 236B     		ldr	r3, [r4, #48]
+ 2563 0036 012B     		cmp	r3, #1
+ 2564 0038 1CD0     		beq	.L297
+ 2565              	.L296:
+ 2566 003a 2368     		ldr	r3, [r4]
+ 2567 003c 5B69     		ldr	r3, [r3, #20]
+ 2568 003e 13F0400F 		tst	r3, #64
+ 2569 0042 2ED0     		beq	.L298
+ 2570              	.L299:
+ 2571 0044 2268     		ldr	r2, [r4]
+ 2572 0046 02F11403 		add	r3, r2, #20
+ 2573              		.syntax unified
+ 2574              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2575 004a 53E8003F 		ldrex r3, [r3]
+ 2576              	@ 0 "" 2
+ 2577              		.thumb
+ 2578              		.syntax unified
+ 2579 004e 23F04003 		bic	r3, r3, #64
+ 2580 0052 1432     		adds	r2, r2, #20
+ 2581              		.syntax unified
+ 2582              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2583 0054 42E80031 		strex r1, r3, [r2]
+ 2584              	@ 0 "" 2
+ 2585              		.thumb
+ 2586              		.syntax unified
+ 2587 0058 0029     		cmp	r1, #0
+ 2588 005a F3D1     		bne	.L299
+ 2589 005c E36B     		ldr	r3, [r4, #60]
+ 2590 005e B3B1     		cbz	r3, .L300
+ 2591 0060 154A     		ldr	r2, .L303
+ 2592 0062 1A65     		str	r2, [r3, #80]
+ 2593 0064 E06B     		ldr	r0, [r4, #60]
+ARM GAS  /tmp/cc4BdNm7.s 			page 45
+
+
+ 2594 0066 FFF7FEFF 		bl	HAL_DMA_Abort_IT
+ 2595 006a 18B3     		cbz	r0, .L301
+ 2596 006c E06B     		ldr	r0, [r4, #60]
+ 2597 006e 036D     		ldr	r3, [r0, #80]
+ 2598 0070 9847     		blx	r3
+ 2599 0072 1FE0     		b	.L301
+ 2600              	.L297:
+ 2601 0074 2268     		ldr	r2, [r4]
+ 2602 0076 02F10C03 		add	r3, r2, #12
+ 2603              		.syntax unified
+ 2604              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2605 007a 53E8003F 		ldrex r3, [r3]
+ 2606              	@ 0 "" 2
+ 2607              		.thumb
+ 2608              		.syntax unified
+ 2609 007e 23F01003 		bic	r3, r3, #16
+ 2610 0082 0C32     		adds	r2, r2, #12
+ 2611              		.syntax unified
+ 2612              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2613 0084 42E80031 		strex r1, r3, [r2]
+ 2614              	@ 0 "" 2
+ 2615              		.thumb
+ 2616              		.syntax unified
+ 2617 0088 0029     		cmp	r1, #0
+ 2618 008a F3D1     		bne	.L297
+ 2619 008c D5E7     		b	.L296
+ 2620              	.L300:
+ 2621 008e 0023     		movs	r3, #0
+ 2622 0090 E385     		strh	r3, [r4, #46]	@ movhi
+ 2623 0092 2022     		movs	r2, #32
+ 2624 0094 84F84220 		strb	r2, [r4, #66]
+ 2625 0098 2363     		str	r3, [r4, #48]
+ 2626 009a 2046     		mov	r0, r4
+ 2627 009c FFF7FEFF 		bl	HAL_UART_AbortReceiveCpltCallback
+ 2628 00a0 08E0     		b	.L301
+ 2629              	.L298:
+ 2630 00a2 0023     		movs	r3, #0
+ 2631 00a4 E385     		strh	r3, [r4, #46]	@ movhi
+ 2632 00a6 2022     		movs	r2, #32
+ 2633 00a8 84F84220 		strb	r2, [r4, #66]
+ 2634 00ac 2363     		str	r3, [r4, #48]
+ 2635 00ae 2046     		mov	r0, r4
+ 2636 00b0 FFF7FEFF 		bl	HAL_UART_AbortReceiveCpltCallback
+ 2637              	.L301:
+ 2638 00b4 0020     		movs	r0, #0
+ 2639 00b6 10BD     		pop	{r4, pc}
+ 2640              	.L304:
+ 2641              		.align	2
+ 2642              	.L303:
+ 2643 00b8 00000000 		.word	UART_DMARxOnlyAbortCallback
+ 2645              		.section	.text.UART_DMARxOnlyAbortCallback,"ax",%progbits
+ 2646              		.align	1
+ 2647              		.syntax unified
+ 2648              		.thumb
+ 2649              		.thumb_func
+ 2651              	UART_DMARxOnlyAbortCallback:
+ 2652              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/cc4BdNm7.s 			page 46
+
+
+ 2653              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2654 0000 08B5     		push	{r3, lr}
+ 2655 0002 806B     		ldr	r0, [r0, #56]
+ 2656 0004 0023     		movs	r3, #0
+ 2657 0006 C385     		strh	r3, [r0, #46]	@ movhi
+ 2658 0008 2022     		movs	r2, #32
+ 2659 000a 80F84220 		strb	r2, [r0, #66]
+ 2660 000e 0363     		str	r3, [r0, #48]
+ 2661 0010 FFF7FEFF 		bl	HAL_UART_AbortReceiveCpltCallback
+ 2662 0014 08BD     		pop	{r3, pc}
+ 2664              		.section	.text.HAL_UARTEx_RxEventCallback,"ax",%progbits
+ 2665              		.align	1
+ 2666              		.weak	HAL_UARTEx_RxEventCallback
+ 2667              		.syntax unified
+ 2668              		.thumb
+ 2669              		.thumb_func
+ 2671              	HAL_UARTEx_RxEventCallback:
+ 2672              		@ args = 0, pretend = 0, frame = 0
+ 2673              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2674              		@ link register save eliminated.
+ 2675 0000 7047     		bx	lr
+ 2677              		.section	.text.UART_Receive_IT,"ax",%progbits
+ 2678              		.align	1
+ 2679              		.syntax unified
+ 2680              		.thumb
+ 2681              		.thumb_func
+ 2683              	UART_Receive_IT:
+ 2684              		@ args = 0, pretend = 0, frame = 8
+ 2685              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2686 0000 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 2687 0004 DBB2     		uxtb	r3, r3
+ 2688 0006 222B     		cmp	r3, #34
+ 2689 0008 69D1     		bne	.L319
+ 2690 000a 8368     		ldr	r3, [r0, #8]
+ 2691 000c B3F5805F 		cmp	r3, #4096
+ 2692 0010 4FD0     		beq	.L325
+ 2693              	.L310:
+ 2694 0012 826A     		ldr	r2, [r0, #40]
+ 2695 0014 B3F5805F 		cmp	r3, #4096
+ 2696 0018 04D0     		beq	.L312
+ 2697 001a 002B     		cmp	r3, #0
+ 2698 001c 56D1     		bne	.L313
+ 2699 001e 0369     		ldr	r3, [r0, #16]
+ 2700 0020 002B     		cmp	r3, #0
+ 2701 0022 53D1     		bne	.L313
+ 2702              	.L312:
+ 2703 0024 0368     		ldr	r3, [r0]
+ 2704 0026 5B68     		ldr	r3, [r3, #4]
+ 2705 0028 1370     		strb	r3, [r2]
+ 2706              	.L314:
+ 2707 002a 836A     		ldr	r3, [r0, #40]
+ 2708 002c 0133     		adds	r3, r3, #1
+ 2709 002e 8362     		str	r3, [r0, #40]
+ 2710              	.L311:
+ 2711 0030 C38D     		ldrh	r3, [r0, #46]
+ 2712 0032 9BB2     		uxth	r3, r3
+ 2713 0034 013B     		subs	r3, r3, #1
+ARM GAS  /tmp/cc4BdNm7.s 			page 47
+
+
+ 2714 0036 9BB2     		uxth	r3, r3
+ 2715 0038 C385     		strh	r3, [r0, #46]	@ movhi
+ 2716 003a 002B     		cmp	r3, #0
+ 2717 003c 51D1     		bne	.L320
+ 2718 003e 00B5     		push	{lr}
+ 2719 0040 83B0     		sub	sp, sp, #12
+ 2720 0042 0268     		ldr	r2, [r0]
+ 2721 0044 D368     		ldr	r3, [r2, #12]
+ 2722 0046 23F02003 		bic	r3, r3, #32
+ 2723 004a D360     		str	r3, [r2, #12]
+ 2724 004c 0268     		ldr	r2, [r0]
+ 2725 004e D368     		ldr	r3, [r2, #12]
+ 2726 0050 23F48073 		bic	r3, r3, #256
+ 2727 0054 D360     		str	r3, [r2, #12]
+ 2728 0056 0268     		ldr	r2, [r0]
+ 2729 0058 5369     		ldr	r3, [r2, #20]
+ 2730 005a 23F00103 		bic	r3, r3, #1
+ 2731 005e 5361     		str	r3, [r2, #20]
+ 2732 0060 2023     		movs	r3, #32
+ 2733 0062 80F84230 		strb	r3, [r0, #66]
+ 2734 0066 0023     		movs	r3, #0
+ 2735 0068 4363     		str	r3, [r0, #52]
+ 2736 006a 036B     		ldr	r3, [r0, #48]
+ 2737 006c 012B     		cmp	r3, #1
+ 2738 006e 33D1     		bne	.L315
+ 2739 0070 0023     		movs	r3, #0
+ 2740 0072 0363     		str	r3, [r0, #48]
+ 2741              	.L316:
+ 2742 0074 0268     		ldr	r2, [r0]
+ 2743 0076 02F10C03 		add	r3, r2, #12
+ 2744              		.syntax unified
+ 2745              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2746 007a 53E8003F 		ldrex r3, [r3]
+ 2747              	@ 0 "" 2
+ 2748              		.thumb
+ 2749              		.syntax unified
+ 2750 007e 23F01003 		bic	r3, r3, #16
+ 2751 0082 0C32     		adds	r2, r2, #12
+ 2752              		.syntax unified
+ 2753              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2754 0084 42E80031 		strex r1, r3, [r2]
+ 2755              	@ 0 "" 2
+ 2756              		.thumb
+ 2757              		.syntax unified
+ 2758 0088 0029     		cmp	r1, #0
+ 2759 008a F3D1     		bne	.L316
+ 2760 008c 0368     		ldr	r3, [r0]
+ 2761 008e 1A68     		ldr	r2, [r3]
+ 2762 0090 12F0100F 		tst	r2, #16
+ 2763 0094 06D0     		beq	.L317
+ 2764 0096 0022     		movs	r2, #0
+ 2765 0098 0192     		str	r2, [sp, #4]
+ 2766 009a 1A68     		ldr	r2, [r3]
+ 2767 009c 0192     		str	r2, [sp, #4]
+ 2768 009e 5B68     		ldr	r3, [r3, #4]
+ 2769 00a0 0193     		str	r3, [sp, #4]
+ 2770 00a2 019B     		ldr	r3, [sp, #4]
+ARM GAS  /tmp/cc4BdNm7.s 			page 48
+
+
+ 2771              	.L317:
+ 2772 00a4 818D     		ldrh	r1, [r0, #44]
+ 2773 00a6 FFF7FEFF 		bl	HAL_UARTEx_RxEventCallback
+ 2774              	.L318:
+ 2775 00aa 0020     		movs	r0, #0
+ 2776 00ac 03B0     		add	sp, sp, #12
+ 2777              		@ sp needed
+ 2778 00ae 5DF804FB 		ldr	pc, [sp], #4
+ 2779              	.L325:
+ 2780 00b2 0269     		ldr	r2, [r0, #16]
+ 2781 00b4 002A     		cmp	r2, #0
+ 2782 00b6 ACD1     		bne	.L310
+ 2783 00b8 826A     		ldr	r2, [r0, #40]
+ 2784 00ba 0368     		ldr	r3, [r0]
+ 2785 00bc 5B68     		ldr	r3, [r3, #4]
+ 2786 00be C3F30803 		ubfx	r3, r3, #0, #9
+ 2787 00c2 1380     		strh	r3, [r2]	@ movhi
+ 2788 00c4 836A     		ldr	r3, [r0, #40]
+ 2789 00c6 0233     		adds	r3, r3, #2
+ 2790 00c8 8362     		str	r3, [r0, #40]
+ 2791 00ca B1E7     		b	.L311
+ 2792              	.L313:
+ 2793 00cc 0368     		ldr	r3, [r0]
+ 2794 00ce 5B68     		ldr	r3, [r3, #4]
+ 2795 00d0 03F07F03 		and	r3, r3, #127
+ 2796 00d4 1370     		strb	r3, [r2]
+ 2797 00d6 A8E7     		b	.L314
+ 2798              	.L315:
+ 2799 00d8 FFF7FEFF 		bl	HAL_UART_RxCpltCallback
+ 2800 00dc E5E7     		b	.L318
+ 2801              	.L319:
+ 2802 00de 0220     		movs	r0, #2
+ 2803 00e0 7047     		bx	lr
+ 2804              	.L320:
+ 2805 00e2 0020     		movs	r0, #0
+ 2806 00e4 7047     		bx	lr
+ 2808              		.section	.text.HAL_UART_IRQHandler,"ax",%progbits
+ 2809              		.align	1
+ 2810              		.global	HAL_UART_IRQHandler
+ 2811              		.syntax unified
+ 2812              		.thumb
+ 2813              		.thumb_func
+ 2815              	HAL_UART_IRQHandler:
+ 2816              		@ args = 0, pretend = 0, frame = 8
+ 2817              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2818 0000 10B5     		push	{r4, lr}
+ 2819 0002 82B0     		sub	sp, sp, #8
+ 2820 0004 0446     		mov	r4, r0
+ 2821 0006 0268     		ldr	r2, [r0]
+ 2822 0008 1368     		ldr	r3, [r2]
+ 2823 000a D068     		ldr	r0, [r2, #12]
+ 2824 000c 5169     		ldr	r1, [r2, #20]
+ 2825 000e 13F00F0F 		tst	r3, #15
+ 2826 0012 09D1     		bne	.L327
+ 2827 0014 13F0200F 		tst	r3, #32
+ 2828 0018 0CD0     		beq	.L328
+ 2829 001a 10F0200F 		tst	r0, #32
+ARM GAS  /tmp/cc4BdNm7.s 			page 49
+
+
+ 2830 001e 09D0     		beq	.L328
+ 2831 0020 2046     		mov	r0, r4
+ 2832 0022 FFF7FEFF 		bl	UART_Receive_IT
+ 2833 0026 16E0     		b	.L326
+ 2834              	.L327:
+ 2835 0028 11F00101 		ands	r1, r1, #1
+ 2836 002c 15D1     		bne	.L330
+ 2837 002e 10F4907F 		tst	r0, #288
+ 2838 0032 12D1     		bne	.L330
+ 2839              	.L328:
+ 2840 0034 216B     		ldr	r1, [r4, #48]
+ 2841 0036 0129     		cmp	r1, #1
+ 2842 0038 79D0     		beq	.L358
+ 2843              	.L343:
+ 2844 003a 13F0800F 		tst	r3, #128
+ 2845 003e 03D0     		beq	.L356
+ 2846 0040 10F0800F 		tst	r0, #128
+ 2847 0044 40F02181 		bne	.L359
+ 2848              	.L356:
+ 2849 0048 13F0400F 		tst	r3, #64
+ 2850 004c 03D0     		beq	.L326
+ 2851 004e 10F0400F 		tst	r0, #64
+ 2852 0052 40F01E81 		bne	.L360
+ 2853              	.L326:
+ 2854 0056 02B0     		add	sp, sp, #8
+ 2855              		@ sp needed
+ 2856 0058 10BD     		pop	{r4, pc}
+ 2857              	.L330:
+ 2858 005a 13F0010F 		tst	r3, #1
+ 2859 005e 06D0     		beq	.L331
+ 2860 0060 10F4807F 		tst	r0, #256
+ 2861 0064 03D0     		beq	.L331
+ 2862 0066 626C     		ldr	r2, [r4, #68]
+ 2863 0068 42F00102 		orr	r2, r2, #1
+ 2864 006c 6264     		str	r2, [r4, #68]
+ 2865              	.L331:
+ 2866 006e 13F0040F 		tst	r3, #4
+ 2867 0072 04D0     		beq	.L332
+ 2868 0074 19B1     		cbz	r1, .L332
+ 2869 0076 626C     		ldr	r2, [r4, #68]
+ 2870 0078 42F00202 		orr	r2, r2, #2
+ 2871 007c 6264     		str	r2, [r4, #68]
+ 2872              	.L332:
+ 2873 007e 13F0020F 		tst	r3, #2
+ 2874 0082 04D0     		beq	.L333
+ 2875 0084 19B1     		cbz	r1, .L333
+ 2876 0086 626C     		ldr	r2, [r4, #68]
+ 2877 0088 42F00402 		orr	r2, r2, #4
+ 2878 008c 6264     		str	r2, [r4, #68]
+ 2879              	.L333:
+ 2880 008e 13F0080F 		tst	r3, #8
+ 2881 0092 07D0     		beq	.L334
+ 2882 0094 10F0200F 		tst	r0, #32
+ 2883 0098 00D1     		bne	.L335
+ 2884 009a 19B1     		cbz	r1, .L334
+ 2885              	.L335:
+ 2886 009c 626C     		ldr	r2, [r4, #68]
+ARM GAS  /tmp/cc4BdNm7.s 			page 50
+
+
+ 2887 009e 42F00802 		orr	r2, r2, #8
+ 2888 00a2 6264     		str	r2, [r4, #68]
+ 2889              	.L334:
+ 2890 00a4 626C     		ldr	r2, [r4, #68]
+ 2891 00a6 002A     		cmp	r2, #0
+ 2892 00a8 D5D0     		beq	.L326
+ 2893 00aa 13F0200F 		tst	r3, #32
+ 2894 00ae 02D0     		beq	.L337
+ 2895 00b0 10F0200F 		tst	r0, #32
+ 2896 00b4 29D1     		bne	.L361
+ 2897              	.L337:
+ 2898 00b6 2368     		ldr	r3, [r4]
+ 2899 00b8 5B69     		ldr	r3, [r3, #20]
+ 2900 00ba 03F04003 		and	r3, r3, #64
+ 2901 00be 626C     		ldr	r2, [r4, #68]
+ 2902 00c0 12F0080F 		tst	r2, #8
+ 2903 00c4 00D1     		bne	.L338
+ 2904 00c6 63B3     		cbz	r3, .L339
+ 2905              	.L338:
+ 2906 00c8 2046     		mov	r0, r4
+ 2907 00ca FFF7FEFF 		bl	UART_EndRxTransfer
+ 2908 00ce 2368     		ldr	r3, [r4]
+ 2909 00d0 5B69     		ldr	r3, [r3, #20]
+ 2910 00d2 13F0400F 		tst	r3, #64
+ 2911 00d6 20D0     		beq	.L340
+ 2912              	.L341:
+ 2913 00d8 2268     		ldr	r2, [r4]
+ 2914 00da 02F11403 		add	r3, r2, #20
+ 2915              		.syntax unified
+ 2916              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2917 00de 53E8003F 		ldrex r3, [r3]
+ 2918              	@ 0 "" 2
+ 2919              		.thumb
+ 2920              		.syntax unified
+ 2921 00e2 23F04003 		bic	r3, r3, #64
+ 2922 00e6 1432     		adds	r2, r2, #20
+ 2923              		.syntax unified
+ 2924              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2925 00e8 42E80031 		strex r1, r3, [r2]
+ 2926              	@ 0 "" 2
+ 2927              		.thumb
+ 2928              		.syntax unified
+ 2929 00ec 0029     		cmp	r1, #0
+ 2930 00ee F3D1     		bne	.L341
+ 2931 00f0 E36B     		ldr	r3, [r4, #60]
+ 2932 00f2 73B1     		cbz	r3, .L342
+ 2933 00f4 694A     		ldr	r2, .L362
+ 2934 00f6 1A65     		str	r2, [r3, #80]
+ 2935 00f8 E06B     		ldr	r0, [r4, #60]
+ 2936 00fa FFF7FEFF 		bl	HAL_DMA_Abort_IT
+ 2937 00fe 0028     		cmp	r0, #0
+ 2938 0100 A9D0     		beq	.L326
+ 2939 0102 E06B     		ldr	r0, [r4, #60]
+ 2940 0104 036D     		ldr	r3, [r0, #80]
+ 2941 0106 9847     		blx	r3
+ 2942 0108 A5E7     		b	.L326
+ 2943              	.L361:
+ARM GAS  /tmp/cc4BdNm7.s 			page 51
+
+
+ 2944 010a 2046     		mov	r0, r4
+ 2945 010c FFF7FEFF 		bl	UART_Receive_IT
+ 2946 0110 D1E7     		b	.L337
+ 2947              	.L342:
+ 2948 0112 2046     		mov	r0, r4
+ 2949 0114 FFF7FEFF 		bl	HAL_UART_ErrorCallback
+ 2950 0118 9DE7     		b	.L326
+ 2951              	.L340:
+ 2952 011a 2046     		mov	r0, r4
+ 2953 011c FFF7FEFF 		bl	HAL_UART_ErrorCallback
+ 2954 0120 99E7     		b	.L326
+ 2955              	.L339:
+ 2956 0122 2046     		mov	r0, r4
+ 2957 0124 FFF7FEFF 		bl	HAL_UART_ErrorCallback
+ 2958 0128 0023     		movs	r3, #0
+ 2959 012a 6364     		str	r3, [r4, #68]
+ 2960 012c 93E7     		b	.L326
+ 2961              	.L358:
+ 2962 012e 13F0100F 		tst	r3, #16
+ 2963 0132 82D0     		beq	.L343
+ 2964 0134 10F0100F 		tst	r0, #16
+ 2965 0138 3FF47FAF 		beq	.L343
+ 2966 013c 0023     		movs	r3, #0
+ 2967 013e 0193     		str	r3, [sp, #4]
+ 2968 0140 1368     		ldr	r3, [r2]
+ 2969 0142 0193     		str	r3, [sp, #4]
+ 2970 0144 5368     		ldr	r3, [r2, #4]
+ 2971 0146 0193     		str	r3, [sp, #4]
+ 2972 0148 019B     		ldr	r3, [sp, #4]
+ 2973 014a 5369     		ldr	r3, [r2, #20]
+ 2974 014c 13F0400F 		tst	r3, #64
+ 2975 0150 5FD0     		beq	.L344
+ 2976 0152 E26B     		ldr	r2, [r4, #60]
+ 2977 0154 1368     		ldr	r3, [r2]
+ 2978 0156 5B68     		ldr	r3, [r3, #4]
+ 2979 0158 9BB2     		uxth	r3, r3
+ 2980 015a 002B     		cmp	r3, #0
+ 2981 015c 4AD0     		beq	.L345
+ 2982 015e A18D     		ldrh	r1, [r4, #44]
+ 2983 0160 9942     		cmp	r1, r3
+ 2984 0162 47D9     		bls	.L345
+ 2985 0164 E385     		strh	r3, [r4, #46]	@ movhi
+ 2986 0166 D369     		ldr	r3, [r2, #28]
+ 2987 0168 B3F5807F 		cmp	r3, #256
+ 2988 016c 37D0     		beq	.L346
+ 2989              	.L347:
+ 2990 016e 2268     		ldr	r2, [r4]
+ 2991 0170 02F10C03 		add	r3, r2, #12
+ 2992              		.syntax unified
+ 2993              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 2994 0174 53E8003F 		ldrex r3, [r3]
+ 2995              	@ 0 "" 2
+ 2996              		.thumb
+ 2997              		.syntax unified
+ 2998 0178 23F48073 		bic	r3, r3, #256
+ 2999 017c 0C32     		adds	r2, r2, #12
+ 3000              		.syntax unified
+ARM GAS  /tmp/cc4BdNm7.s 			page 52
+
+
+ 3001              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3002 017e 42E80031 		strex r1, r3, [r2]
+ 3003              	@ 0 "" 2
+ 3004              		.thumb
+ 3005              		.syntax unified
+ 3006 0182 0029     		cmp	r1, #0
+ 3007 0184 F3D1     		bne	.L347
+ 3008              	.L348:
+ 3009 0186 2268     		ldr	r2, [r4]
+ 3010 0188 02F11403 		add	r3, r2, #20
+ 3011              		.syntax unified
+ 3012              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3013 018c 53E8003F 		ldrex r3, [r3]
+ 3014              	@ 0 "" 2
+ 3015              		.thumb
+ 3016              		.syntax unified
+ 3017 0190 23F00103 		bic	r3, r3, #1
+ 3018 0194 1432     		adds	r2, r2, #20
+ 3019              		.syntax unified
+ 3020              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3021 0196 42E80031 		strex r1, r3, [r2]
+ 3022              	@ 0 "" 2
+ 3023              		.thumb
+ 3024              		.syntax unified
+ 3025 019a 0029     		cmp	r1, #0
+ 3026 019c F3D1     		bne	.L348
+ 3027              	.L349:
+ 3028 019e 2268     		ldr	r2, [r4]
+ 3029 01a0 02F11403 		add	r3, r2, #20
+ 3030              		.syntax unified
+ 3031              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3032 01a4 53E8003F 		ldrex r3, [r3]
+ 3033              	@ 0 "" 2
+ 3034              		.thumb
+ 3035              		.syntax unified
+ 3036 01a8 23F04003 		bic	r3, r3, #64
+ 3037 01ac 1432     		adds	r2, r2, #20
+ 3038              		.syntax unified
+ 3039              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3040 01ae 42E80031 		strex r1, r3, [r2]
+ 3041              	@ 0 "" 2
+ 3042              		.thumb
+ 3043              		.syntax unified
+ 3044 01b2 0029     		cmp	r1, #0
+ 3045 01b4 F3D1     		bne	.L349
+ 3046 01b6 2023     		movs	r3, #32
+ 3047 01b8 84F84230 		strb	r3, [r4, #66]
+ 3048 01bc 0023     		movs	r3, #0
+ 3049 01be 2363     		str	r3, [r4, #48]
+ 3050              	.L350:
+ 3051 01c0 2268     		ldr	r2, [r4]
+ 3052 01c2 02F10C03 		add	r3, r2, #12
+ 3053              		.syntax unified
+ 3054              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3055 01c6 53E8003F 		ldrex r3, [r3]
+ 3056              	@ 0 "" 2
+ 3057              		.thumb
+ARM GAS  /tmp/cc4BdNm7.s 			page 53
+
+
+ 3058              		.syntax unified
+ 3059 01ca 23F01003 		bic	r3, r3, #16
+ 3060 01ce 0C32     		adds	r2, r2, #12
+ 3061              		.syntax unified
+ 3062              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3063 01d0 42E80031 		strex r1, r3, [r2]
+ 3064              	@ 0 "" 2
+ 3065              		.thumb
+ 3066              		.syntax unified
+ 3067 01d4 0029     		cmp	r1, #0
+ 3068 01d6 F3D1     		bne	.L350
+ 3069 01d8 E06B     		ldr	r0, [r4, #60]
+ 3070 01da FFF7FEFF 		bl	HAL_DMA_Abort
+ 3071              	.L346:
+ 3072 01de 0223     		movs	r3, #2
+ 3073 01e0 6363     		str	r3, [r4, #52]
+ 3074 01e2 A18D     		ldrh	r1, [r4, #44]
+ 3075 01e4 E38D     		ldrh	r3, [r4, #46]
+ 3076 01e6 9BB2     		uxth	r3, r3
+ 3077 01e8 C91A     		subs	r1, r1, r3
+ 3078 01ea 89B2     		uxth	r1, r1
+ 3079 01ec 2046     		mov	r0, r4
+ 3080 01ee FFF7FEFF 		bl	HAL_UARTEx_RxEventCallback
+ 3081 01f2 30E7     		b	.L326
+ 3082              	.L345:
+ 3083 01f4 A18D     		ldrh	r1, [r4, #44]
+ 3084 01f6 9942     		cmp	r1, r3
+ 3085 01f8 7FF42DAF 		bne	.L326
+ 3086 01fc D369     		ldr	r3, [r2, #28]
+ 3087 01fe B3F5807F 		cmp	r3, #256
+ 3088 0202 7FF428AF 		bne	.L326
+ 3089 0206 0223     		movs	r3, #2
+ 3090 0208 6363     		str	r3, [r4, #52]
+ 3091 020a 2046     		mov	r0, r4
+ 3092 020c FFF7FEFF 		bl	HAL_UARTEx_RxEventCallback
+ 3093 0210 21E7     		b	.L326
+ 3094              	.L344:
+ 3095 0212 A18D     		ldrh	r1, [r4, #44]
+ 3096 0214 E38D     		ldrh	r3, [r4, #46]
+ 3097 0216 9BB2     		uxth	r3, r3
+ 3098 0218 C91A     		subs	r1, r1, r3
+ 3099 021a 89B2     		uxth	r1, r1
+ 3100 021c E38D     		ldrh	r3, [r4, #46]
+ 3101 021e 9BB2     		uxth	r3, r3
+ 3102 0220 002B     		cmp	r3, #0
+ 3103 0222 3FF418AF 		beq	.L326
+ 3104 0226 0029     		cmp	r1, #0
+ 3105 0228 3FF415AF 		beq	.L326
+ 3106              	.L353:
+ 3107 022c 2268     		ldr	r2, [r4]
+ 3108 022e 02F10C03 		add	r3, r2, #12
+ 3109              		.syntax unified
+ 3110              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3111 0232 53E8003F 		ldrex r3, [r3]
+ 3112              	@ 0 "" 2
+ 3113              		.thumb
+ 3114              		.syntax unified
+ARM GAS  /tmp/cc4BdNm7.s 			page 54
+
+
+ 3115 0236 23F49073 		bic	r3, r3, #288
+ 3116 023a 0C32     		adds	r2, r2, #12
+ 3117              		.syntax unified
+ 3118              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3119 023c 42E80030 		strex r0, r3, [r2]
+ 3120              	@ 0 "" 2
+ 3121              		.thumb
+ 3122              		.syntax unified
+ 3123 0240 0028     		cmp	r0, #0
+ 3124 0242 F3D1     		bne	.L353
+ 3125              	.L354:
+ 3126 0244 2268     		ldr	r2, [r4]
+ 3127 0246 02F11403 		add	r3, r2, #20
+ 3128              		.syntax unified
+ 3129              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3130 024a 53E8003F 		ldrex r3, [r3]
+ 3131              	@ 0 "" 2
+ 3132              		.thumb
+ 3133              		.syntax unified
+ 3134 024e 23F00103 		bic	r3, r3, #1
+ 3135 0252 1432     		adds	r2, r2, #20
+ 3136              		.syntax unified
+ 3137              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3138 0254 42E80030 		strex r0, r3, [r2]
+ 3139              	@ 0 "" 2
+ 3140              		.thumb
+ 3141              		.syntax unified
+ 3142 0258 0028     		cmp	r0, #0
+ 3143 025a F3D1     		bne	.L354
+ 3144 025c 2023     		movs	r3, #32
+ 3145 025e 84F84230 		strb	r3, [r4, #66]
+ 3146 0262 0023     		movs	r3, #0
+ 3147 0264 2363     		str	r3, [r4, #48]
+ 3148              	.L355:
+ 3149 0266 2268     		ldr	r2, [r4]
+ 3150 0268 02F10C03 		add	r3, r2, #12
+ 3151              		.syntax unified
+ 3152              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3153 026c 53E8003F 		ldrex r3, [r3]
+ 3154              	@ 0 "" 2
+ 3155              		.thumb
+ 3156              		.syntax unified
+ 3157 0270 23F01003 		bic	r3, r3, #16
+ 3158 0274 0C32     		adds	r2, r2, #12
+ 3159              		.syntax unified
+ 3160              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3161 0276 42E80030 		strex r0, r3, [r2]
+ 3162              	@ 0 "" 2
+ 3163              		.thumb
+ 3164              		.syntax unified
+ 3165 027a 0028     		cmp	r0, #0
+ 3166 027c F3D1     		bne	.L355
+ 3167 027e 0223     		movs	r3, #2
+ 3168 0280 6363     		str	r3, [r4, #52]
+ 3169 0282 2046     		mov	r0, r4
+ 3170 0284 FFF7FEFF 		bl	HAL_UARTEx_RxEventCallback
+ 3171 0288 E5E6     		b	.L326
+ARM GAS  /tmp/cc4BdNm7.s 			page 55
+
+
+ 3172              	.L359:
+ 3173 028a 2046     		mov	r0, r4
+ 3174 028c FFF7FEFF 		bl	UART_Transmit_IT
+ 3175 0290 E1E6     		b	.L326
+ 3176              	.L360:
+ 3177 0292 2046     		mov	r0, r4
+ 3178 0294 FFF7FEFF 		bl	UART_EndTransmit_IT
+ 3179 0298 DDE6     		b	.L326
+ 3180              	.L363:
+ 3181 029a 00BF     		.align	2
+ 3182              	.L362:
+ 3183 029c 00000000 		.word	UART_DMAAbortOnError
+ 3185              		.section	.text.UART_DMARxHalfCplt,"ax",%progbits
+ 3186              		.align	1
+ 3187              		.syntax unified
+ 3188              		.thumb
+ 3189              		.thumb_func
+ 3191              	UART_DMARxHalfCplt:
+ 3192              		@ args = 0, pretend = 0, frame = 0
+ 3193              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3194 0000 08B5     		push	{r3, lr}
+ 3195 0002 806B     		ldr	r0, [r0, #56]
+ 3196 0004 0123     		movs	r3, #1
+ 3197 0006 4363     		str	r3, [r0, #52]
+ 3198 0008 036B     		ldr	r3, [r0, #48]
+ 3199 000a 012B     		cmp	r3, #1
+ 3200 000c 02D0     		beq	.L368
+ 3201 000e FFF7FEFF 		bl	HAL_UART_RxHalfCpltCallback
+ 3202              	.L364:
+ 3203 0012 08BD     		pop	{r3, pc}
+ 3204              	.L368:
+ 3205 0014 818D     		ldrh	r1, [r0, #44]
+ 3206 0016 4908     		lsrs	r1, r1, #1
+ 3207 0018 FFF7FEFF 		bl	HAL_UARTEx_RxEventCallback
+ 3208 001c F9E7     		b	.L364
+ 3210              		.section	.text.UART_DMAReceiveCplt,"ax",%progbits
+ 3211              		.align	1
+ 3212              		.syntax unified
+ 3213              		.thumb
+ 3214              		.thumb_func
+ 3216              	UART_DMAReceiveCplt:
+ 3217              		@ args = 0, pretend = 0, frame = 0
+ 3218              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3219 0000 08B5     		push	{r3, lr}
+ 3220 0002 0346     		mov	r3, r0
+ 3221 0004 806B     		ldr	r0, [r0, #56]
+ 3222 0006 1B68     		ldr	r3, [r3]
+ 3223 0008 1B68     		ldr	r3, [r3]
+ 3224 000a 13F4807F 		tst	r3, #256
+ 3225 000e 2BD1     		bne	.L370
+ 3226 0010 0023     		movs	r3, #0
+ 3227 0012 C385     		strh	r3, [r0, #46]	@ movhi
+ 3228              	.L371:
+ 3229 0014 0268     		ldr	r2, [r0]
+ 3230 0016 02F10C03 		add	r3, r2, #12
+ 3231              		.syntax unified
+ 3232              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ARM GAS  /tmp/cc4BdNm7.s 			page 56
+
+
+ 3233 001a 53E8003F 		ldrex r3, [r3]
+ 3234              	@ 0 "" 2
+ 3235              		.thumb
+ 3236              		.syntax unified
+ 3237 001e 23F48073 		bic	r3, r3, #256
+ 3238 0022 0C32     		adds	r2, r2, #12
+ 3239              		.syntax unified
+ 3240              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3241 0024 42E80031 		strex r1, r3, [r2]
+ 3242              	@ 0 "" 2
+ 3243              		.thumb
+ 3244              		.syntax unified
+ 3245 0028 0029     		cmp	r1, #0
+ 3246 002a F3D1     		bne	.L371
+ 3247              	.L372:
+ 3248 002c 0268     		ldr	r2, [r0]
+ 3249 002e 02F11403 		add	r3, r2, #20
+ 3250              		.syntax unified
+ 3251              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3252 0032 53E8003F 		ldrex r3, [r3]
+ 3253              	@ 0 "" 2
+ 3254              		.thumb
+ 3255              		.syntax unified
+ 3256 0036 23F00103 		bic	r3, r3, #1
+ 3257 003a 1432     		adds	r2, r2, #20
+ 3258              		.syntax unified
+ 3259              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3260 003c 42E80031 		strex r1, r3, [r2]
+ 3261              	@ 0 "" 2
+ 3262              		.thumb
+ 3263              		.syntax unified
+ 3264 0040 0029     		cmp	r1, #0
+ 3265 0042 F3D1     		bne	.L372
+ 3266              	.L373:
+ 3267 0044 0268     		ldr	r2, [r0]
+ 3268 0046 02F11403 		add	r3, r2, #20
+ 3269              		.syntax unified
+ 3270              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3271 004a 53E8003F 		ldrex r3, [r3]
+ 3272              	@ 0 "" 2
+ 3273              		.thumb
+ 3274              		.syntax unified
+ 3275 004e 23F04003 		bic	r3, r3, #64
+ 3276 0052 1432     		adds	r2, r2, #20
+ 3277              		.syntax unified
+ 3278              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3279 0054 42E80031 		strex r1, r3, [r2]
+ 3280              	@ 0 "" 2
+ 3281              		.thumb
+ 3282              		.syntax unified
+ 3283 0058 0029     		cmp	r1, #0
+ 3284 005a F3D1     		bne	.L373
+ 3285 005c 2023     		movs	r3, #32
+ 3286 005e 80F84230 		strb	r3, [r0, #66]
+ 3287 0062 036B     		ldr	r3, [r0, #48]
+ 3288 0064 012B     		cmp	r3, #1
+ 3289 0066 07D0     		beq	.L374
+ARM GAS  /tmp/cc4BdNm7.s 			page 57
+
+
+ 3290              	.L370:
+ 3291 0068 0023     		movs	r3, #0
+ 3292 006a 4363     		str	r3, [r0, #52]
+ 3293 006c 036B     		ldr	r3, [r0, #48]
+ 3294 006e 012B     		cmp	r3, #1
+ 3295 0070 0FD0     		beq	.L378
+ 3296 0072 FFF7FEFF 		bl	HAL_UART_RxCpltCallback
+ 3297              	.L369:
+ 3298 0076 08BD     		pop	{r3, pc}
+ 3299              	.L374:
+ 3300 0078 0268     		ldr	r2, [r0]
+ 3301 007a 02F10C03 		add	r3, r2, #12
+ 3302              		.syntax unified
+ 3303              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3304 007e 53E8003F 		ldrex r3, [r3]
+ 3305              	@ 0 "" 2
+ 3306              		.thumb
+ 3307              		.syntax unified
+ 3308 0082 23F01003 		bic	r3, r3, #16
+ 3309 0086 0C32     		adds	r2, r2, #12
+ 3310              		.syntax unified
+ 3311              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3312 0088 42E80031 		strex r1, r3, [r2]
+ 3313              	@ 0 "" 2
+ 3314              		.thumb
+ 3315              		.syntax unified
+ 3316 008c 0029     		cmp	r1, #0
+ 3317 008e F3D1     		bne	.L374
+ 3318 0090 EAE7     		b	.L370
+ 3319              	.L378:
+ 3320 0092 818D     		ldrh	r1, [r0, #44]
+ 3321 0094 FFF7FEFF 		bl	HAL_UARTEx_RxEventCallback
+ 3322 0098 EDE7     		b	.L369
+ 3324              		.section	.text.HAL_LIN_SendBreak,"ax",%progbits
+ 3325              		.align	1
+ 3326              		.global	HAL_LIN_SendBreak
+ 3327              		.syntax unified
+ 3328              		.thumb
+ 3329              		.thumb_func
+ 3331              	HAL_LIN_SendBreak:
+ 3332              		@ args = 0, pretend = 0, frame = 0
+ 3333              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3334              		@ link register save eliminated.
+ 3335 0000 90F84030 		ldrb	r3, [r0, #64]	@ zero_extendqisi2
+ 3336 0004 012B     		cmp	r3, #1
+ 3337 0006 19D0     		beq	.L382
+ 3338 0008 0123     		movs	r3, #1
+ 3339 000a 80F84030 		strb	r3, [r0, #64]
+ 3340 000e 2423     		movs	r3, #36
+ 3341 0010 80F84130 		strb	r3, [r0, #65]
+ 3342              	.L381:
+ 3343 0014 0268     		ldr	r2, [r0]
+ 3344 0016 02F10C03 		add	r3, r2, #12
+ 3345              		.syntax unified
+ 3346              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3347 001a 53E8003F 		ldrex r3, [r3]
+ 3348              	@ 0 "" 2
+ARM GAS  /tmp/cc4BdNm7.s 			page 58
+
+
+ 3349              		.thumb
+ 3350              		.syntax unified
+ 3351 001e 43F00103 		orr	r3, r3, #1
+ 3352 0022 0C32     		adds	r2, r2, #12
+ 3353              		.syntax unified
+ 3354              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3355 0024 42E80031 		strex r1, r3, [r2]
+ 3356              	@ 0 "" 2
+ 3357              		.thumb
+ 3358              		.syntax unified
+ 3359 0028 0029     		cmp	r1, #0
+ 3360 002a F3D1     		bne	.L381
+ 3361 002c 2023     		movs	r3, #32
+ 3362 002e 80F84130 		strb	r3, [r0, #65]
+ 3363 0032 0023     		movs	r3, #0
+ 3364 0034 80F84030 		strb	r3, [r0, #64]
+ 3365 0038 1846     		mov	r0, r3
+ 3366 003a 7047     		bx	lr
+ 3367              	.L382:
+ 3368 003c 0220     		movs	r0, #2
+ 3369 003e 7047     		bx	lr
+ 3371              		.section	.text.HAL_MultiProcessor_EnterMuteMode,"ax",%progbits
+ 3372              		.align	1
+ 3373              		.global	HAL_MultiProcessor_EnterMuteMode
+ 3374              		.syntax unified
+ 3375              		.thumb
+ 3376              		.thumb_func
+ 3378              	HAL_MultiProcessor_EnterMuteMode:
+ 3379              		@ args = 0, pretend = 0, frame = 0
+ 3380              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3381              		@ link register save eliminated.
+ 3382 0000 90F84030 		ldrb	r3, [r0, #64]	@ zero_extendqisi2
+ 3383 0004 012B     		cmp	r3, #1
+ 3384 0006 1AD0     		beq	.L386
+ 3385 0008 0123     		movs	r3, #1
+ 3386 000a 80F84030 		strb	r3, [r0, #64]
+ 3387 000e 2423     		movs	r3, #36
+ 3388 0010 80F84130 		strb	r3, [r0, #65]
+ 3389              	.L385:
+ 3390 0014 0268     		ldr	r2, [r0]
+ 3391 0016 02F10C03 		add	r3, r2, #12
+ 3392              		.syntax unified
+ 3393              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3394 001a 53E8003F 		ldrex r3, [r3]
+ 3395              	@ 0 "" 2
+ 3396              		.thumb
+ 3397              		.syntax unified
+ 3398 001e 43F00203 		orr	r3, r3, #2
+ 3399 0022 0C32     		adds	r2, r2, #12
+ 3400              		.syntax unified
+ 3401              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3402 0024 42E80031 		strex r1, r3, [r2]
+ 3403              	@ 0 "" 2
+ 3404              		.thumb
+ 3405              		.syntax unified
+ 3406 0028 0029     		cmp	r1, #0
+ 3407 002a F3D1     		bne	.L385
+ARM GAS  /tmp/cc4BdNm7.s 			page 59
+
+
+ 3408 002c 2023     		movs	r3, #32
+ 3409 002e 80F84130 		strb	r3, [r0, #65]
+ 3410 0032 0023     		movs	r3, #0
+ 3411 0034 4363     		str	r3, [r0, #52]
+ 3412 0036 80F84030 		strb	r3, [r0, #64]
+ 3413 003a 1846     		mov	r0, r3
+ 3414 003c 7047     		bx	lr
+ 3415              	.L386:
+ 3416 003e 0220     		movs	r0, #2
+ 3417 0040 7047     		bx	lr
+ 3419              		.section	.text.HAL_MultiProcessor_ExitMuteMode,"ax",%progbits
+ 3420              		.align	1
+ 3421              		.global	HAL_MultiProcessor_ExitMuteMode
+ 3422              		.syntax unified
+ 3423              		.thumb
+ 3424              		.thumb_func
+ 3426              	HAL_MultiProcessor_ExitMuteMode:
+ 3427              		@ args = 0, pretend = 0, frame = 0
+ 3428              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3429              		@ link register save eliminated.
+ 3430 0000 90F84030 		ldrb	r3, [r0, #64]	@ zero_extendqisi2
+ 3431 0004 012B     		cmp	r3, #1
+ 3432 0006 1AD0     		beq	.L390
+ 3433 0008 0123     		movs	r3, #1
+ 3434 000a 80F84030 		strb	r3, [r0, #64]
+ 3435 000e 2423     		movs	r3, #36
+ 3436 0010 80F84130 		strb	r3, [r0, #65]
+ 3437              	.L389:
+ 3438 0014 0268     		ldr	r2, [r0]
+ 3439 0016 02F10C03 		add	r3, r2, #12
+ 3440              		.syntax unified
+ 3441              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3442 001a 53E8003F 		ldrex r3, [r3]
+ 3443              	@ 0 "" 2
+ 3444              		.thumb
+ 3445              		.syntax unified
+ 3446 001e 23F00203 		bic	r3, r3, #2
+ 3447 0022 0C32     		adds	r2, r2, #12
+ 3448              		.syntax unified
+ 3449              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3450 0024 42E80031 		strex r1, r3, [r2]
+ 3451              	@ 0 "" 2
+ 3452              		.thumb
+ 3453              		.syntax unified
+ 3454 0028 0029     		cmp	r1, #0
+ 3455 002a F3D1     		bne	.L389
+ 3456 002c 2023     		movs	r3, #32
+ 3457 002e 80F84130 		strb	r3, [r0, #65]
+ 3458 0032 0023     		movs	r3, #0
+ 3459 0034 4363     		str	r3, [r0, #52]
+ 3460 0036 80F84030 		strb	r3, [r0, #64]
+ 3461 003a 1846     		mov	r0, r3
+ 3462 003c 7047     		bx	lr
+ 3463              	.L390:
+ 3464 003e 0220     		movs	r0, #2
+ 3465 0040 7047     		bx	lr
+ 3467              		.section	.text.HAL_HalfDuplex_EnableTransmitter,"ax",%progbits
+ARM GAS  /tmp/cc4BdNm7.s 			page 60
+
+
+ 3468              		.align	1
+ 3469              		.global	HAL_HalfDuplex_EnableTransmitter
+ 3470              		.syntax unified
+ 3471              		.thumb
+ 3472              		.thumb_func
+ 3474              	HAL_HalfDuplex_EnableTransmitter:
+ 3475              		@ args = 0, pretend = 0, frame = 0
+ 3476              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3477              		@ link register save eliminated.
+ 3478 0000 90F84030 		ldrb	r3, [r0, #64]	@ zero_extendqisi2
+ 3479 0004 012B     		cmp	r3, #1
+ 3480 0006 14D0     		beq	.L393
+ 3481 0008 0123     		movs	r3, #1
+ 3482 000a 80F84030 		strb	r3, [r0, #64]
+ 3483 000e 2423     		movs	r3, #36
+ 3484 0010 80F84130 		strb	r3, [r0, #65]
+ 3485 0014 0268     		ldr	r2, [r0]
+ 3486 0016 D368     		ldr	r3, [r2, #12]
+ 3487 0018 23F00C03 		bic	r3, r3, #12
+ 3488 001c 43F00803 		orr	r3, r3, #8
+ 3489 0020 D360     		str	r3, [r2, #12]
+ 3490 0022 2023     		movs	r3, #32
+ 3491 0024 80F84130 		strb	r3, [r0, #65]
+ 3492 0028 0023     		movs	r3, #0
+ 3493 002a 80F84030 		strb	r3, [r0, #64]
+ 3494 002e 1846     		mov	r0, r3
+ 3495 0030 7047     		bx	lr
+ 3496              	.L393:
+ 3497 0032 0220     		movs	r0, #2
+ 3498 0034 7047     		bx	lr
+ 3500              		.section	.text.HAL_HalfDuplex_EnableReceiver,"ax",%progbits
+ 3501              		.align	1
+ 3502              		.global	HAL_HalfDuplex_EnableReceiver
+ 3503              		.syntax unified
+ 3504              		.thumb
+ 3505              		.thumb_func
+ 3507              	HAL_HalfDuplex_EnableReceiver:
+ 3508              		@ args = 0, pretend = 0, frame = 0
+ 3509              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3510              		@ link register save eliminated.
+ 3511 0000 90F84030 		ldrb	r3, [r0, #64]	@ zero_extendqisi2
+ 3512 0004 012B     		cmp	r3, #1
+ 3513 0006 14D0     		beq	.L396
+ 3514 0008 0123     		movs	r3, #1
+ 3515 000a 80F84030 		strb	r3, [r0, #64]
+ 3516 000e 2423     		movs	r3, #36
+ 3517 0010 80F84130 		strb	r3, [r0, #65]
+ 3518 0014 0268     		ldr	r2, [r0]
+ 3519 0016 D368     		ldr	r3, [r2, #12]
+ 3520 0018 23F00C03 		bic	r3, r3, #12
+ 3521 001c 43F00403 		orr	r3, r3, #4
+ 3522 0020 D360     		str	r3, [r2, #12]
+ 3523 0022 2023     		movs	r3, #32
+ 3524 0024 80F84130 		strb	r3, [r0, #65]
+ 3525 0028 0023     		movs	r3, #0
+ 3526 002a 80F84030 		strb	r3, [r0, #64]
+ 3527 002e 1846     		mov	r0, r3
+ARM GAS  /tmp/cc4BdNm7.s 			page 61
+
+
+ 3528 0030 7047     		bx	lr
+ 3529              	.L396:
+ 3530 0032 0220     		movs	r0, #2
+ 3531 0034 7047     		bx	lr
+ 3533              		.section	.text.HAL_UART_GetState,"ax",%progbits
+ 3534              		.align	1
+ 3535              		.global	HAL_UART_GetState
+ 3536              		.syntax unified
+ 3537              		.thumb
+ 3538              		.thumb_func
+ 3540              	HAL_UART_GetState:
+ 3541              		@ args = 0, pretend = 0, frame = 0
+ 3542              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3543              		@ link register save eliminated.
+ 3544 0000 90F84130 		ldrb	r3, [r0, #65]	@ zero_extendqisi2
+ 3545 0004 90F84200 		ldrb	r0, [r0, #66]	@ zero_extendqisi2
+ 3546 0008 1843     		orrs	r0, r0, r3
+ 3547 000a 7047     		bx	lr
+ 3549              		.section	.text.HAL_UART_GetError,"ax",%progbits
+ 3550              		.align	1
+ 3551              		.global	HAL_UART_GetError
+ 3552              		.syntax unified
+ 3553              		.thumb
+ 3554              		.thumb_func
+ 3556              	HAL_UART_GetError:
+ 3557              		@ args = 0, pretend = 0, frame = 0
+ 3558              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3559              		@ link register save eliminated.
+ 3560 0000 406C     		ldr	r0, [r0, #68]
+ 3561 0002 7047     		bx	lr
+ 3563              		.section	.text.UART_Start_Receive_IT,"ax",%progbits
+ 3564              		.align	1
+ 3565              		.global	UART_Start_Receive_IT
+ 3566              		.syntax unified
+ 3567              		.thumb
+ 3568              		.thumb_func
+ 3570              	UART_Start_Receive_IT:
+ 3571              		@ args = 0, pretend = 0, frame = 0
+ 3572              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3573              		@ link register save eliminated.
+ 3574 0000 8162     		str	r1, [r0, #40]
+ 3575 0002 8285     		strh	r2, [r0, #44]	@ movhi
+ 3576 0004 C285     		strh	r2, [r0, #46]	@ movhi
+ 3577 0006 0023     		movs	r3, #0
+ 3578 0008 4364     		str	r3, [r0, #68]
+ 3579 000a 2223     		movs	r3, #34
+ 3580 000c 80F84230 		strb	r3, [r0, #66]
+ 3581 0010 0369     		ldr	r3, [r0, #16]
+ 3582 0012 23B1     		cbz	r3, .L400
+ 3583 0014 0268     		ldr	r2, [r0]
+ 3584 0016 D368     		ldr	r3, [r2, #12]
+ 3585 0018 43F48073 		orr	r3, r3, #256
+ 3586 001c D360     		str	r3, [r2, #12]
+ 3587              	.L400:
+ 3588 001e 0268     		ldr	r2, [r0]
+ 3589 0020 5369     		ldr	r3, [r2, #20]
+ 3590 0022 43F00103 		orr	r3, r3, #1
+ARM GAS  /tmp/cc4BdNm7.s 			page 62
+
+
+ 3591 0026 5361     		str	r3, [r2, #20]
+ 3592 0028 0268     		ldr	r2, [r0]
+ 3593 002a D368     		ldr	r3, [r2, #12]
+ 3594 002c 43F02003 		orr	r3, r3, #32
+ 3595 0030 D360     		str	r3, [r2, #12]
+ 3596 0032 0020     		movs	r0, #0
+ 3597 0034 7047     		bx	lr
+ 3599              		.section	.text.HAL_UART_Receive_IT,"ax",%progbits
+ 3600              		.align	1
+ 3601              		.global	HAL_UART_Receive_IT
+ 3602              		.syntax unified
+ 3603              		.thumb
+ 3604              		.thumb_func
+ 3606              	HAL_UART_Receive_IT:
+ 3607              		@ args = 0, pretend = 0, frame = 0
+ 3608              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3609 0000 08B5     		push	{r3, lr}
+ 3610 0002 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 3611 0006 DBB2     		uxtb	r3, r3
+ 3612 0008 202B     		cmp	r3, #32
+ 3613 000a 08D1     		bne	.L403
+ 3614 000c 49B1     		cbz	r1, .L404
+ 3615 000e 0AB9     		cbnz	r2, .L407
+ 3616 0010 0120     		movs	r0, #1
+ 3617              	.L402:
+ 3618 0012 08BD     		pop	{r3, pc}
+ 3619              	.L407:
+ 3620 0014 0023     		movs	r3, #0
+ 3621 0016 0363     		str	r3, [r0, #48]
+ 3622 0018 FFF7FEFF 		bl	UART_Start_Receive_IT
+ 3623 001c F9E7     		b	.L402
+ 3624              	.L403:
+ 3625 001e 0220     		movs	r0, #2
+ 3626 0020 F7E7     		b	.L402
+ 3627              	.L404:
+ 3628 0022 0120     		movs	r0, #1
+ 3629 0024 F5E7     		b	.L402
+ 3631              		.section	.text.HAL_UARTEx_ReceiveToIdle_IT,"ax",%progbits
+ 3632              		.align	1
+ 3633              		.global	HAL_UARTEx_ReceiveToIdle_IT
+ 3634              		.syntax unified
+ 3635              		.thumb
+ 3636              		.thumb_func
+ 3638              	HAL_UARTEx_ReceiveToIdle_IT:
+ 3639              		@ args = 0, pretend = 0, frame = 8
+ 3640              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3641 0000 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 3642 0004 DBB2     		uxtb	r3, r3
+ 3643 0006 202B     		cmp	r3, #32
+ 3644 0008 29D1     		bne	.L412
+ 3645 000a 10B5     		push	{r4, lr}
+ 3646 000c 82B0     		sub	sp, sp, #8
+ 3647 000e 0446     		mov	r4, r0
+ 3648 0010 39B3     		cbz	r1, .L413
+ 3649 0012 12B9     		cbnz	r2, .L420
+ 3650 0014 0120     		movs	r0, #1
+ 3651              	.L409:
+ARM GAS  /tmp/cc4BdNm7.s 			page 63
+
+
+ 3652 0016 02B0     		add	sp, sp, #8
+ 3653              		@ sp needed
+ 3654 0018 10BD     		pop	{r4, pc}
+ 3655              	.L420:
+ 3656 001a 0123     		movs	r3, #1
+ 3657 001c 0363     		str	r3, [r0, #48]
+ 3658 001e 0023     		movs	r3, #0
+ 3659 0020 4363     		str	r3, [r0, #52]
+ 3660 0022 FFF7FEFF 		bl	UART_Start_Receive_IT
+ 3661 0026 0028     		cmp	r0, #0
+ 3662 0028 F5D1     		bne	.L409
+ 3663 002a 236B     		ldr	r3, [r4, #48]
+ 3664 002c 012B     		cmp	r3, #1
+ 3665 002e 01D0     		beq	.L421
+ 3666 0030 0120     		movs	r0, #1
+ 3667 0032 F0E7     		b	.L409
+ 3668              	.L421:
+ 3669 0034 0023     		movs	r3, #0
+ 3670 0036 0193     		str	r3, [sp, #4]
+ 3671 0038 2368     		ldr	r3, [r4]
+ 3672 003a 1A68     		ldr	r2, [r3]
+ 3673 003c 0192     		str	r2, [sp, #4]
+ 3674 003e 5B68     		ldr	r3, [r3, #4]
+ 3675 0040 0193     		str	r3, [sp, #4]
+ 3676 0042 019B     		ldr	r3, [sp, #4]
+ 3677              	.L411:
+ 3678 0044 2268     		ldr	r2, [r4]
+ 3679 0046 02F10C03 		add	r3, r2, #12
+ 3680              		.syntax unified
+ 3681              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3682 004a 53E8003F 		ldrex r3, [r3]
+ 3683              	@ 0 "" 2
+ 3684              		.thumb
+ 3685              		.syntax unified
+ 3686 004e 43F01003 		orr	r3, r3, #16
+ 3687 0052 0C32     		adds	r2, r2, #12
+ 3688              		.syntax unified
+ 3689              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3690 0054 42E80031 		strex r1, r3, [r2]
+ 3691              	@ 0 "" 2
+ 3692              		.thumb
+ 3693              		.syntax unified
+ 3694 0058 0029     		cmp	r1, #0
+ 3695 005a F3D1     		bne	.L411
+ 3696 005c DBE7     		b	.L409
+ 3697              	.L412:
+ 3698 005e 0220     		movs	r0, #2
+ 3699 0060 7047     		bx	lr
+ 3700              	.L413:
+ 3701 0062 0120     		movs	r0, #1
+ 3702 0064 D7E7     		b	.L409
+ 3704              		.section	.text.UART_Start_Receive_DMA,"ax",%progbits
+ 3705              		.align	1
+ 3706              		.global	UART_Start_Receive_DMA
+ 3707              		.syntax unified
+ 3708              		.thumb
+ 3709              		.thumb_func
+ARM GAS  /tmp/cc4BdNm7.s 			page 64
+
+
+ 3711              	UART_Start_Receive_DMA:
+ 3712              		@ args = 0, pretend = 0, frame = 8
+ 3713              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3714 0000 30B5     		push	{r4, r5, lr}
+ 3715 0002 83B0     		sub	sp, sp, #12
+ 3716 0004 0446     		mov	r4, r0
+ 3717 0006 1346     		mov	r3, r2
+ 3718 0008 8162     		str	r1, [r0, #40]
+ 3719 000a 8285     		strh	r2, [r0, #44]	@ movhi
+ 3720 000c 0022     		movs	r2, #0
+ 3721 000e 4264     		str	r2, [r0, #68]
+ 3722 0010 2220     		movs	r0, #34
+ 3723 0012 84F84200 		strb	r0, [r4, #66]
+ 3724 0016 E06B     		ldr	r0, [r4, #60]
+ 3725 0018 244D     		ldr	r5, .L431
+ 3726 001a C563     		str	r5, [r0, #60]
+ 3727 001c E06B     		ldr	r0, [r4, #60]
+ 3728 001e 244D     		ldr	r5, .L431+4
+ 3729 0020 0564     		str	r5, [r0, #64]
+ 3730 0022 E06B     		ldr	r0, [r4, #60]
+ 3731 0024 234D     		ldr	r5, .L431+8
+ 3732 0026 C564     		str	r5, [r0, #76]
+ 3733 0028 E06B     		ldr	r0, [r4, #60]
+ 3734 002a 0265     		str	r2, [r0, #80]
+ 3735 002c 2068     		ldr	r0, [r4]
+ 3736 002e 0A46     		mov	r2, r1
+ 3737 0030 011D     		adds	r1, r0, #4
+ 3738 0032 E06B     		ldr	r0, [r4, #60]
+ 3739 0034 FFF7FEFF 		bl	HAL_DMA_Start_IT
+ 3740 0038 0028     		cmp	r0, #0
+ 3741 003a 2FD1     		bne	.L430
+ 3742 003c 0023     		movs	r3, #0
+ 3743 003e 0193     		str	r3, [sp, #4]
+ 3744 0040 2368     		ldr	r3, [r4]
+ 3745 0042 1A68     		ldr	r2, [r3]
+ 3746 0044 0192     		str	r2, [sp, #4]
+ 3747 0046 5B68     		ldr	r3, [r3, #4]
+ 3748 0048 0193     		str	r3, [sp, #4]
+ 3749 004a 019B     		ldr	r3, [sp, #4]
+ 3750 004c 2369     		ldr	r3, [r4, #16]
+ 3751 004e 5BB1     		cbz	r3, .L427
+ 3752              	.L426:
+ 3753 0050 2268     		ldr	r2, [r4]
+ 3754 0052 02F10C03 		add	r3, r2, #12
+ 3755              		.syntax unified
+ 3756              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3757 0056 53E8003F 		ldrex r3, [r3]
+ 3758              	@ 0 "" 2
+ 3759              		.thumb
+ 3760              		.syntax unified
+ 3761 005a 43F48073 		orr	r3, r3, #256
+ 3762 005e 0C32     		adds	r2, r2, #12
+ 3763              		.syntax unified
+ 3764              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3765 0060 42E80031 		strex r1, r3, [r2]
+ 3766              	@ 0 "" 2
+ 3767              		.thumb
+ARM GAS  /tmp/cc4BdNm7.s 			page 65
+
+
+ 3768              		.syntax unified
+ 3769 0064 0029     		cmp	r1, #0
+ 3770 0066 F3D1     		bne	.L426
+ 3771              	.L427:
+ 3772 0068 2268     		ldr	r2, [r4]
+ 3773 006a 02F11403 		add	r3, r2, #20
+ 3774              		.syntax unified
+ 3775              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3776 006e 53E8003F 		ldrex r3, [r3]
+ 3777              	@ 0 "" 2
+ 3778              		.thumb
+ 3779              		.syntax unified
+ 3780 0072 43F00103 		orr	r3, r3, #1
+ 3781 0076 1432     		adds	r2, r2, #20
+ 3782              		.syntax unified
+ 3783              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3784 0078 42E80031 		strex r1, r3, [r2]
+ 3785              	@ 0 "" 2
+ 3786              		.thumb
+ 3787              		.syntax unified
+ 3788 007c 0029     		cmp	r1, #0
+ 3789 007e F3D1     		bne	.L427
+ 3790              	.L428:
+ 3791 0080 2268     		ldr	r2, [r4]
+ 3792 0082 02F11403 		add	r3, r2, #20
+ 3793              		.syntax unified
+ 3794              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3795 0086 53E8003F 		ldrex r3, [r3]
+ 3796              	@ 0 "" 2
+ 3797              		.thumb
+ 3798              		.syntax unified
+ 3799 008a 43F04003 		orr	r3, r3, #64
+ 3800 008e 1432     		adds	r2, r2, #20
+ 3801              		.syntax unified
+ 3802              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3803 0090 42E80031 		strex r1, r3, [r2]
+ 3804              	@ 0 "" 2
+ 3805              		.thumb
+ 3806              		.syntax unified
+ 3807 0094 0029     		cmp	r1, #0
+ 3808 0096 F3D1     		bne	.L428
+ 3809              	.L424:
+ 3810 0098 03B0     		add	sp, sp, #12
+ 3811              		@ sp needed
+ 3812 009a 30BD     		pop	{r4, r5, pc}
+ 3813              	.L430:
+ 3814 009c 1023     		movs	r3, #16
+ 3815 009e 6364     		str	r3, [r4, #68]
+ 3816 00a0 2023     		movs	r3, #32
+ 3817 00a2 84F84230 		strb	r3, [r4, #66]
+ 3818 00a6 0120     		movs	r0, #1
+ 3819 00a8 F6E7     		b	.L424
+ 3820              	.L432:
+ 3821 00aa 00BF     		.align	2
+ 3822              	.L431:
+ 3823 00ac 00000000 		.word	UART_DMAReceiveCplt
+ 3824 00b0 00000000 		.word	UART_DMARxHalfCplt
+ARM GAS  /tmp/cc4BdNm7.s 			page 66
+
+
+ 3825 00b4 00000000 		.word	UART_DMAError
+ 3827              		.section	.text.HAL_UART_Receive_DMA,"ax",%progbits
+ 3828              		.align	1
+ 3829              		.global	HAL_UART_Receive_DMA
+ 3830              		.syntax unified
+ 3831              		.thumb
+ 3832              		.thumb_func
+ 3834              	HAL_UART_Receive_DMA:
+ 3835              		@ args = 0, pretend = 0, frame = 0
+ 3836              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3837 0000 08B5     		push	{r3, lr}
+ 3838 0002 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 3839 0006 DBB2     		uxtb	r3, r3
+ 3840 0008 202B     		cmp	r3, #32
+ 3841 000a 08D1     		bne	.L435
+ 3842 000c 49B1     		cbz	r1, .L436
+ 3843 000e 0AB9     		cbnz	r2, .L439
+ 3844 0010 0120     		movs	r0, #1
+ 3845              	.L434:
+ 3846 0012 08BD     		pop	{r3, pc}
+ 3847              	.L439:
+ 3848 0014 0023     		movs	r3, #0
+ 3849 0016 0363     		str	r3, [r0, #48]
+ 3850 0018 FFF7FEFF 		bl	UART_Start_Receive_DMA
+ 3851 001c F9E7     		b	.L434
+ 3852              	.L435:
+ 3853 001e 0220     		movs	r0, #2
+ 3854 0020 F7E7     		b	.L434
+ 3855              	.L436:
+ 3856 0022 0120     		movs	r0, #1
+ 3857 0024 F5E7     		b	.L434
+ 3859              		.section	.text.HAL_UARTEx_ReceiveToIdle_DMA,"ax",%progbits
+ 3860              		.align	1
+ 3861              		.global	HAL_UARTEx_ReceiveToIdle_DMA
+ 3862              		.syntax unified
+ 3863              		.thumb
+ 3864              		.thumb_func
+ 3866              	HAL_UARTEx_ReceiveToIdle_DMA:
+ 3867              		@ args = 0, pretend = 0, frame = 8
+ 3868              		@ frame_needed = 0, uses_anonymous_args = 0
+ 3869 0000 90F84230 		ldrb	r3, [r0, #66]	@ zero_extendqisi2
+ 3870 0004 DBB2     		uxtb	r3, r3
+ 3871 0006 202B     		cmp	r3, #32
+ 3872 0008 27D1     		bne	.L444
+ 3873 000a 10B5     		push	{r4, lr}
+ 3874 000c 82B0     		sub	sp, sp, #8
+ 3875 000e 0446     		mov	r4, r0
+ 3876 0010 29B3     		cbz	r1, .L445
+ 3877 0012 12B9     		cbnz	r2, .L452
+ 3878 0014 0120     		movs	r0, #1
+ 3879              	.L441:
+ 3880 0016 02B0     		add	sp, sp, #8
+ 3881              		@ sp needed
+ 3882 0018 10BD     		pop	{r4, pc}
+ 3883              	.L452:
+ 3884 001a 0123     		movs	r3, #1
+ 3885 001c 0363     		str	r3, [r0, #48]
+ARM GAS  /tmp/cc4BdNm7.s 			page 67
+
+
+ 3886 001e 0023     		movs	r3, #0
+ 3887 0020 4363     		str	r3, [r0, #52]
+ 3888 0022 FFF7FEFF 		bl	UART_Start_Receive_DMA
+ 3889 0026 236B     		ldr	r3, [r4, #48]
+ 3890 0028 012B     		cmp	r3, #1
+ 3891 002a 01D0     		beq	.L453
+ 3892 002c 0120     		movs	r0, #1
+ 3893 002e F2E7     		b	.L441
+ 3894              	.L453:
+ 3895 0030 0023     		movs	r3, #0
+ 3896 0032 0193     		str	r3, [sp, #4]
+ 3897 0034 2368     		ldr	r3, [r4]
+ 3898 0036 1A68     		ldr	r2, [r3]
+ 3899 0038 0192     		str	r2, [sp, #4]
+ 3900 003a 5B68     		ldr	r3, [r3, #4]
+ 3901 003c 0193     		str	r3, [sp, #4]
+ 3902 003e 019B     		ldr	r3, [sp, #4]
+ 3903              	.L443:
+ 3904 0040 2268     		ldr	r2, [r4]
+ 3905 0042 02F10C03 		add	r3, r2, #12
+ 3906              		.syntax unified
+ 3907              	@ 480 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3908 0046 53E8003F 		ldrex r3, [r3]
+ 3909              	@ 0 "" 2
+ 3910              		.thumb
+ 3911              		.syntax unified
+ 3912 004a 43F01003 		orr	r3, r3, #16
+ 3913 004e 0C32     		adds	r2, r2, #12
+ 3914              		.syntax unified
+ 3915              	@ 531 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 3916 0050 42E80031 		strex r1, r3, [r2]
+ 3917              	@ 0 "" 2
+ 3918              		.thumb
+ 3919              		.syntax unified
+ 3920 0054 0029     		cmp	r1, #0
+ 3921 0056 F3D1     		bne	.L443
+ 3922 0058 DDE7     		b	.L441
+ 3923              	.L444:
+ 3924 005a 0220     		movs	r0, #2
+ 3925 005c 7047     		bx	lr
+ 3926              	.L445:
+ 3927 005e 0120     		movs	r0, #1
+ 3928 0060 D9E7     		b	.L441
+ 3930              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/cc4BdNm7.s 			page 68
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f4xx_hal_uart.c
+     /tmp/cc4BdNm7.s:18     .text.UART_EndTxTransfer:00000000 $t
+     /tmp/cc4BdNm7.s:23     .text.UART_EndTxTransfer:00000000 UART_EndTxTransfer
+     /tmp/cc4BdNm7.s:51     .text.UART_EndRxTransfer:00000000 $t
+     /tmp/cc4BdNm7.s:56     .text.UART_EndRxTransfer:00000000 UART_EndRxTransfer
+     /tmp/cc4BdNm7.s:129    .text.UART_Transmit_IT:00000000 $t
+     /tmp/cc4BdNm7.s:134    .text.UART_Transmit_IT:00000000 UART_Transmit_IT
+     /tmp/cc4BdNm7.s:189    .text.UART_SetConfig:00000000 $t
+     /tmp/cc4BdNm7.s:194    .text.UART_SetConfig:00000000 UART_SetConfig
+     /tmp/cc4BdNm7.s:305    .text.UART_SetConfig:00000108 $d
+     /tmp/cc4BdNm7.s:309    .text.UART_WaitOnFlagUntilTimeout:00000000 $t
+     /tmp/cc4BdNm7.s:314    .text.UART_WaitOnFlagUntilTimeout:00000000 UART_WaitOnFlagUntilTimeout
+     /tmp/cc4BdNm7.s:380    .text.HAL_UART_MspInit:00000000 $t
+     /tmp/cc4BdNm7.s:386    .text.HAL_UART_MspInit:00000000 HAL_UART_MspInit
+     /tmp/cc4BdNm7.s:393    .text.HAL_UART_Init:00000000 $t
+     /tmp/cc4BdNm7.s:399    .text.HAL_UART_Init:00000000 HAL_UART_Init
+     /tmp/cc4BdNm7.s:444    .text.HAL_HalfDuplex_Init:00000000 $t
+     /tmp/cc4BdNm7.s:450    .text.HAL_HalfDuplex_Init:00000000 HAL_HalfDuplex_Init
+     /tmp/cc4BdNm7.s:500    .text.HAL_LIN_Init:00000000 $t
+     /tmp/cc4BdNm7.s:506    .text.HAL_LIN_Init:00000000 HAL_LIN_Init
+     /tmp/cc4BdNm7.s:566    .text.HAL_MultiProcessor_Init:00000000 $t
+     /tmp/cc4BdNm7.s:572    .text.HAL_MultiProcessor_Init:00000000 HAL_MultiProcessor_Init
+     /tmp/cc4BdNm7.s:637    .text.HAL_UART_MspDeInit:00000000 $t
+     /tmp/cc4BdNm7.s:643    .text.HAL_UART_MspDeInit:00000000 HAL_UART_MspDeInit
+     /tmp/cc4BdNm7.s:650    .text.HAL_UART_DeInit:00000000 $t
+     /tmp/cc4BdNm7.s:656    .text.HAL_UART_DeInit:00000000 HAL_UART_DeInit
+     /tmp/cc4BdNm7.s:682    .text.HAL_UART_Transmit:00000000 $t
+     /tmp/cc4BdNm7.s:688    .text.HAL_UART_Transmit:00000000 HAL_UART_Transmit
+     /tmp/cc4BdNm7.s:790    .text.HAL_UART_Receive:00000000 $t
+     /tmp/cc4BdNm7.s:796    .text.HAL_UART_Receive:00000000 HAL_UART_Receive
+     /tmp/cc4BdNm7.s:904    .text.HAL_UART_Transmit_IT:00000000 $t
+     /tmp/cc4BdNm7.s:910    .text.HAL_UART_Transmit_IT:00000000 HAL_UART_Transmit_IT
+     /tmp/cc4BdNm7.s:944    .text.HAL_UART_Transmit_DMA:00000000 $t
+     /tmp/cc4BdNm7.s:950    .text.HAL_UART_Transmit_DMA:00000000 HAL_UART_Transmit_DMA
+     /tmp/cc4BdNm7.s:1029   .text.HAL_UART_Transmit_DMA:00000084 $d
+     /tmp/cc4BdNm7.s:1903   .text.UART_DMATransmitCplt:00000000 UART_DMATransmitCplt
+     /tmp/cc4BdNm7.s:1998   .text.UART_DMATxHalfCplt:00000000 UART_DMATxHalfCplt
+     /tmp/cc4BdNm7.s:2051   .text.UART_DMAError:00000000 UART_DMAError
+     /tmp/cc4BdNm7.s:1034   .text.HAL_UART_DMAPause:00000000 $t
+     /tmp/cc4BdNm7.s:1040   .text.HAL_UART_DMAPause:00000000 HAL_UART_DMAPause
+     /tmp/cc4BdNm7.s:1148   .text.HAL_UART_DMAResume:00000000 $t
+     /tmp/cc4BdNm7.s:1154   .text.HAL_UART_DMAResume:00000000 HAL_UART_DMAResume
+     /tmp/cc4BdNm7.s:1264   .text.HAL_UART_DMAStop:00000000 $t
+     /tmp/cc4BdNm7.s:1270   .text.HAL_UART_DMAStop:00000000 HAL_UART_DMAStop
+     /tmp/cc4BdNm7.s:1353   .text.HAL_UARTEx_ReceiveToIdle:00000000 $t
+     /tmp/cc4BdNm7.s:1359   .text.HAL_UARTEx_ReceiveToIdle:00000000 HAL_UARTEx_ReceiveToIdle
+     /tmp/cc4BdNm7.s:1506   .text.HAL_UARTEx_GetRxEventType:00000000 $t
+     /tmp/cc4BdNm7.s:1512   .text.HAL_UARTEx_GetRxEventType:00000000 HAL_UARTEx_GetRxEventType
+     /tmp/cc4BdNm7.s:1520   .text.HAL_UART_Abort:00000000 $t
+     /tmp/cc4BdNm7.s:1526   .text.HAL_UART_Abort:00000000 HAL_UART_Abort
+     /tmp/cc4BdNm7.s:1685   .text.HAL_UART_AbortTransmit:00000000 $t
+     /tmp/cc4BdNm7.s:1691   .text.HAL_UART_AbortTransmit:00000000 HAL_UART_AbortTransmit
+     /tmp/cc4BdNm7.s:1763   .text.HAL_UART_AbortReceive:00000000 $t
+     /tmp/cc4BdNm7.s:1769   .text.HAL_UART_AbortReceive:00000000 HAL_UART_AbortReceive
+     /tmp/cc4BdNm7.s:1885   .text.HAL_UART_TxCpltCallback:00000000 $t
+     /tmp/cc4BdNm7.s:1891   .text.HAL_UART_TxCpltCallback:00000000 HAL_UART_TxCpltCallback
+ARM GAS  /tmp/cc4BdNm7.s 			page 69
+
+
+     /tmp/cc4BdNm7.s:1898   .text.UART_DMATransmitCplt:00000000 $t
+     /tmp/cc4BdNm7.s:1960   .text.UART_EndTransmit_IT:00000000 $t
+     /tmp/cc4BdNm7.s:1965   .text.UART_EndTransmit_IT:00000000 UART_EndTransmit_IT
+     /tmp/cc4BdNm7.s:1980   .text.HAL_UART_TxHalfCpltCallback:00000000 $t
+     /tmp/cc4BdNm7.s:1986   .text.HAL_UART_TxHalfCpltCallback:00000000 HAL_UART_TxHalfCpltCallback
+     /tmp/cc4BdNm7.s:1993   .text.UART_DMATxHalfCplt:00000000 $t
+     /tmp/cc4BdNm7.s:2007   .text.HAL_UART_RxCpltCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2013   .text.HAL_UART_RxCpltCallback:00000000 HAL_UART_RxCpltCallback
+     /tmp/cc4BdNm7.s:2020   .text.HAL_UART_RxHalfCpltCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2026   .text.HAL_UART_RxHalfCpltCallback:00000000 HAL_UART_RxHalfCpltCallback
+     /tmp/cc4BdNm7.s:2033   .text.HAL_UART_ErrorCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2039   .text.HAL_UART_ErrorCallback:00000000 HAL_UART_ErrorCallback
+     /tmp/cc4BdNm7.s:2046   .text.UART_DMAError:00000000 $t
+     /tmp/cc4BdNm7.s:2096   .text.UART_DMAAbortOnError:00000000 $t
+     /tmp/cc4BdNm7.s:2101   .text.UART_DMAAbortOnError:00000000 UART_DMAAbortOnError
+     /tmp/cc4BdNm7.s:2112   .text.HAL_UART_AbortCpltCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2118   .text.HAL_UART_AbortCpltCallback:00000000 HAL_UART_AbortCpltCallback
+     /tmp/cc4BdNm7.s:2125   .text.HAL_UART_Abort_IT:00000000 $t
+     /tmp/cc4BdNm7.s:2131   .text.HAL_UART_Abort_IT:00000000 HAL_UART_Abort_IT
+     /tmp/cc4BdNm7.s:2315   .text.HAL_UART_Abort_IT:0000011c $d
+     /tmp/cc4BdNm7.s:2355   .text.UART_DMATxAbortCallback:00000000 UART_DMATxAbortCallback
+     /tmp/cc4BdNm7.s:2324   .text.UART_DMARxAbortCallback:00000000 UART_DMARxAbortCallback
+     /tmp/cc4BdNm7.s:2319   .text.UART_DMARxAbortCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2350   .text.UART_DMATxAbortCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2381   .text.HAL_UART_AbortTransmitCpltCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2387   .text.HAL_UART_AbortTransmitCpltCallback:00000000 HAL_UART_AbortTransmitCpltCallback
+     /tmp/cc4BdNm7.s:2394   .text.HAL_UART_AbortTransmit_IT:00000000 $t
+     /tmp/cc4BdNm7.s:2400   .text.HAL_UART_AbortTransmit_IT:00000000 HAL_UART_AbortTransmit_IT
+     /tmp/cc4BdNm7.s:2479   .text.HAL_UART_AbortTransmit_IT:0000007c $d
+     /tmp/cc4BdNm7.s:2487   .text.UART_DMATxOnlyAbortCallback:00000000 UART_DMATxOnlyAbortCallback
+     /tmp/cc4BdNm7.s:2482   .text.UART_DMATxOnlyAbortCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2500   .text.HAL_UART_AbortReceiveCpltCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2506   .text.HAL_UART_AbortReceiveCpltCallback:00000000 HAL_UART_AbortReceiveCpltCallback
+     /tmp/cc4BdNm7.s:2513   .text.HAL_UART_AbortReceive_IT:00000000 $t
+     /tmp/cc4BdNm7.s:2519   .text.HAL_UART_AbortReceive_IT:00000000 HAL_UART_AbortReceive_IT
+     /tmp/cc4BdNm7.s:2643   .text.HAL_UART_AbortReceive_IT:000000b8 $d
+     /tmp/cc4BdNm7.s:2651   .text.UART_DMARxOnlyAbortCallback:00000000 UART_DMARxOnlyAbortCallback
+     /tmp/cc4BdNm7.s:2646   .text.UART_DMARxOnlyAbortCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2665   .text.HAL_UARTEx_RxEventCallback:00000000 $t
+     /tmp/cc4BdNm7.s:2671   .text.HAL_UARTEx_RxEventCallback:00000000 HAL_UARTEx_RxEventCallback
+     /tmp/cc4BdNm7.s:2678   .text.UART_Receive_IT:00000000 $t
+     /tmp/cc4BdNm7.s:2683   .text.UART_Receive_IT:00000000 UART_Receive_IT
+     /tmp/cc4BdNm7.s:2809   .text.HAL_UART_IRQHandler:00000000 $t
+     /tmp/cc4BdNm7.s:2815   .text.HAL_UART_IRQHandler:00000000 HAL_UART_IRQHandler
+     /tmp/cc4BdNm7.s:3183   .text.HAL_UART_IRQHandler:0000029c $d
+     /tmp/cc4BdNm7.s:3186   .text.UART_DMARxHalfCplt:00000000 $t
+     /tmp/cc4BdNm7.s:3191   .text.UART_DMARxHalfCplt:00000000 UART_DMARxHalfCplt
+     /tmp/cc4BdNm7.s:3211   .text.UART_DMAReceiveCplt:00000000 $t
+     /tmp/cc4BdNm7.s:3216   .text.UART_DMAReceiveCplt:00000000 UART_DMAReceiveCplt
+     /tmp/cc4BdNm7.s:3325   .text.HAL_LIN_SendBreak:00000000 $t
+     /tmp/cc4BdNm7.s:3331   .text.HAL_LIN_SendBreak:00000000 HAL_LIN_SendBreak
+     /tmp/cc4BdNm7.s:3372   .text.HAL_MultiProcessor_EnterMuteMode:00000000 $t
+     /tmp/cc4BdNm7.s:3378   .text.HAL_MultiProcessor_EnterMuteMode:00000000 HAL_MultiProcessor_EnterMuteMode
+     /tmp/cc4BdNm7.s:3420   .text.HAL_MultiProcessor_ExitMuteMode:00000000 $t
+     /tmp/cc4BdNm7.s:3426   .text.HAL_MultiProcessor_ExitMuteMode:00000000 HAL_MultiProcessor_ExitMuteMode
+     /tmp/cc4BdNm7.s:3468   .text.HAL_HalfDuplex_EnableTransmitter:00000000 $t
+     /tmp/cc4BdNm7.s:3474   .text.HAL_HalfDuplex_EnableTransmitter:00000000 HAL_HalfDuplex_EnableTransmitter
+ARM GAS  /tmp/cc4BdNm7.s 			page 70
+
+
+     /tmp/cc4BdNm7.s:3501   .text.HAL_HalfDuplex_EnableReceiver:00000000 $t
+     /tmp/cc4BdNm7.s:3507   .text.HAL_HalfDuplex_EnableReceiver:00000000 HAL_HalfDuplex_EnableReceiver
+     /tmp/cc4BdNm7.s:3534   .text.HAL_UART_GetState:00000000 $t
+     /tmp/cc4BdNm7.s:3540   .text.HAL_UART_GetState:00000000 HAL_UART_GetState
+     /tmp/cc4BdNm7.s:3550   .text.HAL_UART_GetError:00000000 $t
+     /tmp/cc4BdNm7.s:3556   .text.HAL_UART_GetError:00000000 HAL_UART_GetError
+     /tmp/cc4BdNm7.s:3564   .text.UART_Start_Receive_IT:00000000 $t
+     /tmp/cc4BdNm7.s:3570   .text.UART_Start_Receive_IT:00000000 UART_Start_Receive_IT
+     /tmp/cc4BdNm7.s:3600   .text.HAL_UART_Receive_IT:00000000 $t
+     /tmp/cc4BdNm7.s:3606   .text.HAL_UART_Receive_IT:00000000 HAL_UART_Receive_IT
+     /tmp/cc4BdNm7.s:3632   .text.HAL_UARTEx_ReceiveToIdle_IT:00000000 $t
+     /tmp/cc4BdNm7.s:3638   .text.HAL_UARTEx_ReceiveToIdle_IT:00000000 HAL_UARTEx_ReceiveToIdle_IT
+     /tmp/cc4BdNm7.s:3705   .text.UART_Start_Receive_DMA:00000000 $t
+     /tmp/cc4BdNm7.s:3711   .text.UART_Start_Receive_DMA:00000000 UART_Start_Receive_DMA
+     /tmp/cc4BdNm7.s:3823   .text.UART_Start_Receive_DMA:000000ac $d
+     /tmp/cc4BdNm7.s:3828   .text.HAL_UART_Receive_DMA:00000000 $t
+     /tmp/cc4BdNm7.s:3834   .text.HAL_UART_Receive_DMA:00000000 HAL_UART_Receive_DMA
+     /tmp/cc4BdNm7.s:3860   .text.HAL_UARTEx_ReceiveToIdle_DMA:00000000 $t
+     /tmp/cc4BdNm7.s:3866   .text.HAL_UARTEx_ReceiveToIdle_DMA:00000000 HAL_UARTEx_ReceiveToIdle_DMA
+
+UNDEFINED SYMBOLS
+__aeabi_uldivmod
+HAL_RCC_GetPCLK1Freq
+HAL_RCC_GetPCLK2Freq
+HAL_GetTick
+HAL_DMA_Start_IT
+HAL_DMA_Abort
+HAL_DMA_GetError
+HAL_DMA_Abort_IT

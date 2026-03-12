@@ -1,0 +1,493 @@
+ARM GAS  /tmp/ccki8p1I.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"cholesky.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/cholesky.c"
+  20              		.section	.rodata.cholesky_decompose_lower.str1.4,"aMS",%progbits,1
+  21              		.align	2
+  22              	.LC0:
+  23 0000 6D617420 		.ascii	"mat != (matrix_t*)0\000"
+  23      213D2028 
+  23      6D617472 
+  23      69785F74 
+  23      2A293000 
+  24              		.align	2
+  25              	.LC1:
+  26 0014 436F7265 		.ascii	"Core/Src/cholesky.c\000"
+  26      2F537263 
+  26      2F63686F 
+  26      6C65736B 
+  26      792E6300 
+  27              		.align	2
+  28              	.LC2:
+  29 0028 6D61742D 		.ascii	"mat->rows == mat->cols\000"
+  29      3E726F77 
+  29      73203D3D 
+  29      206D6174 
+  29      2D3E636F 
+  30 003f 00       		.align	2
+  31              	.LC3:
+  32 0040 6D61742D 		.ascii	"mat->rows > 0\000"
+  32      3E726F77 
+  32      73203E20 
+  32      3000
+  33              		.global	__aeabi_f2d
+  34              		.global	__aeabi_d2f
+  35              		.section	.text.cholesky_decompose_lower,"ax",%progbits
+  36              		.align	1
+  37              		.global	cholesky_decompose_lower
+  38              		.syntax unified
+  39              		.thumb
+  40              		.thumb_func
+  42              	cholesky_decompose_lower:
+  43              	.LVL0:
+ARM GAS  /tmp/ccki8p1I.s 			page 2
+
+
+  44              	.LFB10:
+   1:Core/Src/cholesky.c **** #include <assert.h>
+   2:Core/Src/cholesky.c **** #include <stdint.h>
+   3:Core/Src/cholesky.c **** #include <math.h>
+   4:Core/Src/cholesky.c **** 
+   5:Core/Src/cholesky.c **** #define EXTERN_INLINE_MATRIX static INLINE
+   6:Core/Src/cholesky.c **** #include "matrix.h"
+   7:Core/Src/cholesky.c **** 
+   8:Core/Src/cholesky.c **** /**
+   9:Core/Src/cholesky.c **** * \brief Decomposes a matrix into lower triangular form using Cholesky decomposition.
+  10:Core/Src/cholesky.c **** * \param[in] mat The matrix to decompose in place into a lower triangular matrix.
+  11:Core/Src/cholesky.c **** * \return Zero in case of success, nonzero if the matrix is not positive semi-definite.
+  12:Core/Src/cholesky.c **** *
+  13:Core/Src/cholesky.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  14:Core/Src/cholesky.c **** */
+  15:Core/Src/cholesky.c **** int cholesky_decompose_lower(register const matrix_t *const mat)
+  16:Core/Src/cholesky.c **** {
+  45              		.loc 1 16 1 view -0
+  46              		.cfi_startproc
+  47              		@ args = 0, pretend = 0, frame = 0
+  48              		@ frame_needed = 0, uses_anonymous_args = 0
+  49              		.loc 1 16 1 is_stmt 0 view .LVU1
+  50 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  51              		.cfi_def_cfa_offset 24
+  52              		.cfi_offset 3, -24
+  53              		.cfi_offset 4, -20
+  54              		.cfi_offset 5, -16
+  55              		.cfi_offset 6, -12
+  56              		.cfi_offset 7, -8
+  57              		.cfi_offset 14, -4
+  17:Core/Src/cholesky.c ****     uint_fast8_t i, j;
+  58              		.loc 1 17 5 is_stmt 1 view .LVU2
+  18:Core/Src/cholesky.c ****     uint_fast8_t n = mat->rows;
+  59              		.loc 1 18 5 view .LVU3
+  60              		.loc 1 18 18 is_stmt 0 view .LVU4
+  61 0002 0768     		ldr	r7, [r0]
+  62              	.LVL1:
+  19:Core/Src/cholesky.c ****     matrix_data_t *t = mat->data;
+  63              		.loc 1 19 5 is_stmt 1 view .LVU5
+  64              		.loc 1 19 20 is_stmt 0 view .LVU6
+  65 0004 8468     		ldr	r4, [r0, #8]
+  66              	.LVL2:
+  20:Core/Src/cholesky.c **** 
+  21:Core/Src/cholesky.c ****     matrix_data_t el_ii;
+  67              		.loc 1 21 5 is_stmt 1 view .LVU7
+  22:Core/Src/cholesky.c ****     matrix_data_t div_el_ii = 0;
+  68              		.loc 1 22 5 view .LVU8
+  23:Core/Src/cholesky.c **** 
+  24:Core/Src/cholesky.c ****     assert(mat != (matrix_t*)0);
+  69              		.loc 1 24 5 view .LVU9
+  70 0006 38B1     		cbz	r0, .L20
+  25:Core/Src/cholesky.c ****     assert(mat->rows == mat->cols);
+  71              		.loc 1 25 5 view .LVU10
+  72 0008 4368     		ldr	r3, [r0, #4]
+  73 000a BB42     		cmp	r3, r7
+  74 000c 0AD1     		bne	.L21
+  26:Core/Src/cholesky.c ****     assert(mat->rows > 0);
+ARM GAS  /tmp/ccki8p1I.s 			page 3
+
+
+  75              		.loc 1 26 5 view .LVU11
+  76 000e 7FB1     		cbz	r7, .L22
+  22:Core/Src/cholesky.c **** 
+  77              		.loc 1 22 19 is_stmt 0 view .LVU12
+  78 0010 9FED3A6A 		vldr.32	s12, .L28
+  27:Core/Src/cholesky.c **** 
+  28:Core/Src/cholesky.c ****     for( i = 0; i < n; ++i )
+  79              		.loc 1 28 12 view .LVU13
+  80 0014 0026     		movs	r6, #0
+  81 0016 57E0     		b	.L4
+  82              	.L20:
+  24:Core/Src/cholesky.c ****     assert(mat->rows == mat->cols);
+  83              		.loc 1 24 5 discriminator 1 view .LVU14
+  84 0018 394B     		ldr	r3, .L28+4
+  85 001a 3A4A     		ldr	r2, .L28+8
+  86 001c 1821     		movs	r1, #24
+  87 001e 3A48     		ldr	r0, .L28+12
+  88              	.LVL3:
+  24:Core/Src/cholesky.c ****     assert(mat->rows == mat->cols);
+  89              		.loc 1 24 5 discriminator 1 view .LVU15
+  90 0020 FFF7FEFF 		bl	__assert_func
+  91              	.LVL4:
+  92              	.L21:
+  25:Core/Src/cholesky.c ****     assert(mat->rows > 0);
+  93              		.loc 1 25 5 discriminator 1 view .LVU16
+  94 0024 394B     		ldr	r3, .L28+16
+  95 0026 374A     		ldr	r2, .L28+8
+  96 0028 1921     		movs	r1, #25
+  97 002a 3748     		ldr	r0, .L28+12
+  98              	.LVL5:
+  25:Core/Src/cholesky.c ****     assert(mat->rows > 0);
+  99              		.loc 1 25 5 discriminator 1 view .LVU17
+ 100 002c FFF7FEFF 		bl	__assert_func
+ 101              	.LVL6:
+ 102              	.L22:
+  26:Core/Src/cholesky.c **** 
+ 103              		.loc 1 26 5 discriminator 1 view .LVU18
+ 104 0030 374B     		ldr	r3, .L28+20
+ 105 0032 344A     		ldr	r2, .L28+8
+ 106 0034 1A21     		movs	r1, #26
+ 107 0036 3448     		ldr	r0, .L28+12
+ 108              	.LVL7:
+  26:Core/Src/cholesky.c **** 
+ 109              		.loc 1 26 5 discriminator 1 view .LVU19
+ 110 0038 FFF7FEFF 		bl	__assert_func
+ 111              	.LVL8:
+ 112              	.L6:
+ 113              	.LBB2:
+  29:Core/Src/cholesky.c ****     {
+  30:Core/Src/cholesky.c ****         for( j = i; j < n; ++j )
+  31:Core/Src/cholesky.c ****         {
+  32:Core/Src/cholesky.c ****             matrix_data_t sum = t[i*n+j];
+  33:Core/Src/cholesky.c **** 
+  34:Core/Src/cholesky.c ****             uint_fast16_t iEl = i*n;
+  35:Core/Src/cholesky.c ****             uint_fast16_t jEl = j*n;
+  36:Core/Src/cholesky.c ****             uint_fast16_t end = iEl+i;
+  37:Core/Src/cholesky.c ****             // k = 0:i-1
+ARM GAS  /tmp/ccki8p1I.s 			page 4
+
+
+  38:Core/Src/cholesky.c ****             for( ; iEl<end; ++iEl,++jEl )
+  39:Core/Src/cholesky.c ****             {
+  40:Core/Src/cholesky.c ****                 // sum -= el[i*n+k]*el[j*n+k];
+  41:Core/Src/cholesky.c ****                 sum -= t[iEl]* t[jEl];
+ 114              		.loc 1 41 17 is_stmt 1 view .LVU20
+ 115              		.loc 1 41 25 is_stmt 0 view .LVU21
+ 116 003c 04EB8301 		add	r1, r4, r3, lsl #2
+ 117 0040 D1ED007A 		vldr.32	s15, [r1]
+ 118              		.loc 1 41 33 view .LVU22
+ 119 0044 04EB8201 		add	r1, r4, r2, lsl #2
+ 120 0048 D1ED006A 		vldr.32	s13, [r1]
+ 121              		.loc 1 41 30 view .LVU23
+ 122 004c 67EEA67A 		vmul.f32	s15, s15, s13
+ 123              		.loc 1 41 21 view .LVU24
+ 124 0050 37EE677A 		vsub.f32	s14, s14, s15
+ 125              	.LVL9:
+  38:Core/Src/cholesky.c ****             {
+ 126              		.loc 1 38 34 is_stmt 1 discriminator 2 view .LVU25
+  38:Core/Src/cholesky.c ****             {
+ 127              		.loc 1 38 29 is_stmt 0 discriminator 2 view .LVU26
+ 128 0054 0133     		adds	r3, r3, #1
+ 129              	.LVL10:
+  38:Core/Src/cholesky.c ****             {
+ 130              		.loc 1 38 35 discriminator 2 view .LVU27
+ 131 0056 0132     		adds	r2, r2, #1
+ 132              	.LVL11:
+ 133              	.L5:
+  38:Core/Src/cholesky.c ****             {
+ 134              		.loc 1 38 23 is_stmt 1 discriminator 1 view .LVU28
+ 135 0058 8342     		cmp	r3, r0
+ 136 005a EFD3     		bcc	.L6
+  42:Core/Src/cholesky.c ****             }
+  43:Core/Src/cholesky.c **** 
+  44:Core/Src/cholesky.c ****             if( i == j )
+ 137              		.loc 1 44 13 view .LVU29
+ 138              		.loc 1 44 15 is_stmt 0 view .LVU30
+ 139 005c AE42     		cmp	r6, r5
+ 140 005e 15D0     		beq	.L23
+  45:Core/Src/cholesky.c ****             {
+  46:Core/Src/cholesky.c ****                 // is it positive-definite?
+  47:Core/Src/cholesky.c ****                 if( sum <= 0.0 ) return 1;
+  48:Core/Src/cholesky.c **** 
+  49:Core/Src/cholesky.c ****                 el_ii = (matrix_data_t)sqrt(sum);
+  50:Core/Src/cholesky.c ****                 t[i*n+i] = el_ii;
+  51:Core/Src/cholesky.c ****                 div_el_ii = (matrix_data_t)1.0/el_ii;
+  52:Core/Src/cholesky.c ****             }
+  53:Core/Src/cholesky.c ****             else
+  54:Core/Src/cholesky.c ****             {
+  55:Core/Src/cholesky.c ****                 t[j*n+i] = sum*div_el_ii;
+ 141              		.loc 1 55 17 is_stmt 1 view .LVU31
+ 142              		.loc 1 55 22 is_stmt 0 view .LVU32
+ 143 0060 B444     		add	ip, ip, r6
+ 144              		.loc 1 55 18 view .LVU33
+ 145 0062 04EB8C0C 		add	ip, r4, ip, lsl #2
+ 146              		.loc 1 55 31 view .LVU34
+ 147 0066 26EE077A 		vmul.f32	s14, s12, s14
+ 148              	.LVL12:
+ARM GAS  /tmp/ccki8p1I.s 			page 5
+
+
+ 149              		.loc 1 55 26 view .LVU35
+ 150 006a 8CED007A 		vstr.32	s14, [ip]
+ 151              	.LVL13:
+ 152              	.L9:
+ 153              		.loc 1 55 26 view .LVU36
+ 154              	.LBE2:
+  30:Core/Src/cholesky.c ****         {
+ 155              		.loc 1 30 28 is_stmt 1 discriminator 2 view .LVU37
+ 156 006e 0135     		adds	r5, r5, #1
+ 157              	.LVL14:
+ 158              	.L11:
+  30:Core/Src/cholesky.c ****         {
+ 159              		.loc 1 30 23 discriminator 1 view .LVU38
+ 160 0070 BD42     		cmp	r5, r7
+ 161 0072 28D2     		bcs	.L24
+ 162              	.LBB3:
+  32:Core/Src/cholesky.c **** 
+ 163              		.loc 1 32 13 view .LVU39
+  32:Core/Src/cholesky.c **** 
+ 164              		.loc 1 32 36 is_stmt 0 view .LVU40
+ 165 0074 07FB06F3 		mul	r3, r7, r6
+  32:Core/Src/cholesky.c **** 
+ 166              		.loc 1 32 38 view .LVU41
+ 167 0078 5A19     		adds	r2, r3, r5
+  32:Core/Src/cholesky.c **** 
+ 168              		.loc 1 32 34 view .LVU42
+ 169 007a 04EB8202 		add	r2, r4, r2, lsl #2
+  32:Core/Src/cholesky.c **** 
+ 170              		.loc 1 32 27 view .LVU43
+ 171 007e 92ED007A 		vldr.32	s14, [r2]
+ 172              	.LVL15:
+  34:Core/Src/cholesky.c ****             uint_fast16_t jEl = j*n;
+ 173              		.loc 1 34 13 is_stmt 1 view .LVU44
+  35:Core/Src/cholesky.c ****             uint_fast16_t end = iEl+i;
+ 174              		.loc 1 35 13 view .LVU45
+  35:Core/Src/cholesky.c ****             uint_fast16_t end = iEl+i;
+ 175              		.loc 1 35 27 is_stmt 0 view .LVU46
+ 176 0082 07FB05FC 		mul	ip, r7, r5
+ 177              	.LVL16:
+  36:Core/Src/cholesky.c ****             // k = 0:i-1
+ 178              		.loc 1 36 13 is_stmt 1 view .LVU47
+  36:Core/Src/cholesky.c ****             // k = 0:i-1
+ 179              		.loc 1 36 27 is_stmt 0 view .LVU48
+ 180 0086 9819     		adds	r0, r3, r6
+ 181              	.LVL17:
+  38:Core/Src/cholesky.c ****             {
+ 182              		.loc 1 38 13 is_stmt 1 view .LVU49
+  35:Core/Src/cholesky.c ****             uint_fast16_t end = iEl+i;
+ 183              		.loc 1 35 27 is_stmt 0 view .LVU50
+ 184 0088 6246     		mov	r2, ip
+  38:Core/Src/cholesky.c ****             {
+ 185              		.loc 1 38 13 view .LVU51
+ 186 008a E5E7     		b	.L5
+ 187              	.LVL18:
+ 188              	.L23:
+  47:Core/Src/cholesky.c **** 
+ 189              		.loc 1 47 17 is_stmt 1 view .LVU52
+ARM GAS  /tmp/ccki8p1I.s 			page 6
+
+
+  47:Core/Src/cholesky.c **** 
+ 190              		.loc 1 47 19 is_stmt 0 view .LVU53
+ 191 008c B5EEC07A 		vcmpe.f32	s14, #0
+ 192 0090 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 193 0094 2FD9     		bls	.L17
+  49:Core/Src/cholesky.c ****                 t[i*n+i] = el_ii;
+ 194              		.loc 1 49 17 is_stmt 1 view .LVU54
+  49:Core/Src/cholesky.c ****                 t[i*n+i] = el_ii;
+ 195              		.loc 1 49 40 is_stmt 0 view .LVU55
+ 196 0096 17EE100A 		vmov	r0, s14
+ 197              	.LVL19:
+  49:Core/Src/cholesky.c ****                 t[i*n+i] = el_ii;
+ 198              		.loc 1 49 40 view .LVU56
+ 199 009a FFF7FEFF 		bl	__aeabi_f2d
+ 200              	.LVL20:
+  49:Core/Src/cholesky.c ****                 t[i*n+i] = el_ii;
+ 201              		.loc 1 49 40 view .LVU57
+ 202 009e 41EC100B 		vmov	d0, r0, r1
+ 203 00a2 FFF7FEFF 		bl	sqrt
+ 204              	.LVL21:
+ 205 00a6 51EC100B 		vmov	r0, r1, d0
+  49:Core/Src/cholesky.c ****                 t[i*n+i] = el_ii;
+ 206              		.loc 1 49 23 discriminator 1 view .LVU58
+ 207 00aa FFF7FEFF 		bl	__aeabi_d2f
+ 208              	.LVL22:
+ 209 00ae 07EE900A 		vmov	s15, r0
+ 210              	.LVL23:
+  50:Core/Src/cholesky.c ****                 div_el_ii = (matrix_data_t)1.0/el_ii;
+ 211              		.loc 1 50 17 is_stmt 1 view .LVU59
+  50:Core/Src/cholesky.c ****                 div_el_ii = (matrix_data_t)1.0/el_ii;
+ 212              		.loc 1 50 22 is_stmt 0 view .LVU60
+ 213 00b2 07FB0663 		mla	r3, r7, r6, r6
+  50:Core/Src/cholesky.c ****                 div_el_ii = (matrix_data_t)1.0/el_ii;
+ 214              		.loc 1 50 18 view .LVU61
+ 215 00b6 04EB8303 		add	r3, r4, r3, lsl #2
+  50:Core/Src/cholesky.c ****                 div_el_ii = (matrix_data_t)1.0/el_ii;
+ 216              		.loc 1 50 26 view .LVU62
+ 217 00ba 1860     		str	r0, [r3]	@ float
+  51:Core/Src/cholesky.c ****             }
+ 218              		.loc 1 51 17 is_stmt 1 view .LVU63
+  51:Core/Src/cholesky.c ****             }
+ 219              		.loc 1 51 27 is_stmt 0 view .LVU64
+ 220 00bc B7EE007A 		vmov.f32	s14, #1.0e+0
+ 221 00c0 87EE276A 		vdiv.f32	s12, s14, s15
+ 222              	.LVL24:
+  51:Core/Src/cholesky.c ****             }
+ 223              		.loc 1 51 27 view .LVU65
+ 224 00c4 D3E7     		b	.L9
+ 225              	.LVL25:
+ 226              	.L24:
+  51:Core/Src/cholesky.c ****             }
+ 227              		.loc 1 51 27 view .LVU66
+ 228              	.LBE3:
+  28:Core/Src/cholesky.c ****     {
+ 229              		.loc 1 28 24 is_stmt 1 discriminator 2 view .LVU67
+ 230 00c6 0136     		adds	r6, r6, #1
+ 231              	.LVL26:
+ARM GAS  /tmp/ccki8p1I.s 			page 7
+
+
+ 232              	.L4:
+  28:Core/Src/cholesky.c ****     {
+ 233              		.loc 1 28 19 discriminator 1 view .LVU68
+ 234 00c8 BE42     		cmp	r6, r7
+ 235 00ca 01D2     		bcs	.L25
+  30:Core/Src/cholesky.c ****         {
+ 236              		.loc 1 30 16 is_stmt 0 view .LVU69
+ 237 00cc 3546     		mov	r5, r6
+ 238 00ce CFE7     		b	.L11
+ 239              	.L25:
+  56:Core/Src/cholesky.c ****             }
+  57:Core/Src/cholesky.c ****         }
+  58:Core/Src/cholesky.c ****     }
+  59:Core/Src/cholesky.c **** 
+  60:Core/Src/cholesky.c ****     // zero the top right corner.
+  61:Core/Src/cholesky.c ****     for( i = 0; i < n; ++i )
+ 240              		.loc 1 61 12 view .LVU70
+ 241 00d0 0020     		movs	r0, #0
+ 242 00d2 00E0     		b	.L12
+ 243              	.LVL27:
+ 244              	.L27:
+ 245              		.loc 1 61 24 discriminator 2 view .LVU71
+ 246 00d4 2846     		mov	r0, r5
+ 247              	.LVL28:
+ 248              	.L12:
+ 249              		.loc 1 61 19 is_stmt 1 discriminator 1 view .LVU72
+ 250 00d6 B842     		cmp	r0, r7
+ 251 00d8 0BD2     		bcs	.L26
+  62:Core/Src/cholesky.c ****     {
+  63:Core/Src/cholesky.c ****         for( j = i+1; j < n; ++j )
+ 252              		.loc 1 63 9 view .LVU73
+ 253              		.loc 1 63 16 is_stmt 0 view .LVU74
+ 254 00da 451C     		adds	r5, r0, #1
+ 255              	.LVL29:
+ 256              		.loc 1 63 16 view .LVU75
+ 257 00dc 2B46     		mov	r3, r5
+ 258              	.LVL30:
+ 259              	.L13:
+ 260              		.loc 1 63 25 is_stmt 1 discriminator 1 view .LVU76
+ 261 00de BB42     		cmp	r3, r7
+ 262 00e0 F8D2     		bcs	.L27
+  64:Core/Src/cholesky.c ****         {
+  65:Core/Src/cholesky.c ****             t[i*n+j] = 0.0;
+ 263              		.loc 1 65 13 view .LVU77
+ 264              		.loc 1 65 18 is_stmt 0 view .LVU78
+ 265 00e2 07FB0032 		mla	r2, r7, r0, r3
+ 266              		.loc 1 65 14 view .LVU79
+ 267 00e6 04EB8202 		add	r2, r4, r2, lsl #2
+ 268              		.loc 1 65 22 view .LVU80
+ 269 00ea 0021     		movs	r1, #0
+ 270 00ec 1160     		str	r1, [r2]	@ float
+  63:Core/Src/cholesky.c ****         {
+ 271              		.loc 1 63 30 is_stmt 1 discriminator 3 view .LVU81
+ 272 00ee 0133     		adds	r3, r3, #1
+ 273              	.LVL31:
+  63:Core/Src/cholesky.c ****         {
+ 274              		.loc 1 63 30 is_stmt 0 discriminator 3 view .LVU82
+ARM GAS  /tmp/ccki8p1I.s 			page 8
+
+
+ 275 00f0 F5E7     		b	.L13
+ 276              	.LVL32:
+ 277              	.L26:
+  66:Core/Src/cholesky.c ****         }
+  67:Core/Src/cholesky.c ****     }
+  68:Core/Src/cholesky.c **** 
+  69:Core/Src/cholesky.c ****     return 0;
+ 278              		.loc 1 69 12 view .LVU83
+ 279 00f2 0020     		movs	r0, #0
+ 280              	.LVL33:
+ 281              		.loc 1 69 12 view .LVU84
+ 282 00f4 00E0     		b	.L1
+ 283              	.LVL34:
+ 284              	.L17:
+ 285              	.LBB4:
+  47:Core/Src/cholesky.c **** 
+ 286              		.loc 1 47 41 discriminator 1 view .LVU85
+ 287 00f6 0120     		movs	r0, #1
+ 288              	.LVL35:
+ 289              	.L1:
+  47:Core/Src/cholesky.c **** 
+ 290              		.loc 1 47 41 discriminator 1 view .LVU86
+ 291              	.LBE4:
+  70:Core/Src/cholesky.c **** }
+ 292              		.loc 1 70 1 view .LVU87
+ 293 00f8 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 294              	.LVL36:
+ 295              	.L29:
+ 296              		.loc 1 70 1 view .LVU88
+ 297 00fa 00BF     		.align	2
+ 298              	.L28:
+ 299 00fc 00000000 		.word	0
+ 300 0100 00000000 		.word	.LC0
+ 301 0104 00000000 		.word	__func__.0
+ 302 0108 14000000 		.word	.LC1
+ 303 010c 28000000 		.word	.LC2
+ 304 0110 40000000 		.word	.LC3
+ 305              		.cfi_endproc
+ 306              	.LFE10:
+ 308              		.section	.rodata.__func__.0,"a"
+ 309              		.align	2
+ 312              	__func__.0:
+ 313 0000 63686F6C 		.ascii	"cholesky_decompose_lower\000"
+ 313      65736B79 
+ 313      5F646563 
+ 313      6F6D706F 
+ 313      73655F6C 
+ 314              		.text
+ 315              	.Letext0:
+ 316              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 317              		.file 3 "Core/Inc/matrix.h"
+ 318              		.file 4 "/usr/include/newlib/math.h"
+ 319              		.file 5 "/usr/include/newlib/assert.h"
+ARM GAS  /tmp/ccki8p1I.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 cholesky.c
+     /tmp/ccki8p1I.s:21     .rodata.cholesky_decompose_lower.str1.4:00000000 $d
+     /tmp/ccki8p1I.s:36     .text.cholesky_decompose_lower:00000000 $t
+     /tmp/ccki8p1I.s:42     .text.cholesky_decompose_lower:00000000 cholesky_decompose_lower
+     /tmp/ccki8p1I.s:299    .text.cholesky_decompose_lower:000000fc $d
+     /tmp/ccki8p1I.s:312    .rodata.__func__.0:00000000 __func__.0
+     /tmp/ccki8p1I.s:309    .rodata.__func__.0:00000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_f2d
+__aeabi_d2f
+__assert_func
+sqrt

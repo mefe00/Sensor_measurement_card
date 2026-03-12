@@ -1,0 +1,673 @@
+ARM GAS  /tmp/ccExwNkf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"kalman.c"
+  16              		.text
+  17              		.section	.text.matrix_get,"ax",%progbits
+  18              		.align	1
+  19              		.global	matrix_get
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	matrix_get:
+  25              		@ args = 0, pretend = 0, frame = 0
+  26              		@ frame_needed = 0, uses_anonymous_args = 0
+  27              		@ link register save eliminated.
+  28 0000 4368     		ldr	r3, [r0, #4]
+  29 0002 01FB0322 		mla	r2, r1, r3, r2
+  30 0006 8368     		ldr	r3, [r0, #8]
+  31 0008 03EB8203 		add	r3, r3, r2, lsl #2
+  32 000c 93ED000A 		vldr.32	s0, [r3]
+  33 0010 7047     		bx	lr
+  35              		.section	.text.matrix_set,"ax",%progbits
+  36              		.align	1
+  37              		.global	matrix_set
+  38              		.syntax unified
+  39              		.thumb
+  40              		.thumb_func
+  42              	matrix_set:
+  43              		@ args = 0, pretend = 0, frame = 0
+  44              		@ frame_needed = 0, uses_anonymous_args = 0
+  45              		@ link register save eliminated.
+  46 0000 4368     		ldr	r3, [r0, #4]
+  47 0002 01FB0322 		mla	r2, r1, r3, r2
+  48 0006 8368     		ldr	r3, [r0, #8]
+  49 0008 03EB8203 		add	r3, r3, r2, lsl #2
+  50 000c 83ED000A 		vstr.32	s0, [r3]
+  51 0010 7047     		bx	lr
+  53              		.section	.text.matrix_set_symmetric,"ax",%progbits
+  54              		.align	1
+  55              		.global	matrix_set_symmetric
+  56              		.syntax unified
+  57              		.thumb
+  58              		.thumb_func
+  60              	matrix_set_symmetric:
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccExwNkf.s 			page 2
+
+
+  63 0000 70B5     		push	{r4, r5, r6, lr}
+  64 0002 2DED028B 		vpush.64	{d8}
+  65 0006 0446     		mov	r4, r0
+  66 0008 0E46     		mov	r6, r1
+  67 000a 1546     		mov	r5, r2
+  68 000c B0EE408A 		vmov.f32	s16, s0
+  69 0010 FFF7FEFF 		bl	matrix_set
+  70 0014 B0EE480A 		vmov.f32	s0, s16
+  71 0018 3246     		mov	r2, r6
+  72 001a 2946     		mov	r1, r5
+  73 001c 2046     		mov	r0, r4
+  74 001e FFF7FEFF 		bl	matrix_set
+  75 0022 BDEC028B 		vldm	sp!, {d8}
+  76 0026 70BD     		pop	{r4, r5, r6, pc}
+  78              		.section	.text.matrix_get_row_pointer,"ax",%progbits
+  79              		.align	1
+  80              		.global	matrix_get_row_pointer
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  85              	matrix_get_row_pointer:
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
+  89 0000 4368     		ldr	r3, [r0, #4]
+  90 0002 01FB03F3 		mul	r3, r1, r3
+  91 0006 8168     		ldr	r1, [r0, #8]
+  92 0008 01EB8301 		add	r1, r1, r3, lsl #2
+  93 000c 1160     		str	r1, [r2]
+  94 000e 7047     		bx	lr
+  96              		.section	.text.matrix_get_column_copy,"ax",%progbits
+  97              		.align	1
+  98              		.global	matrix_get_column_copy
+  99              		.syntax unified
+ 100              		.thumb
+ 101              		.thumb_func
+ 103              	matrix_get_column_copy:
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106 0000 30B5     		push	{r4, r5, lr}
+ 107 0002 0368     		ldr	r3, [r0]
+ 108 0004 013B     		subs	r3, r3, #1
+ 109 0006 4468     		ldr	r4, [r0, #4]
+ 110 0008 03FB0411 		mla	r1, r3, r4, r1
+ 111 000c 02EB830E 		add	lr, r2, r3, lsl #2
+ 112 0010 8568     		ldr	r5, [r0, #8]
+ 113 0012 05EB810C 		add	ip, r5, r1, lsl #2
+ 114 0016 DCF800C0 		ldr	ip, [ip]	@ float
+ 115 001a CEF800C0 		str	ip, [lr]	@ float
+ 116 001e 0AE0     		b	.L7
+ 117              	.L8:
+ 118 0020 013B     		subs	r3, r3, #1
+ 119 0022 091B     		subs	r1, r1, r4
+ 120 0024 02EB830E 		add	lr, r2, r3, lsl #2
+ 121 0028 8568     		ldr	r5, [r0, #8]
+ 122 002a 05EB810C 		add	ip, r5, r1, lsl #2
+ 123 002e DCF800C0 		ldr	ip, [ip]	@ float
+ARM GAS  /tmp/ccExwNkf.s 			page 3
+
+
+ 124 0032 CEF800C0 		str	ip, [lr]	@ float
+ 125              	.L7:
+ 126 0036 002B     		cmp	r3, #0
+ 127 0038 F2D1     		bne	.L8
+ 128 003a 30BD     		pop	{r4, r5, pc}
+ 130              		.section	.text.matrix_get_row_copy,"ax",%progbits
+ 131              		.align	1
+ 132              		.global	matrix_get_row_copy
+ 133              		.syntax unified
+ 134              		.thumb
+ 135              		.thumb_func
+ 137              	matrix_get_row_copy:
+ 138              		@ args = 0, pretend = 0, frame = 0
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140              		@ link register save eliminated.
+ 141 0000 30B4     		push	{r4, r5}
+ 142 0002 4468     		ldr	r4, [r0, #4]
+ 143 0004 631E     		subs	r3, r4, #1
+ 144 0006 01FB0444 		mla	r4, r1, r4, r4
+ 145 000a 611E     		subs	r1, r4, #1
+ 146 000c 8468     		ldr	r4, [r0, #8]
+ 147 000e 02EB830C 		add	ip, r2, r3, lsl #2
+ 148 0012 04EB8104 		add	r4, r4, r1, lsl #2
+ 149 0016 2468     		ldr	r4, [r4]	@ float
+ 150 0018 CCF80040 		str	r4, [ip]	@ float
+ 151 001c 0AE0     		b	.L11
+ 152              	.L12:
+ 153 001e 013B     		subs	r3, r3, #1
+ 154 0020 0139     		subs	r1, r1, #1
+ 155 0022 02EB8304 		add	r4, r2, r3, lsl #2
+ 156 0026 8568     		ldr	r5, [r0, #8]
+ 157 0028 05EB810C 		add	ip, r5, r1, lsl #2
+ 158 002c DCF800C0 		ldr	ip, [ip]	@ float
+ 159 0030 C4F800C0 		str	ip, [r4]	@ float
+ 160              	.L11:
+ 161 0034 002B     		cmp	r3, #0
+ 162 0036 F2D1     		bne	.L12
+ 163 0038 30BC     		pop	{r4, r5}
+ 164 003a 7047     		bx	lr
+ 166              		.section	.text.matrix_copy,"ax",%progbits
+ 167              		.align	1
+ 168              		.global	matrix_copy
+ 169              		.syntax unified
+ 170              		.thumb
+ 171              		.thumb_func
+ 173              	matrix_copy:
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176              		@ link register save eliminated.
+ 177 0000 10B4     		push	{r4}
+ 178 0002 4368     		ldr	r3, [r0, #4]
+ 179 0004 0268     		ldr	r2, [r0]
+ 180 0006 02FB03F3 		mul	r3, r2, r3
+ 181 000a 8468     		ldr	r4, [r0, #8]
+ 182 000c 8868     		ldr	r0, [r1, #8]
+ 183 000e 013B     		subs	r3, r3, #1
+ 184 0010 06E0     		b	.L15
+ARM GAS  /tmp/ccExwNkf.s 			page 4
+
+
+ 185              	.L16:
+ 186 0012 00EB8302 		add	r2, r0, r3, lsl #2
+ 187 0016 04EB8301 		add	r1, r4, r3, lsl #2
+ 188 001a 0968     		ldr	r1, [r1]	@ float
+ 189 001c 1160     		str	r1, [r2]	@ float
+ 190 001e 013B     		subs	r3, r3, #1
+ 191              	.L15:
+ 192 0020 002B     		cmp	r3, #0
+ 193 0022 F6DA     		bge	.L16
+ 194 0024 5DF8044B 		ldr	r4, [sp], #4
+ 195 0028 7047     		bx	lr
+ 197              		.section	.text.matrix_sub,"ax",%progbits
+ 198              		.align	1
+ 199              		.global	matrix_sub
+ 200              		.syntax unified
+ 201              		.thumb
+ 202              		.thumb_func
+ 204              	matrix_sub:
+ 205              		@ args = 0, pretend = 0, frame = 0
+ 206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207              		@ link register save eliminated.
+ 208 0000 10B4     		push	{r4}
+ 209 0002 4368     		ldr	r3, [r0, #4]
+ 210 0004 0468     		ldr	r4, [r0]
+ 211 0006 04FB03F3 		mul	r3, r4, r3
+ 212 000a 8468     		ldr	r4, [r0, #8]
+ 213 000c 8868     		ldr	r0, [r1, #8]
+ 214 000e 9168     		ldr	r1, [r2, #8]
+ 215 0010 013B     		subs	r3, r3, #1
+ 216 0012 0EE0     		b	.L19
+ 217              	.L20:
+ 218 0014 04EB8302 		add	r2, r4, r3, lsl #2
+ 219 0018 D2ED007A 		vldr.32	s15, [r2]
+ 220 001c 00EB8302 		add	r2, r0, r3, lsl #2
+ 221 0020 92ED007A 		vldr.32	s14, [r2]
+ 222 0024 01EB8302 		add	r2, r1, r3, lsl #2
+ 223 0028 77EEC77A 		vsub.f32	s15, s15, s14
+ 224 002c C2ED007A 		vstr.32	s15, [r2]
+ 225 0030 013B     		subs	r3, r3, #1
+ 226              	.L19:
+ 227 0032 002B     		cmp	r3, #0
+ 228 0034 EEDA     		bge	.L20
+ 229 0036 5DF8044B 		ldr	r4, [sp], #4
+ 230 003a 7047     		bx	lr
+ 232              		.section	.text.matrix_sub_inplace_b,"ax",%progbits
+ 233              		.align	1
+ 234              		.global	matrix_sub_inplace_b
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 239              	matrix_sub_inplace_b:
+ 240              		@ args = 0, pretend = 0, frame = 0
+ 241              		@ frame_needed = 0, uses_anonymous_args = 0
+ 242              		@ link register save eliminated.
+ 243 0000 4368     		ldr	r3, [r0, #4]
+ 244 0002 0268     		ldr	r2, [r0]
+ 245 0004 02FB03F3 		mul	r3, r2, r3
+ARM GAS  /tmp/ccExwNkf.s 			page 5
+
+
+ 246 0008 8068     		ldr	r0, [r0, #8]
+ 247 000a 8968     		ldr	r1, [r1, #8]
+ 248 000c 013B     		subs	r3, r3, #1
+ 249 000e 0CE0     		b	.L23
+ 250              	.L24:
+ 251 0010 00EB8302 		add	r2, r0, r3, lsl #2
+ 252 0014 D2ED007A 		vldr.32	s15, [r2]
+ 253 0018 01EB8302 		add	r2, r1, r3, lsl #2
+ 254 001c 92ED007A 		vldr.32	s14, [r2]
+ 255 0020 77EEC77A 		vsub.f32	s15, s15, s14
+ 256 0024 C2ED007A 		vstr.32	s15, [r2]
+ 257 0028 013B     		subs	r3, r3, #1
+ 258              	.L23:
+ 259 002a 002B     		cmp	r3, #0
+ 260 002c F0DA     		bge	.L24
+ 261 002e 7047     		bx	lr
+ 263              		.section	.text.matrix_add_inplace,"ax",%progbits
+ 264              		.align	1
+ 265              		.global	matrix_add_inplace
+ 266              		.syntax unified
+ 267              		.thumb
+ 268              		.thumb_func
+ 270              	matrix_add_inplace:
+ 271              		@ args = 0, pretend = 0, frame = 0
+ 272              		@ frame_needed = 0, uses_anonymous_args = 0
+ 273              		@ link register save eliminated.
+ 274 0000 10B4     		push	{r4}
+ 275 0002 4368     		ldr	r3, [r0, #4]
+ 276 0004 0268     		ldr	r2, [r0]
+ 277 0006 02FB03F3 		mul	r3, r2, r3
+ 278 000a 8468     		ldr	r4, [r0, #8]
+ 279 000c 8868     		ldr	r0, [r1, #8]
+ 280 000e 013B     		subs	r3, r3, #1
+ 281 0010 0CE0     		b	.L26
+ 282              	.L27:
+ 283 0012 04EB8302 		add	r2, r4, r3, lsl #2
+ 284 0016 D2ED007A 		vldr.32	s15, [r2]
+ 285 001a 00EB8301 		add	r1, r0, r3, lsl #2
+ 286 001e 91ED007A 		vldr.32	s14, [r1]
+ 287 0022 77EE877A 		vadd.f32	s15, s15, s14
+ 288 0026 C2ED007A 		vstr.32	s15, [r2]
+ 289 002a 013B     		subs	r3, r3, #1
+ 290              	.L26:
+ 291 002c 002B     		cmp	r3, #0
+ 292 002e F0DA     		bge	.L27
+ 293 0030 5DF8044B 		ldr	r4, [sp], #4
+ 294 0034 7047     		bx	lr
+ 296              		.section	.text.kalman_filter_initialize,"ax",%progbits
+ 297              		.align	1
+ 298              		.global	kalman_filter_initialize
+ 299              		.syntax unified
+ 300              		.thumb
+ 301              		.thumb_func
+ 303              	kalman_filter_initialize:
+ 304              		@ args = 36, pretend = 0, frame = 0
+ 305              		@ frame_needed = 0, uses_anonymous_args = 0
+ 306 0000 70B5     		push	{r4, r5, r6, lr}
+ARM GAS  /tmp/ccExwNkf.s 			page 6
+
+
+ 307 0002 0446     		mov	r4, r0
+ 308 0004 0D46     		mov	r5, r1
+ 309 0006 1646     		mov	r6, r2
+ 310 0008 0A46     		mov	r2, r1
+ 311 000a 0C30     		adds	r0, r0, #12
+ 312 000c FFF7FEFF 		bl	matrix_init
+ 313 0010 079B     		ldr	r3, [sp, #28]
+ 314 0012 2A46     		mov	r2, r5
+ 315 0014 2946     		mov	r1, r5
+ 316 0016 04F11800 		add	r0, r4, #24
+ 317 001a FFF7FEFF 		bl	matrix_init
+ 318 001e 049B     		ldr	r3, [sp, #16]
+ 319 0020 0122     		movs	r2, #1
+ 320 0022 2946     		mov	r1, r5
+ 321 0024 2046     		mov	r0, r4
+ 322 0026 FFF7FEFF 		bl	matrix_init
+ 323 002a 059B     		ldr	r3, [sp, #20]
+ 324 002c 3246     		mov	r2, r6
+ 325 002e 2946     		mov	r1, r5
+ 326 0030 04F13000 		add	r0, r4, #48
+ 327 0034 FFF7FEFF 		bl	matrix_init
+ 328 0038 089B     		ldr	r3, [sp, #32]
+ 329 003a 3246     		mov	r2, r6
+ 330 003c 3146     		mov	r1, r6
+ 331 003e 04F13C00 		add	r0, r4, #60
+ 332 0042 FFF7FEFF 		bl	matrix_init
+ 333 0046 069B     		ldr	r3, [sp, #24]
+ 334 0048 0122     		movs	r2, #1
+ 335 004a 3146     		mov	r1, r6
+ 336 004c 04F12400 		add	r0, r4, #36
+ 337 0050 FFF7FEFF 		bl	matrix_init
+ 338 0054 099B     		ldr	r3, [sp, #36]
+ 339 0056 A364     		str	r3, [r4, #72]
+ 340 0058 0A9B     		ldr	r3, [sp, #40]
+ 341 005a 0122     		movs	r2, #1
+ 342 005c 2946     		mov	r1, r5
+ 343 005e 04F14C00 		add	r0, r4, #76
+ 344 0062 FFF7FEFF 		bl	matrix_init
+ 345 0066 0B9B     		ldr	r3, [sp, #44]
+ 346 0068 2A46     		mov	r2, r5
+ 347 006a 2946     		mov	r1, r5
+ 348 006c 04F15800 		add	r0, r4, #88
+ 349 0070 FFF7FEFF 		bl	matrix_init
+ 350 0074 0C9B     		ldr	r3, [sp, #48]
+ 351 0076 3246     		mov	r2, r6
+ 352 0078 2946     		mov	r1, r5
+ 353 007a 04F16400 		add	r0, r4, #100
+ 354 007e FFF7FEFF 		bl	matrix_init
+ 355 0082 70BD     		pop	{r4, r5, r6, pc}
+ 357              		.section	.text.kalman_measurement_initialize,"ax",%progbits
+ 358              		.align	1
+ 359              		.global	kalman_measurement_initialize
+ 360              		.syntax unified
+ 361              		.thumb
+ 362              		.thumb_func
+ 364              	kalman_measurement_initialize:
+ 365              		@ args = 40, pretend = 0, frame = 0
+ARM GAS  /tmp/ccExwNkf.s 			page 7
+
+
+ 366              		@ frame_needed = 0, uses_anonymous_args = 0
+ 367 0000 70B5     		push	{r4, r5, r6, lr}
+ 368 0002 0546     		mov	r5, r0
+ 369 0004 0E46     		mov	r6, r1
+ 370 0006 1446     		mov	r4, r2
+ 371 0008 0A46     		mov	r2, r1
+ 372 000a 2146     		mov	r1, r4
+ 373 000c 0C30     		adds	r0, r0, #12
+ 374 000e FFF7FEFF 		bl	matrix_init
+ 375 0012 059B     		ldr	r3, [sp, #20]
+ 376 0014 2246     		mov	r2, r4
+ 377 0016 2146     		mov	r1, r4
+ 378 0018 05F11800 		add	r0, r5, #24
+ 379 001c FFF7FEFF 		bl	matrix_init
+ 380 0020 049B     		ldr	r3, [sp, #16]
+ 381 0022 0122     		movs	r2, #1
+ 382 0024 2146     		mov	r1, r4
+ 383 0026 2846     		mov	r0, r5
+ 384 0028 FFF7FEFF 		bl	matrix_init
+ 385 002c 089B     		ldr	r3, [sp, #32]
+ 386 002e 2246     		mov	r2, r4
+ 387 0030 3146     		mov	r1, r6
+ 388 0032 05F13C00 		add	r0, r5, #60
+ 389 0036 FFF7FEFF 		bl	matrix_init
+ 390 003a 079B     		ldr	r3, [sp, #28]
+ 391 003c 2246     		mov	r2, r4
+ 392 003e 2146     		mov	r1, r4
+ 393 0040 05F13000 		add	r0, r5, #48
+ 394 0044 FFF7FEFF 		bl	matrix_init
+ 395 0048 069B     		ldr	r3, [sp, #24]
+ 396 004a 0122     		movs	r2, #1
+ 397 004c 2146     		mov	r1, r4
+ 398 004e 05F12400 		add	r0, r5, #36
+ 399 0052 FFF7FEFF 		bl	matrix_init
+ 400 0056 099B     		ldr	r3, [sp, #36]
+ 401 0058 AB64     		str	r3, [r5, #72]
+ 402 005a 0A9B     		ldr	r3, [sp, #40]
+ 403 005c 2246     		mov	r2, r4
+ 404 005e 2146     		mov	r1, r4
+ 405 0060 05F14C00 		add	r0, r5, #76
+ 406 0064 FFF7FEFF 		bl	matrix_init
+ 407 0068 0B9B     		ldr	r3, [sp, #44]
+ 408 006a 3246     		mov	r2, r6
+ 409 006c 2146     		mov	r1, r4
+ 410 006e 05F15800 		add	r0, r5, #88
+ 411 0072 FFF7FEFF 		bl	matrix_init
+ 412 0076 0C9B     		ldr	r3, [sp, #48]
+ 413 0078 2246     		mov	r2, r4
+ 414 007a 3146     		mov	r1, r6
+ 415 007c 05F17000 		add	r0, r5, #112
+ 416 0080 FFF7FEFF 		bl	matrix_init
+ 417 0084 0D9B     		ldr	r3, [sp, #52]
+ 418 0086 3246     		mov	r2, r6
+ 419 0088 3146     		mov	r1, r6
+ 420 008a 05F16400 		add	r0, r5, #100
+ 421 008e FFF7FEFF 		bl	matrix_init
+ 422 0092 70BD     		pop	{r4, r5, r6, pc}
+ARM GAS  /tmp/ccExwNkf.s 			page 8
+
+
+ 424              		.section	.text.kalman_predict_x,"ax",%progbits
+ 425              		.align	1
+ 426              		.global	kalman_predict_x
+ 427              		.syntax unified
+ 428              		.thumb
+ 429              		.thumb_func
+ 431              	kalman_predict_x:
+ 432              		@ args = 0, pretend = 0, frame = 0
+ 433              		@ frame_needed = 0, uses_anonymous_args = 0
+ 434 0000 38B5     		push	{r3, r4, r5, lr}
+ 435 0002 0446     		mov	r4, r0
+ 436 0004 00F14C05 		add	r5, r0, #76
+ 437 0008 2A46     		mov	r2, r5
+ 438 000a 0146     		mov	r1, r0
+ 439 000c 0C30     		adds	r0, r0, #12
+ 440 000e FFF7FEFF 		bl	matrix_mult_rowvector
+ 441 0012 2146     		mov	r1, r4
+ 442 0014 2846     		mov	r0, r5
+ 443 0016 FFF7FEFF 		bl	matrix_copy
+ 444 001a 38BD     		pop	{r3, r4, r5, pc}
+ 446              		.section	.text.kalman_predict_Q,"ax",%progbits
+ 447              		.align	1
+ 448              		.global	kalman_predict_Q
+ 449              		.syntax unified
+ 450              		.thumb
+ 451              		.thumb_func
+ 453              	kalman_predict_Q:
+ 454              		@ args = 0, pretend = 0, frame = 0
+ 455              		@ frame_needed = 0, uses_anonymous_args = 0
+ 456 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 457 0004 0446     		mov	r4, r0
+ 458 0006 00F10C07 		add	r7, r0, #12
+ 459 000a 00F1300A 		add	r10, r0, #48
+ 460 000e 00F11805 		add	r5, r0, #24
+ 461 0012 D0F84880 		ldr	r8, [r0, #72]
+ 462 0016 00F15806 		add	r6, r0, #88
+ 463 001a 00F16409 		add	r9, r0, #100
+ 464 001e 4346     		mov	r3, r8
+ 465 0020 3246     		mov	r2, r6
+ 466 0022 2946     		mov	r1, r5
+ 467 0024 3846     		mov	r0, r7
+ 468 0026 FFF7FEFF 		bl	matrix_mult
+ 469 002a 2A46     		mov	r2, r5
+ 470 002c 3946     		mov	r1, r7
+ 471 002e 3046     		mov	r0, r6
+ 472 0030 FFF7FEFF 		bl	matrix_mult_transb
+ 473 0034 236B     		ldr	r3, [r4, #48]
+ 474 0036 0BB9     		cbnz	r3, .L38
+ 475              	.L35:
+ 476 0038 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 477              	.L38:
+ 478 003c 4346     		mov	r3, r8
+ 479 003e 4A46     		mov	r2, r9
+ 480 0040 04F13C01 		add	r1, r4, #60
+ 481 0044 5046     		mov	r0, r10
+ 482 0046 FFF7FEFF 		bl	matrix_mult
+ 483 004a 2A46     		mov	r2, r5
+ARM GAS  /tmp/ccExwNkf.s 			page 9
+
+
+ 484 004c 5146     		mov	r1, r10
+ 485 004e 4846     		mov	r0, r9
+ 486 0050 FFF7FEFF 		bl	matrix_multadd_transb
+ 487 0054 F0E7     		b	.L35
+ 489              		.section	.text.kalman_predict_Q_tuned,"ax",%progbits
+ 490              		.align	1
+ 491              		.global	kalman_predict_Q_tuned
+ 492              		.syntax unified
+ 493              		.thumb
+ 494              		.thumb_func
+ 496              	kalman_predict_Q_tuned:
+ 497              		@ args = 0, pretend = 0, frame = 0
+ 498              		@ frame_needed = 0, uses_anonymous_args = 0
+ 499 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 500 0004 2DED028B 		vpush.64	{d8}
+ 501 0008 0446     		mov	r4, r0
+ 502 000a 00F10C07 		add	r7, r0, #12
+ 503 000e 00F1300A 		add	r10, r0, #48
+ 504 0012 00F11805 		add	r5, r0, #24
+ 505 0016 D0F84880 		ldr	r8, [r0, #72]
+ 506 001a 00F15806 		add	r6, r0, #88
+ 507 001e 00F16409 		add	r9, r0, #100
+ 508 0022 20EE000A 		vmul.f32	s0, s0, s0
+ 509 0026 F7EE007A 		vmov.f32	s15, #1.0e+0
+ 510 002a 87EE808A 		vdiv.f32	s16, s15, s0
+ 511 002e 4346     		mov	r3, r8
+ 512 0030 3246     		mov	r2, r6
+ 513 0032 2946     		mov	r1, r5
+ 514 0034 3846     		mov	r0, r7
+ 515 0036 FFF7FEFF 		bl	matrix_mult
+ 516 003a 2A46     		mov	r2, r5
+ 517 003c B0EE480A 		vmov.f32	s0, s16
+ 518 0040 3946     		mov	r1, r7
+ 519 0042 3046     		mov	r0, r6
+ 520 0044 FFF7FEFF 		bl	matrix_multscale_transb
+ 521 0048 236B     		ldr	r3, [r4, #48]
+ 522 004a 1BB9     		cbnz	r3, .L42
+ 523              	.L39:
+ 524 004c BDEC028B 		vldm	sp!, {d8}
+ 525 0050 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 526              	.L42:
+ 527 0054 4346     		mov	r3, r8
+ 528 0056 4A46     		mov	r2, r9
+ 529 0058 04F13C01 		add	r1, r4, #60
+ 530 005c 5046     		mov	r0, r10
+ 531 005e FFF7FEFF 		bl	matrix_mult
+ 532 0062 2A46     		mov	r2, r5
+ 533 0064 5146     		mov	r1, r10
+ 534 0066 4846     		mov	r0, r9
+ 535 0068 FFF7FEFF 		bl	matrix_multadd_transb
+ 536 006c EEE7     		b	.L39
+ 538              		.section	.text.kalman_correct,"ax",%progbits
+ 539              		.align	1
+ 540              		.global	kalman_correct
+ 541              		.syntax unified
+ 542              		.thumb
+ 543              		.thumb_func
+ARM GAS  /tmp/ccExwNkf.s 			page 10
+
+
+ 545              	kalman_correct:
+ 546              		@ args = 0, pretend = 0, frame = 16
+ 547              		@ frame_needed = 0, uses_anonymous_args = 0
+ 548 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 549 0004 85B0     		sub	sp, sp, #20
+ 550 0006 0346     		mov	r3, r0
+ 551 0008 0C46     		mov	r4, r1
+ 552 000a 00F11805 		add	r5, r0, #24
+ 553 000e 01F10C06 		add	r6, r1, #12
+ 554 0012 01F13C09 		add	r9, r1, #60
+ 555 0016 01F13008 		add	r8, r1, #48
+ 556 001a 01F1240A 		add	r10, r1, #36
+ 557 001e D1F848B0 		ldr	fp, [r1, #72]
+ 558 0022 01F14C02 		add	r2, r1, #76
+ 559 0026 0092     		str	r2, [sp]
+ 560 0028 01F15807 		add	r7, r1, #88
+ 561 002c 6431     		adds	r1, r1, #100
+ 562 002e 0191     		str	r1, [sp, #4]
+ 563 0030 04F17000 		add	r0, r4, #112
+ 564 0034 0290     		str	r0, [sp, #8]
+ 565 0036 5246     		mov	r2, r10
+ 566 0038 0393     		str	r3, [sp, #12]
+ 567 003a 1946     		mov	r1, r3
+ 568 003c 3046     		mov	r0, r6
+ 569 003e FFF7FEFF 		bl	matrix_mult_rowvector
+ 570 0042 5146     		mov	r1, r10
+ 571 0044 2046     		mov	r0, r4
+ 572 0046 FFF7FEFF 		bl	matrix_sub_inplace_b
+ 573 004a 5B46     		mov	r3, fp
+ 574 004c 3A46     		mov	r2, r7
+ 575 004e 2946     		mov	r1, r5
+ 576 0050 3046     		mov	r0, r6
+ 577 0052 FFF7FEFF 		bl	matrix_mult
+ 578 0056 4246     		mov	r2, r8
+ 579 0058 3146     		mov	r1, r6
+ 580 005a 3846     		mov	r0, r7
+ 581 005c FFF7FEFF 		bl	matrix_mult_transb
+ 582 0060 04F11801 		add	r1, r4, #24
+ 583 0064 4046     		mov	r0, r8
+ 584 0066 FFF7FEFF 		bl	matrix_add_inplace
+ 585 006a 4046     		mov	r0, r8
+ 586 006c FFF7FEFF 		bl	cholesky_decompose_lower
+ 587 0070 009C     		ldr	r4, [sp]
+ 588 0072 2146     		mov	r1, r4
+ 589 0074 4046     		mov	r0, r8
+ 590 0076 FFF7FEFF 		bl	matrix_invert_lower
+ 591 007a DDF80880 		ldr	r8, [sp, #8]
+ 592 007e 4246     		mov	r2, r8
+ 593 0080 3146     		mov	r1, r6
+ 594 0082 2846     		mov	r0, r5
+ 595 0084 FFF7FEFF 		bl	matrix_mult_transb
+ 596 0088 5B46     		mov	r3, fp
+ 597 008a 4A46     		mov	r2, r9
+ 598 008c 2146     		mov	r1, r4
+ 599 008e 4046     		mov	r0, r8
+ 600 0090 FFF7FEFF 		bl	matrix_mult
+ 601 0094 039A     		ldr	r2, [sp, #12]
+ARM GAS  /tmp/ccExwNkf.s 			page 11
+
+
+ 602 0096 5146     		mov	r1, r10
+ 603 0098 4846     		mov	r0, r9
+ 604 009a FFF7FEFF 		bl	matrix_multadd_rowvector
+ 605 009e 5B46     		mov	r3, fp
+ 606 00a0 3A46     		mov	r2, r7
+ 607 00a2 2946     		mov	r1, r5
+ 608 00a4 3046     		mov	r0, r6
+ 609 00a6 FFF7FEFF 		bl	matrix_mult
+ 610 00aa 5B46     		mov	r3, fp
+ 611 00ac 019C     		ldr	r4, [sp, #4]
+ 612 00ae 2246     		mov	r2, r4
+ 613 00b0 3946     		mov	r1, r7
+ 614 00b2 4846     		mov	r0, r9
+ 615 00b4 FFF7FEFF 		bl	matrix_mult
+ 616 00b8 2A46     		mov	r2, r5
+ 617 00ba 2146     		mov	r1, r4
+ 618 00bc 2846     		mov	r0, r5
+ 619 00be FFF7FEFF 		bl	matrix_sub
+ 620 00c2 05B0     		add	sp, sp, #20
+ 621              		@ sp needed
+ 622 00c4 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 624              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/ccExwNkf.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 kalman.c
+     /tmp/ccExwNkf.s:18     .text.matrix_get:00000000 $t
+     /tmp/ccExwNkf.s:24     .text.matrix_get:00000000 matrix_get
+     /tmp/ccExwNkf.s:36     .text.matrix_set:00000000 $t
+     /tmp/ccExwNkf.s:42     .text.matrix_set:00000000 matrix_set
+     /tmp/ccExwNkf.s:54     .text.matrix_set_symmetric:00000000 $t
+     /tmp/ccExwNkf.s:60     .text.matrix_set_symmetric:00000000 matrix_set_symmetric
+     /tmp/ccExwNkf.s:79     .text.matrix_get_row_pointer:00000000 $t
+     /tmp/ccExwNkf.s:85     .text.matrix_get_row_pointer:00000000 matrix_get_row_pointer
+     /tmp/ccExwNkf.s:97     .text.matrix_get_column_copy:00000000 $t
+     /tmp/ccExwNkf.s:103    .text.matrix_get_column_copy:00000000 matrix_get_column_copy
+     /tmp/ccExwNkf.s:131    .text.matrix_get_row_copy:00000000 $t
+     /tmp/ccExwNkf.s:137    .text.matrix_get_row_copy:00000000 matrix_get_row_copy
+     /tmp/ccExwNkf.s:167    .text.matrix_copy:00000000 $t
+     /tmp/ccExwNkf.s:173    .text.matrix_copy:00000000 matrix_copy
+     /tmp/ccExwNkf.s:198    .text.matrix_sub:00000000 $t
+     /tmp/ccExwNkf.s:204    .text.matrix_sub:00000000 matrix_sub
+     /tmp/ccExwNkf.s:233    .text.matrix_sub_inplace_b:00000000 $t
+     /tmp/ccExwNkf.s:239    .text.matrix_sub_inplace_b:00000000 matrix_sub_inplace_b
+     /tmp/ccExwNkf.s:264    .text.matrix_add_inplace:00000000 $t
+     /tmp/ccExwNkf.s:270    .text.matrix_add_inplace:00000000 matrix_add_inplace
+     /tmp/ccExwNkf.s:297    .text.kalman_filter_initialize:00000000 $t
+     /tmp/ccExwNkf.s:303    .text.kalman_filter_initialize:00000000 kalman_filter_initialize
+     /tmp/ccExwNkf.s:358    .text.kalman_measurement_initialize:00000000 $t
+     /tmp/ccExwNkf.s:364    .text.kalman_measurement_initialize:00000000 kalman_measurement_initialize
+     /tmp/ccExwNkf.s:425    .text.kalman_predict_x:00000000 $t
+     /tmp/ccExwNkf.s:431    .text.kalman_predict_x:00000000 kalman_predict_x
+     /tmp/ccExwNkf.s:447    .text.kalman_predict_Q:00000000 $t
+     /tmp/ccExwNkf.s:453    .text.kalman_predict_Q:00000000 kalman_predict_Q
+     /tmp/ccExwNkf.s:490    .text.kalman_predict_Q_tuned:00000000 $t
+     /tmp/ccExwNkf.s:496    .text.kalman_predict_Q_tuned:00000000 kalman_predict_Q_tuned
+     /tmp/ccExwNkf.s:539    .text.kalman_correct:00000000 $t
+     /tmp/ccExwNkf.s:545    .text.kalman_correct:00000000 kalman_correct
+
+UNDEFINED SYMBOLS
+matrix_init
+matrix_mult_rowvector
+matrix_mult
+matrix_mult_transb
+matrix_multadd_transb
+matrix_multscale_transb
+cholesky_decompose_lower
+matrix_invert_lower
+matrix_multadd_rowvector

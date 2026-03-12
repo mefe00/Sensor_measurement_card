@@ -1,0 +1,714 @@
+ARM GAS  /tmp/cciARpsD.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"matrix.c"
+  16              		.text
+  17              		.section	.text.matrix_get_column_copy,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	matrix_get_column_copy:
+  24              		@ args = 0, pretend = 0, frame = 0
+  25              		@ frame_needed = 0, uses_anonymous_args = 0
+  26 0000 30B5     		push	{r4, r5, lr}
+  27 0002 0368     		ldr	r3, [r0]
+  28 0004 013B     		subs	r3, r3, #1
+  29 0006 4468     		ldr	r4, [r0, #4]
+  30 0008 03FB0411 		mla	r1, r3, r4, r1
+  31 000c 02EB830E 		add	lr, r2, r3, lsl #2
+  32 0010 8568     		ldr	r5, [r0, #8]
+  33 0012 05EB810C 		add	ip, r5, r1, lsl #2
+  34 0016 DCF800C0 		ldr	ip, [ip]	@ float
+  35 001a CEF800C0 		str	ip, [lr]	@ float
+  36 001e 0AE0     		b	.L2
+  37              	.L3:
+  38 0020 013B     		subs	r3, r3, #1
+  39 0022 091B     		subs	r1, r1, r4
+  40 0024 02EB830E 		add	lr, r2, r3, lsl #2
+  41 0028 8568     		ldr	r5, [r0, #8]
+  42 002a 05EB810C 		add	ip, r5, r1, lsl #2
+  43 002e DCF800C0 		ldr	ip, [ip]	@ float
+  44 0032 CEF800C0 		str	ip, [lr]	@ float
+  45              	.L2:
+  46 0036 002B     		cmp	r3, #0
+  47 0038 F2D1     		bne	.L3
+  48 003a 30BD     		pop	{r4, r5, pc}
+  50              		.section	.text.matrix_init,"ax",%progbits
+  51              		.align	1
+  52              		.global	matrix_init
+  53              		.syntax unified
+  54              		.thumb
+  55              		.thumb_func
+  57              	matrix_init:
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60              		@ link register save eliminated.
+ARM GAS  /tmp/cciARpsD.s 			page 2
+
+
+  61 0000 4260     		str	r2, [r0, #4]
+  62 0002 0160     		str	r1, [r0]
+  63 0004 8360     		str	r3, [r0, #8]
+  64 0006 7047     		bx	lr
+  66              		.section	.text.matrix_invert_lower,"ax",%progbits
+  67              		.align	1
+  68              		.global	matrix_invert_lower
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	matrix_invert_lower:
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		@ link register save eliminated.
+  77 0000 F0B4     		push	{r4, r5, r6, r7}
+  78 0002 0368     		ldr	r3, [r0]
+  79 0004 8668     		ldr	r6, [r0, #8]
+  80 0006 8F68     		ldr	r7, [r1, #8]
+  81 0008 0025     		movs	r5, #0
+  82 000a 27E0     		b	.L7
+  83              	.L23:
+  84 000c B7EE007A 		vmov.f32	s14, #1.0e+0
+  85 0010 21E0     		b	.L9
+  86              	.L11:
+  87 0012 03FB0421 		mla	r1, r3, r4, r2
+  88 0016 06EB8101 		add	r1, r6, r1, lsl #2
+  89 001a D1ED007A 		vldr.32	s15, [r1]
+  90 001e 03FB0021 		mla	r1, r3, r0, r2
+  91 0022 07EB8101 		add	r1, r7, r1, lsl #2
+  92 0026 D1ED006A 		vldr.32	s13, [r1]
+  93 002a 67EEA67A 		vmul.f32	s15, s15, s13
+  94 002e 37EE677A 		vsub.f32	s14, s14, s15
+  95 0032 013A     		subs	r2, r2, #1
+  96              	.L10:
+  97 0034 9042     		cmp	r0, r2
+  98 0036 ECDD     		ble	.L11
+  99 0038 03FB0042 		mla	r2, r3, r0, r4
+ 100 003c 07EB8202 		add	r2, r7, r2, lsl #2
+ 101 0040 C7EE067A 		vdiv.f32	s15, s14, s12
+ 102 0044 C2ED007A 		vstr.32	s15, [r2]
+ 103 0048 0130     		adds	r0, r0, #1
+ 104              	.L8:
+ 105 004a 8542     		cmp	r5, r0
+ 106 004c 05DB     		blt	.L22
+ 107 004e 8542     		cmp	r5, r0
+ 108 0050 DCD0     		beq	.L23
+ 109 0052 9FED267A 		vldr.32	s14, .L27
+ 110              	.L9:
+ 111 0056 6A1E     		subs	r2, r5, #1
+ 112 0058 ECE7     		b	.L10
+ 113              	.L22:
+ 114 005a 0135     		adds	r5, r5, #1
+ 115              	.L7:
+ 116 005c 2C46     		mov	r4, r5
+ 117 005e 9D42     		cmp	r5, r3
+ 118 0060 07D2     		bcs	.L24
+ 119 0062 03FB0552 		mla	r2, r3, r5, r5
+ARM GAS  /tmp/cciARpsD.s 			page 3
+
+
+ 120 0066 06EB8202 		add	r2, r6, r2, lsl #2
+ 121 006a 92ED006A 		vldr.32	s12, [r2]
+ 122 006e 0020     		movs	r0, #0
+ 123 0070 EBE7     		b	.L8
+ 124              	.L24:
+ 125 0072 5D1E     		subs	r5, r3, #1
+ 126 0074 2CE0     		b	.L14
+ 127              	.L17:
+ 128 0076 03FB0241 		mla	r1, r3, r2, r4
+ 129 007a 06EB8101 		add	r1, r6, r1, lsl #2
+ 130 007e D1ED007A 		vldr.32	s15, [r1]
+ 131 0082 03FB0021 		mla	r1, r3, r0, r2
+ 132 0086 07EB8101 		add	r1, r7, r1, lsl #2
+ 133 008a D1ED006A 		vldr.32	s13, [r1]
+ 134 008e 67EEA67A 		vmul.f32	s15, s15, s13
+ 135 0092 37EE677A 		vsub.f32	s14, s14, s15
+ 136 0096 0132     		adds	r2, r2, #1
+ 137              	.L16:
+ 138 0098 9A42     		cmp	r2, r3
+ 139 009a ECD3     		bcc	.L17
+ 140 009c 03FB0042 		mla	r2, r3, r0, r4
+ 141 00a0 07EB8202 		add	r2, r7, r2, lsl #2
+ 142 00a4 C7EE067A 		vdiv.f32	s15, s14, s12
+ 143 00a8 C2ED007A 		vstr.32	s15, [r2]
+ 144 00ac 03FB0402 		mla	r2, r3, r4, r0
+ 145 00b0 07EB8202 		add	r2, r7, r2, lsl #2
+ 146 00b4 C2ED007A 		vstr.32	s15, [r2]
+ 147 00b8 0130     		adds	r0, r0, #1
+ 148              	.L15:
+ 149 00ba 8542     		cmp	r5, r0
+ 150 00bc 07DB     		blt	.L25
+ 151 00be 03FB0042 		mla	r2, r3, r0, r4
+ 152 00c2 07EB8202 		add	r2, r7, r2, lsl #2
+ 153 00c6 92ED007A 		vldr.32	s14, [r2]
+ 154 00ca 6A1C     		adds	r2, r5, #1
+ 155 00cc E4E7     		b	.L16
+ 156              	.L25:
+ 157 00ce 013D     		subs	r5, r5, #1
+ 158              	.L14:
+ 159 00d0 002D     		cmp	r5, #0
+ 160 00d2 08DB     		blt	.L26
+ 161 00d4 2C46     		mov	r4, r5
+ 162 00d6 03FB0552 		mla	r2, r3, r5, r5
+ 163 00da 06EB8202 		add	r2, r6, r2, lsl #2
+ 164 00de 92ED006A 		vldr.32	s12, [r2]
+ 165 00e2 0020     		movs	r0, #0
+ 166 00e4 E9E7     		b	.L15
+ 167              	.L26:
+ 168 00e6 F0BC     		pop	{r4, r5, r6, r7}
+ 169 00e8 7047     		bx	lr
+ 170              	.L28:
+ 171 00ea 00BF     		.align	2
+ 172              	.L27:
+ 173 00ec 00000000 		.word	0
+ 175              		.section	.rodata.matrix_mult.str1.4,"aMS",%progbits,1
+ 176              		.align	2
+ 177              	.LC0:
+ARM GAS  /tmp/cciARpsD.s 			page 4
+
+
+ 178 0000 6120213D 		.ascii	"a != (matrix_t*)0\000"
+ 178      20286D61 
+ 178      74726978 
+ 178      5F742A29 
+ 178      3000
+ 179 0012 0000     		.align	2
+ 180              	.LC1:
+ 181 0014 436F7265 		.ascii	"Core/Src/matrix.c\000"
+ 181      2F537263 
+ 181      2F6D6174 
+ 181      7269782E 
+ 181      6300
+ 182 0026 0000     		.align	2
+ 183              	.LC2:
+ 184 0028 6320213D 		.ascii	"c != (matrix_t*)0\000"
+ 184      20286D61 
+ 184      74726978 
+ 184      5F742A29 
+ 184      3000
+ 185 003a 0000     		.align	2
+ 186              	.LC3:
+ 187 003c 62617578 		.ascii	"baux != (matrix_data_t*)0\000"
+ 187      20213D20 
+ 187      286D6174 
+ 187      7269785F 
+ 187      64617461 
+ 188 0056 0000     		.align	2
+ 189              	.LC4:
+ 190 0058 612D3E63 		.ascii	"a->cols == b->rows\000"
+ 190      6F6C7320 
+ 190      3D3D2062 
+ 190      2D3E726F 
+ 190      777300
+ 191 006b 00       		.align	2
+ 192              	.LC5:
+ 193 006c 612D3E72 		.ascii	"a->rows == c->rows\000"
+ 193      6F777320 
+ 193      3D3D2063 
+ 193      2D3E726F 
+ 193      777300
+ 194 007f 00       		.align	2
+ 195              	.LC6:
+ 196 0080 622D3E63 		.ascii	"b->cols == c->cols\000"
+ 196      6F6C7320 
+ 196      3D3D2063 
+ 196      2D3E636F 
+ 196      6C7300
+ 197              		.section	.text.matrix_mult,"ax",%progbits
+ 198              		.align	1
+ 199              		.global	matrix_mult
+ 200              		.syntax unified
+ 201              		.thumb
+ 202              		.thumb_func
+ 204              	matrix_mult:
+ 205              		@ args = 0, pretend = 0, frame = 8
+ 206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ARM GAS  /tmp/cciARpsD.s 			page 5
+
+
+ 208 0004 83B0     		sub	sp, sp, #12
+ 209 0006 1D46     		mov	r5, r3
+ 210 0008 4B68     		ldr	r3, [r1, #4]
+ 211 000a D2F80490 		ldr	r9, [r2, #4]
+ 212 000e 0C68     		ldr	r4, [r1]
+ 213 0010 0768     		ldr	r7, [r0]
+ 214 0012 8668     		ldr	r6, [r0, #8]
+ 215 0014 D2F808A0 		ldr	r10, [r2, #8]
+ 216 0018 78B1     		cbz	r0, .L43
+ 217 001a 8E46     		mov	lr, r1
+ 218 001c 9AB1     		cbz	r2, .L44
+ 219 001e C5B1     		cbz	r5, .L45
+ 220 0020 4168     		ldr	r1, [r0, #4]
+ 221 0022 A142     		cmp	r1, r4
+ 222 0024 1BD1     		bne	.L46
+ 223 0026 1268     		ldr	r2, [r2]
+ 224 0028 BA42     		cmp	r2, r7
+ 225 002a 1ED1     		bne	.L47
+ 226 002c 4B45     		cmp	r3, r9
+ 227 002e 22D1     		bne	.L48
+ 228 0030 03F1FF3B 		add	fp, r3, #-1
+ 229 0034 CDF804E0 		str	lr, [sp, #4]
+ 230 0038 45E0     		b	.L36
+ 231              	.L43:
+ 232 003a 2A4B     		ldr	r3, .L51
+ 233 003c 2A4A     		ldr	r2, .L51+4
+ 234 003e 5C21     		movs	r1, #92
+ 235 0040 2A48     		ldr	r0, .L51+8
+ 236 0042 FFF7FEFF 		bl	__assert_func
+ 237              	.L44:
+ 238 0046 2A4B     		ldr	r3, .L51+12
+ 239 0048 274A     		ldr	r2, .L51+4
+ 240 004a 5E21     		movs	r1, #94
+ 241 004c 2748     		ldr	r0, .L51+8
+ 242 004e FFF7FEFF 		bl	__assert_func
+ 243              	.L45:
+ 244 0052 284B     		ldr	r3, .L51+16
+ 245 0054 244A     		ldr	r2, .L51+4
+ 246 0056 5F21     		movs	r1, #95
+ 247 0058 2448     		ldr	r0, .L51+8
+ 248 005a FFF7FEFF 		bl	__assert_func
+ 249              	.L46:
+ 250 005e 264B     		ldr	r3, .L51+20
+ 251 0060 214A     		ldr	r2, .L51+4
+ 252 0062 6221     		movs	r1, #98
+ 253 0064 2148     		ldr	r0, .L51+8
+ 254 0066 FFF7FEFF 		bl	__assert_func
+ 255              	.L47:
+ 256 006a 244B     		ldr	r3, .L51+24
+ 257 006c 1E4A     		ldr	r2, .L51+4
+ 258 006e 6521     		movs	r1, #101
+ 259 0070 1E48     		ldr	r0, .L51+8
+ 260 0072 FFF7FEFF 		bl	__assert_func
+ 261              	.L48:
+ 262 0076 224B     		ldr	r3, .L51+28
+ 263 0078 1B4A     		ldr	r2, .L51+4
+ 264 007a 6621     		movs	r1, #102
+ARM GAS  /tmp/cciARpsD.s 			page 6
+
+
+ 265 007c 1B48     		ldr	r0, .L51+8
+ 266 007e FFF7FEFF 		bl	__assert_func
+ 267              	.L38:
+ 268 0082 06EB810E 		add	lr, r6, r1, lsl #2
+ 269 0086 DEED007A 		vldr.32	s15, [lr]
+ 270 008a 0133     		adds	r3, r3, #1
+ 271 008c 05EB8202 		add	r2, r5, r2, lsl #2
+ 272 0090 D2ED006A 		vldr.32	s13, [r2]
+ 273 0094 67EEA67A 		vmul.f32	s15, s15, s13
+ 274 0098 37EE277A 		vadd.f32	s14, s14, s15
+ 275 009c 0131     		adds	r1, r1, #1
+ 276              	.L39:
+ 277 009e 1A46     		mov	r2, r3
+ 278 00a0 A342     		cmp	r3, r4
+ 279 00a2 EED3     		bcc	.L38
+ 280 00a4 09FB0080 		mla	r0, r9, r0, r8
+ 281 00a8 0AEB8000 		add	r0, r10, r0, lsl #2
+ 282 00ac 80ED007A 		vstr.32	s14, [r0]
+ 283 00b0 0CF1010C 		add	ip, ip, #1
+ 284              	.L37:
+ 285 00b4 6046     		mov	r0, ip
+ 286 00b6 BC45     		cmp	ip, r7
+ 287 00b8 03D2     		bcs	.L49
+ 288 00ba 9FED127A 		vldr.32	s14, .L51+32
+ 289 00be 0023     		movs	r3, #0
+ 290 00c0 EDE7     		b	.L39
+ 291              	.L49:
+ 292 00c2 0BF1FF3B 		add	fp, fp, #-1
+ 293              	.L36:
+ 294 00c6 BBF1000F 		cmp	fp, #0
+ 295 00ca 08DB     		blt	.L50
+ 296 00cc D846     		mov	r8, fp
+ 297 00ce 2A46     		mov	r2, r5
+ 298 00d0 5946     		mov	r1, fp
+ 299 00d2 0198     		ldr	r0, [sp, #4]
+ 300 00d4 FFF7FEFF 		bl	matrix_get_column_copy
+ 301 00d8 0021     		movs	r1, #0
+ 302 00da 8C46     		mov	ip, r1
+ 303 00dc EAE7     		b	.L37
+ 304              	.L50:
+ 305 00de 03B0     		add	sp, sp, #12
+ 306              		@ sp needed
+ 307 00e0 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 308              	.L52:
+ 309              		.align	2
+ 310              	.L51:
+ 311 00e4 00000000 		.word	.LC0
+ 312 00e8 00000000 		.word	__func__.0
+ 313 00ec 14000000 		.word	.LC1
+ 314 00f0 28000000 		.word	.LC2
+ 315 00f4 3C000000 		.word	.LC3
+ 316 00f8 58000000 		.word	.LC4
+ 317 00fc 6C000000 		.word	.LC5
+ 318 0100 80000000 		.word	.LC6
+ 319 0104 00000000 		.word	0
+ 321              		.section	.text.matrix_mult_transb,"ax",%progbits
+ 322              		.align	1
+ARM GAS  /tmp/cciARpsD.s 			page 7
+
+
+ 323              		.global	matrix_mult_transb
+ 324              		.syntax unified
+ 325              		.thumb
+ 326              		.thumb_func
+ 328              	matrix_mult_transb:
+ 329              		@ args = 0, pretend = 0, frame = 8
+ 330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 332 0004 83B0     		sub	sp, sp, #12
+ 333 0006 D1F804A0 		ldr	r10, [r1, #4]
+ 334 000a 0F68     		ldr	r7, [r1]
+ 335 000c D0F80090 		ldr	r9, [r0]
+ 336 0010 D0F804B0 		ldr	fp, [r0, #4]
+ 337 0014 D0F808E0 		ldr	lr, [r0, #8]
+ 338 0018 D1F808C0 		ldr	ip, [r1, #8]
+ 339 001c D2F80880 		ldr	r8, [r2, #8]
+ 340 0020 0026     		movs	r6, #0
+ 341 0022 3546     		mov	r5, r6
+ 342 0024 3146     		mov	r1, r6
+ 343 0026 5046     		mov	r0, r10
+ 344 0028 1FE0     		b	.L54
+ 345              	.L56:
+ 346 002a 0EEB8301 		add	r1, lr, r3, lsl #2
+ 347 002e D1ED007A 		vldr.32	s15, [r1]
+ 348 0032 0CEB8201 		add	r1, ip, r2, lsl #2
+ 349 0036 D1ED006A 		vldr.32	s13, [r1]
+ 350 003a 67EEA67A 		vmul.f32	s15, s15, s13
+ 351 003e 37EE277A 		vadd.f32	s14, s14, s15
+ 352 0042 0132     		adds	r2, r2, #1
+ 353 0044 0133     		adds	r3, r3, #1
+ 354              	.L57:
+ 355 0046 A342     		cmp	r3, r4
+ 356 0048 EFD3     		bcc	.L56
+ 357 004a 08EB8503 		add	r3, r8, r5, lsl #2
+ 358 004e 83ED007A 		vstr.32	s14, [r3]
+ 359 0052 0AF1010A 		add	r10, r10, #1
+ 360 0056 0135     		adds	r5, r5, #1
+ 361              	.L55:
+ 362 0058 BA45     		cmp	r10, r7
+ 363 005a 03D2     		bcs	.L61
+ 364 005c 3346     		mov	r3, r6
+ 365 005e 9FED087A 		vldr.32	s14, .L63
+ 366 0062 F0E7     		b	.L57
+ 367              	.L61:
+ 368 0064 0199     		ldr	r1, [sp, #4]
+ 369 0066 5E44     		add	r6, r6, fp
+ 370 0068 0131     		adds	r1, r1, #1
+ 371              	.L54:
+ 372 006a 4945     		cmp	r1, r9
+ 373 006c 04D2     		bcs	.L62
+ 374 006e 3418     		adds	r4, r6, r0
+ 375 0070 0022     		movs	r2, #0
+ 376 0072 9246     		mov	r10, r2
+ 377 0074 0191     		str	r1, [sp, #4]
+ 378 0076 EFE7     		b	.L55
+ 379              	.L62:
+ 380 0078 03B0     		add	sp, sp, #12
+ARM GAS  /tmp/cciARpsD.s 			page 8
+
+
+ 381              		@ sp needed
+ 382 007a BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 383              	.L64:
+ 384 007e 00BF     		.align	2
+ 385              	.L63:
+ 386 0080 00000000 		.word	0
+ 388              		.section	.text.matrix_multadd_transb,"ax",%progbits
+ 389              		.align	1
+ 390              		.global	matrix_multadd_transb
+ 391              		.syntax unified
+ 392              		.thumb
+ 393              		.thumb_func
+ 395              	matrix_multadd_transb:
+ 396              		@ args = 0, pretend = 0, frame = 8
+ 397              		@ frame_needed = 0, uses_anonymous_args = 0
+ 398 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 399 0004 83B0     		sub	sp, sp, #12
+ 400 0006 D1F804A0 		ldr	r10, [r1, #4]
+ 401 000a 0F68     		ldr	r7, [r1]
+ 402 000c D0F80090 		ldr	r9, [r0]
+ 403 0010 D0F804B0 		ldr	fp, [r0, #4]
+ 404 0014 D0F808E0 		ldr	lr, [r0, #8]
+ 405 0018 D1F808C0 		ldr	ip, [r1, #8]
+ 406 001c D2F80880 		ldr	r8, [r2, #8]
+ 407 0020 0026     		movs	r6, #0
+ 408 0022 3546     		mov	r5, r6
+ 409 0024 3146     		mov	r1, r6
+ 410 0026 5046     		mov	r0, r10
+ 411 0028 23E0     		b	.L66
+ 412              	.L68:
+ 413 002a 0EEB8301 		add	r1, lr, r3, lsl #2
+ 414 002e D1ED007A 		vldr.32	s15, [r1]
+ 415 0032 0CEB8201 		add	r1, ip, r2, lsl #2
+ 416 0036 D1ED006A 		vldr.32	s13, [r1]
+ 417 003a 67EEA67A 		vmul.f32	s15, s15, s13
+ 418 003e 37EE277A 		vadd.f32	s14, s14, s15
+ 419 0042 0132     		adds	r2, r2, #1
+ 420 0044 0133     		adds	r3, r3, #1
+ 421              	.L69:
+ 422 0046 A342     		cmp	r3, r4
+ 423 0048 EFD3     		bcc	.L68
+ 424 004a 08EB8503 		add	r3, r8, r5, lsl #2
+ 425 004e D3ED007A 		vldr.32	s15, [r3]
+ 426 0052 77EE877A 		vadd.f32	s15, s15, s14
+ 427 0056 C3ED007A 		vstr.32	s15, [r3]
+ 428 005a 0AF1010A 		add	r10, r10, #1
+ 429 005e 0135     		adds	r5, r5, #1
+ 430              	.L67:
+ 431 0060 BA45     		cmp	r10, r7
+ 432 0062 03D2     		bcs	.L73
+ 433 0064 3346     		mov	r3, r6
+ 434 0066 9FED087A 		vldr.32	s14, .L75
+ 435 006a ECE7     		b	.L69
+ 436              	.L73:
+ 437 006c 0199     		ldr	r1, [sp, #4]
+ 438 006e 5E44     		add	r6, r6, fp
+ 439 0070 0131     		adds	r1, r1, #1
+ARM GAS  /tmp/cciARpsD.s 			page 9
+
+
+ 440              	.L66:
+ 441 0072 4945     		cmp	r1, r9
+ 442 0074 04D2     		bcs	.L74
+ 443 0076 3418     		adds	r4, r6, r0
+ 444 0078 0022     		movs	r2, #0
+ 445 007a 9246     		mov	r10, r2
+ 446 007c 0191     		str	r1, [sp, #4]
+ 447 007e EFE7     		b	.L67
+ 448              	.L74:
+ 449 0080 03B0     		add	sp, sp, #12
+ 450              		@ sp needed
+ 451 0082 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 452              	.L76:
+ 453 0086 00BF     		.align	2
+ 454              	.L75:
+ 455 0088 00000000 		.word	0
+ 457              		.section	.text.matrix_multscale_transb,"ax",%progbits
+ 458              		.align	1
+ 459              		.global	matrix_multscale_transb
+ 460              		.syntax unified
+ 461              		.thumb
+ 462              		.thumb_func
+ 464              	matrix_multscale_transb:
+ 465              		@ args = 0, pretend = 0, frame = 8
+ 466              		@ frame_needed = 0, uses_anonymous_args = 0
+ 467 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 468 0004 83B0     		sub	sp, sp, #12
+ 469 0006 F0EE406A 		vmov.f32	s13, s0
+ 470 000a D1F804A0 		ldr	r10, [r1, #4]
+ 471 000e 0F68     		ldr	r7, [r1]
+ 472 0010 D0F80090 		ldr	r9, [r0]
+ 473 0014 D0F804B0 		ldr	fp, [r0, #4]
+ 474 0018 D0F808E0 		ldr	lr, [r0, #8]
+ 475 001c D1F808C0 		ldr	ip, [r1, #8]
+ 476 0020 D2F80880 		ldr	r8, [r2, #8]
+ 477 0024 0026     		movs	r6, #0
+ 478 0026 3546     		mov	r5, r6
+ 479 0028 3146     		mov	r1, r6
+ 480 002a 5046     		mov	r0, r10
+ 481 002c 21E0     		b	.L78
+ 482              	.L80:
+ 483 002e 0EEB8301 		add	r1, lr, r3, lsl #2
+ 484 0032 D1ED007A 		vldr.32	s15, [r1]
+ 485 0036 0CEB8201 		add	r1, ip, r2, lsl #2
+ 486 003a 91ED006A 		vldr.32	s12, [r1]
+ 487 003e 67EE867A 		vmul.f32	s15, s15, s12
+ 488 0042 37EE277A 		vadd.f32	s14, s14, s15
+ 489 0046 0132     		adds	r2, r2, #1
+ 490 0048 0133     		adds	r3, r3, #1
+ 491              	.L81:
+ 492 004a A342     		cmp	r3, r4
+ 493 004c EFD3     		bcc	.L80
+ 494 004e 08EB8503 		add	r3, r8, r5, lsl #2
+ 495 0052 27EE267A 		vmul.f32	s14, s14, s13
+ 496 0056 83ED007A 		vstr.32	s14, [r3]
+ 497 005a 0AF1010A 		add	r10, r10, #1
+ 498 005e 0135     		adds	r5, r5, #1
+ARM GAS  /tmp/cciARpsD.s 			page 10
+
+
+ 499              	.L79:
+ 500 0060 BA45     		cmp	r10, r7
+ 501 0062 03D2     		bcs	.L85
+ 502 0064 3346     		mov	r3, r6
+ 503 0066 9FED087A 		vldr.32	s14, .L87
+ 504 006a EEE7     		b	.L81
+ 505              	.L85:
+ 506 006c 0199     		ldr	r1, [sp, #4]
+ 507 006e 5E44     		add	r6, r6, fp
+ 508 0070 0131     		adds	r1, r1, #1
+ 509              	.L78:
+ 510 0072 4945     		cmp	r1, r9
+ 511 0074 04D2     		bcs	.L86
+ 512 0076 3418     		adds	r4, r6, r0
+ 513 0078 0022     		movs	r2, #0
+ 514 007a 9246     		mov	r10, r2
+ 515 007c 0191     		str	r1, [sp, #4]
+ 516 007e EFE7     		b	.L79
+ 517              	.L86:
+ 518 0080 03B0     		add	sp, sp, #12
+ 519              		@ sp needed
+ 520 0082 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 521              	.L88:
+ 522 0086 00BF     		.align	2
+ 523              	.L87:
+ 524 0088 00000000 		.word	0
+ 526              		.section	.text.matrix_mult_rowvector,"ax",%progbits
+ 527              		.align	1
+ 528              		.global	matrix_mult_rowvector
+ 529              		.syntax unified
+ 530              		.thumb
+ 531              		.thumb_func
+ 533              	matrix_mult_rowvector:
+ 534              		@ args = 0, pretend = 0, frame = 0
+ 535              		@ frame_needed = 0, uses_anonymous_args = 0
+ 536 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 537 0002 0668     		ldr	r6, [r0]
+ 538 0004 4468     		ldr	r4, [r0, #4]
+ 539 0006 8068     		ldr	r0, [r0, #8]
+ 540 0008 8D68     		ldr	r5, [r1, #8]
+ 541 000a 9768     		ldr	r7, [r2, #8]
+ 542 000c 95ED006A 		vldr.32	s12, [r5]
+ 543 0010 4FF0000C 		mov	ip, #0
+ 544 0014 6346     		mov	r3, ip
+ 545 0016 E646     		mov	lr, ip
+ 546 0018 18E0     		b	.L90
+ 547              	.L92:
+ 548 001a 00EB8201 		add	r1, r0, r2, lsl #2
+ 549 001e D1ED007A 		vldr.32	s15, [r1]
+ 550 0022 05EB8301 		add	r1, r5, r3, lsl #2
+ 551 0026 D1ED006A 		vldr.32	s13, [r1]
+ 552 002a 67EEA67A 		vmul.f32	s15, s15, s13
+ 553 002e 37EE277A 		vadd.f32	s14, s14, s15
+ 554 0032 0133     		adds	r3, r3, #1
+ 555 0034 0132     		adds	r2, r2, #1
+ 556              	.L91:
+ 557 0036 A342     		cmp	r3, r4
+ARM GAS  /tmp/cciARpsD.s 			page 11
+
+
+ 558 0038 EFD3     		bcc	.L92
+ 559 003a 07EB8C03 		add	r3, r7, ip, lsl #2
+ 560 003e 83ED007A 		vstr.32	s14, [r3]
+ 561 0042 0EF1010E 		add	lr, lr, #1
+ 562 0046 0CF1010C 		add	ip, ip, #1
+ 563 004a 1346     		mov	r3, r2
+ 564              	.L90:
+ 565 004c B645     		cmp	lr, r6
+ 566 004e 08D2     		bcs	.L95
+ 567 0050 5A1C     		adds	r2, r3, #1
+ 568 0052 00EB8303 		add	r3, r0, r3, lsl #2
+ 569 0056 93ED007A 		vldr.32	s14, [r3]
+ 570 005a 27EE067A 		vmul.f32	s14, s14, s12
+ 571 005e 0123     		movs	r3, #1
+ 572 0060 E9E7     		b	.L91
+ 573              	.L95:
+ 574 0062 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 576              		.section	.text.matrix_multadd_rowvector,"ax",%progbits
+ 577              		.align	1
+ 578              		.global	matrix_multadd_rowvector
+ 579              		.syntax unified
+ 580              		.thumb
+ 581              		.thumb_func
+ 583              	matrix_multadd_rowvector:
+ 584              		@ args = 0, pretend = 0, frame = 0
+ 585              		@ frame_needed = 0, uses_anonymous_args = 0
+ 586 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 587 0002 0668     		ldr	r6, [r0]
+ 588 0004 4468     		ldr	r4, [r0, #4]
+ 589 0006 8068     		ldr	r0, [r0, #8]
+ 590 0008 8D68     		ldr	r5, [r1, #8]
+ 591 000a 9768     		ldr	r7, [r2, #8]
+ 592 000c 95ED006A 		vldr.32	s12, [r5]
+ 593 0010 4FF0000C 		mov	ip, #0
+ 594 0014 6346     		mov	r3, ip
+ 595 0016 E646     		mov	lr, ip
+ 596 0018 1CE0     		b	.L97
+ 597              	.L99:
+ 598 001a 00EB8201 		add	r1, r0, r2, lsl #2
+ 599 001e D1ED007A 		vldr.32	s15, [r1]
+ 600 0022 05EB8301 		add	r1, r5, r3, lsl #2
+ 601 0026 D1ED006A 		vldr.32	s13, [r1]
+ 602 002a 67EEA67A 		vmul.f32	s15, s15, s13
+ 603 002e 37EE277A 		vadd.f32	s14, s14, s15
+ 604 0032 0133     		adds	r3, r3, #1
+ 605 0034 0132     		adds	r2, r2, #1
+ 606              	.L98:
+ 607 0036 A342     		cmp	r3, r4
+ 608 0038 EFD3     		bcc	.L99
+ 609 003a 07EB8C03 		add	r3, r7, ip, lsl #2
+ 610 003e D3ED007A 		vldr.32	s15, [r3]
+ 611 0042 77EE877A 		vadd.f32	s15, s15, s14
+ 612 0046 C3ED007A 		vstr.32	s15, [r3]
+ 613 004a 0EF1010E 		add	lr, lr, #1
+ 614 004e 0CF1010C 		add	ip, ip, #1
+ 615 0052 1346     		mov	r3, r2
+ 616              	.L97:
+ARM GAS  /tmp/cciARpsD.s 			page 12
+
+
+ 617 0054 B645     		cmp	lr, r6
+ 618 0056 08D2     		bcs	.L102
+ 619 0058 5A1C     		adds	r2, r3, #1
+ 620 005a 00EB8303 		add	r3, r0, r3, lsl #2
+ 621 005e 93ED007A 		vldr.32	s14, [r3]
+ 622 0062 27EE067A 		vmul.f32	s14, s14, s12
+ 623 0066 0123     		movs	r3, #1
+ 624 0068 E5E7     		b	.L98
+ 625              	.L102:
+ 626 006a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 628              		.section	.rodata.__func__.0,"a"
+ 629              		.align	2
+ 632              	__func__.0:
+ 633 0000 6D617472 		.ascii	"matrix_mult\000"
+ 633      69785F6D 
+ 633      756C7400 
+ 634              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/cciARpsD.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 matrix.c
+     /tmp/cciARpsD.s:18     .text.matrix_get_column_copy:00000000 $t
+     /tmp/cciARpsD.s:23     .text.matrix_get_column_copy:00000000 matrix_get_column_copy
+     /tmp/cciARpsD.s:51     .text.matrix_init:00000000 $t
+     /tmp/cciARpsD.s:57     .text.matrix_init:00000000 matrix_init
+     /tmp/cciARpsD.s:67     .text.matrix_invert_lower:00000000 $t
+     /tmp/cciARpsD.s:73     .text.matrix_invert_lower:00000000 matrix_invert_lower
+     /tmp/cciARpsD.s:173    .text.matrix_invert_lower:000000ec $d
+     /tmp/cciARpsD.s:176    .rodata.matrix_mult.str1.4:00000000 $d
+     /tmp/cciARpsD.s:198    .text.matrix_mult:00000000 $t
+     /tmp/cciARpsD.s:204    .text.matrix_mult:00000000 matrix_mult
+     /tmp/cciARpsD.s:311    .text.matrix_mult:000000e4 $d
+     /tmp/cciARpsD.s:632    .rodata.__func__.0:00000000 __func__.0
+     /tmp/cciARpsD.s:322    .text.matrix_mult_transb:00000000 $t
+     /tmp/cciARpsD.s:328    .text.matrix_mult_transb:00000000 matrix_mult_transb
+     /tmp/cciARpsD.s:386    .text.matrix_mult_transb:00000080 $d
+     /tmp/cciARpsD.s:389    .text.matrix_multadd_transb:00000000 $t
+     /tmp/cciARpsD.s:395    .text.matrix_multadd_transb:00000000 matrix_multadd_transb
+     /tmp/cciARpsD.s:455    .text.matrix_multadd_transb:00000088 $d
+     /tmp/cciARpsD.s:458    .text.matrix_multscale_transb:00000000 $t
+     /tmp/cciARpsD.s:464    .text.matrix_multscale_transb:00000000 matrix_multscale_transb
+     /tmp/cciARpsD.s:524    .text.matrix_multscale_transb:00000088 $d
+     /tmp/cciARpsD.s:527    .text.matrix_mult_rowvector:00000000 $t
+     /tmp/cciARpsD.s:533    .text.matrix_mult_rowvector:00000000 matrix_mult_rowvector
+     /tmp/cciARpsD.s:577    .text.matrix_multadd_rowvector:00000000 $t
+     /tmp/cciARpsD.s:583    .text.matrix_multadd_rowvector:00000000 matrix_multadd_rowvector
+     /tmp/cciARpsD.s:629    .rodata.__func__.0:00000000 $d
+
+UNDEFINED SYMBOLS
+__assert_func

@@ -1,0 +1,2312 @@
+ARM GAS  /tmp/ccNPxrNS.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"matrix.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/matrix.c"
+  20              		.section	.text.matrix_get_column_copy,"ax",%progbits
+  21              		.align	1
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	matrix_get_column_copy:
+  27              	.LVL0:
+  28              	.LFB4:
+  29              		.file 2 "Core/Inc/matrix.h"
+   1:Core/Inc/matrix.h **** #ifndef MATRIX_H_
+   2:Core/Inc/matrix.h **** #define MATRIX_H_
+   3:Core/Inc/matrix.h **** 
+   4:Core/Inc/matrix.h **** #include <stdint.h>
+   5:Core/Inc/matrix.h **** #include "compiler.h"
+   6:Core/Inc/matrix.h **** 
+   7:Core/Inc/matrix.h **** /*!
+   8:Core/Inc/matrix.h **** * \def EXTERN_INLINE_MATRIX Helper inline to switch from local inline to extern inline
+   9:Core/Inc/matrix.h **** */
+  10:Core/Inc/matrix.h **** #ifndef EXTERN_INLINE_MATRIX
+  11:Core/Inc/matrix.h **** #define EXTERN_INLINE_MATRIX EXTERN_INLINE
+  12:Core/Inc/matrix.h **** #endif
+  13:Core/Inc/matrix.h **** 
+  14:Core/Inc/matrix.h **** /**
+  15:Core/Inc/matrix.h **** * Matrix data type definition.
+  16:Core/Inc/matrix.h **** */
+  17:Core/Inc/matrix.h **** // MCU'nun donanımsal FPU'su (Floating Point Unit) varsa, matrix_data_t'yi float olarak tanımlaya
+  18:Core/Inc/matrix.h **** typedef float matrix_data_t;
+  19:Core/Inc/matrix.h **** 
+  20:Core/Inc/matrix.h **** /**
+  21:Core/Inc/matrix.h **** * \brief Matrix definition
+  22:Core/Inc/matrix.h **** */
+  23:Core/Inc/matrix.h **** // Bu struct yapısının asıl amacı MCU'nun hantallaşmaısını engellemek içindir. Bunun içi
+  24:Core/Inc/matrix.h **** typedef struct {
+  25:Core/Inc/matrix.h ****     /**
+  26:Core/Inc/matrix.h ****     * \brief Number of rows
+  27:Core/Inc/matrix.h ****     */
+  28:Core/Inc/matrix.h ****     uint_fast8_t rows;
+  29:Core/Inc/matrix.h **** 
+ARM GAS  /tmp/ccNPxrNS.s 			page 2
+
+
+  30:Core/Inc/matrix.h ****     /**
+  31:Core/Inc/matrix.h ****     * \brief Number of columns
+  32:Core/Inc/matrix.h ****     */
+  33:Core/Inc/matrix.h ****     uint_fast8_t cols;
+  34:Core/Inc/matrix.h **** 
+  35:Core/Inc/matrix.h ****     /**
+  36:Core/Inc/matrix.h ****     * \brief Pointer to the data array of size {\see rows} x {\see cols}.
+  37:Core/Inc/matrix.h ****     */
+  38:Core/Inc/matrix.h ****     matrix_data_t *data;
+  39:Core/Inc/matrix.h **** } matrix_t;
+  40:Core/Inc/matrix.h **** 
+  41:Core/Inc/matrix.h **** /**
+  42:Core/Inc/matrix.h **** * \brief Initializes a matrix structure.
+  43:Core/Inc/matrix.h **** * \param[in] mat The matrix to initialize
+  44:Core/Inc/matrix.h **** * \param[in] rows The number of rows
+  45:Core/Inc/matrix.h **** * \param[in] cols The number of columns
+  46:Core/Inc/matrix.h **** * \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
+  47:Core/Inc/matrix.h **** */
+  48:Core/Inc/matrix.h **** void matrix_init(matrix_t *const  mat, const uint_fast8_t rows, const uint_fast8_t cols, matrix_dat
+  49:Core/Inc/matrix.h **** 
+  50:Core/Inc/matrix.h **** /**
+  51:Core/Inc/matrix.h **** * \brief Inverts a lower triangular matrix.
+  52:Core/Inc/matrix.h **** * \param[in] lower The lower triangular matrix to be inverted.
+  53:Core/Inc/matrix.h **** * \param[in] inverse The calculated inverse of the lower triangular matrix.
+  54:Core/Inc/matrix.h **** *
+  55:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  56:Core/Inc/matrix.h **** */
+  57:Core/Inc/matrix.h **** void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT inverse) HOT;
+  58:Core/Inc/matrix.h **** 
+  59:Core/Inc/matrix.h **** /*!
+  60:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref x} * {\ref b}
+  61:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  62:Core/Inc/matrix.h **** * \param[in] x Vector x
+  63:Core/Inc/matrix.h **** * \param[in] c Resulting vector C (will be overwritten)
+  64:Core/Inc/matrix.h **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+  65:Core/Inc/matrix.h **** *
+  66:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  67:Core/Inc/matrix.h **** */
+  68:Core/Inc/matrix.h **** void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matr
+  69:Core/Inc/matrix.h **** 
+  70:Core/Inc/matrix.h **** /*!
+  71:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref c} + {\ref x} * {\ref b}
+  72:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  73:Core/Inc/matrix.h **** * \param[in] x Vector x
+  74:Core/Inc/matrix.h **** * \param[in] c Resulting vector C (will be added to)
+  75:Core/Inc/matrix.h **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+  76:Core/Inc/matrix.h **** *
+  77:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  78:Core/Inc/matrix.h **** */
+  79:Core/Inc/matrix.h **** void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, m
+  80:Core/Inc/matrix.h **** 
+  81:Core/Inc/matrix.h **** /*!
+  82:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+  83:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  84:Core/Inc/matrix.h **** * \param[in] b Matrix B
+  85:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C (will be overwritten)
+  86:Core/Inc/matrix.h **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+ARM GAS  /tmp/ccNPxrNS.s 			page 3
+
+
+  87:Core/Inc/matrix.h **** *
+  88:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  89:Core/Inc/matrix.h **** */
+  90:Core/Inc/matrix.h **** void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matr
+  91:Core/Inc/matrix.h **** 
+  92:Core/Inc/matrix.h **** /*!
+  93:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication with transposed B such that {\ref c} = {\ref a} * {\ref b
+  94:Core/Inc/matrix.h **** * \param[in] a Matrix A
+  95:Core/Inc/matrix.h **** * \param[in] b Matrix B
+  96:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C (will be overwritten)
+  97:Core/Inc/matrix.h **** *
+  98:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  99:Core/Inc/matrix.h **** */
+ 100:Core/Inc/matrix.h **** void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT 
+ 101:Core/Inc/matrix.h **** 
+ 102:Core/Inc/matrix.h **** /*!
+ 103:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication with transposed B and adds the result to {\ref c} such th
+ 104:Core/Inc/matrix.h **** * \param[in] a Matrix A
+ 105:Core/Inc/matrix.h **** * \param[in] b Matrix B
+ 106:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C (will be added to)
+ 107:Core/Inc/matrix.h **** *
+ 108:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 109:Core/Inc/matrix.h **** */
+ 110:Core/Inc/matrix.h **** void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRI
+ 111:Core/Inc/matrix.h **** 
+ 112:Core/Inc/matrix.h **** /*!
+ 113:Core/Inc/matrix.h **** * \brief Performs a matrix multiplication with transposed B and scales the result such that {\ref c
+ 114:Core/Inc/matrix.h **** * \param[in] a Matrix A
+ 115:Core/Inc/matrix.h **** * \param[in] b Matrix B
+ 116:Core/Inc/matrix.h **** * \param[in] scale Scaling factor
+ 117:Core/Inc/matrix.h **** * \param[in] c Resulting matrix C(will be overwritten)
+ 118:Core/Inc/matrix.h **** *
+ 119:Core/Inc/matrix.h **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 120:Core/Inc/matrix.h **** */
+ 121:Core/Inc/matrix.h **** void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matri
+ 122:Core/Inc/matrix.h **** 
+ 123:Core/Inc/matrix.h **** /*!
+ 124:Core/Inc/matrix.h **** * \brief Gets a matrix element
+ 125:Core/Inc/matrix.h **** * \param[in] mat The matrix to get from
+ 126:Core/Inc/matrix.h **** * \param[in] rows The row
+ 127:Core/Inc/matrix.h **** * \param[in] cols The column
+ 128:Core/Inc/matrix.h **** * \return The value at the given cell.
+ 129:Core/Inc/matrix.h **** */
+ 130:Core/Inc/matrix.h **** PURE EXTERN_INLINE_MATRIX matrix_data_t matrix_get(const matrix_t *const mat, const register uint_f
+ 131:Core/Inc/matrix.h **** {
+ 132:Core/Inc/matrix.h ****     register uint_fast16_t address = row * mat->cols + column;
+ 133:Core/Inc/matrix.h ****     return mat->data[address];
+ 134:Core/Inc/matrix.h **** }
+ 135:Core/Inc/matrix.h **** 
+ 136:Core/Inc/matrix.h **** /*!
+ 137:Core/Inc/matrix.h **** * \brief Sets a matrix element
+ 138:Core/Inc/matrix.h **** * \param[in] mat The matrix to set
+ 139:Core/Inc/matrix.h **** * \param[in] rows The row
+ 140:Core/Inc/matrix.h **** * \param[in] cols The column
+ 141:Core/Inc/matrix.h **** * \param[in] value The value to set
+ 142:Core/Inc/matrix.h **** */
+ 143:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_set(matrix_t *mat, const register uint_fast8_t row, const register
+ARM GAS  /tmp/ccNPxrNS.s 			page 4
+
+
+ 144:Core/Inc/matrix.h **** {
+ 145:Core/Inc/matrix.h ****     register uint_fast16_t address = row * mat->cols + column;
+ 146:Core/Inc/matrix.h ****     mat->data[address] = value;
+ 147:Core/Inc/matrix.h **** }
+ 148:Core/Inc/matrix.h **** 
+ 149:Core/Inc/matrix.h **** /*!
+ 150:Core/Inc/matrix.h **** * \brief Sets matrix elements in a symmetric matrix
+ 151:Core/Inc/matrix.h **** * \param[in] mat The matrix to set
+ 152:Core/Inc/matrix.h **** * \param[in] rows The row
+ 153:Core/Inc/matrix.h **** * \param[in] cols The column
+ 154:Core/Inc/matrix.h **** * \param[in] value The value to set
+ 155:Core/Inc/matrix.h **** */
+ 156:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_set_symmetric(matrix_t *mat, const register uint_fast8_t row, cons
+ 157:Core/Inc/matrix.h **** {
+ 158:Core/Inc/matrix.h ****     matrix_set(mat, row, column, value);
+ 159:Core/Inc/matrix.h ****     matrix_set(mat, column, row, value);
+ 160:Core/Inc/matrix.h **** }
+ 161:Core/Inc/matrix.h **** 
+ 162:Core/Inc/matrix.h **** /*!
+ 163:Core/Inc/matrix.h **** * \brief Gets a pointer to a matrix row
+ 164:Core/Inc/matrix.h **** * \param[in] mat The matrix to get from
+ 165:Core/Inc/matrix.h **** * \param[in] rows The row
+ 166:Core/Inc/matrix.h **** * \param[out] row_data A pointer to the given matrix row
+ 167:Core/Inc/matrix.h **** */
+ 168:Core/Inc/matrix.h **** EXTERN_INLINE_MATRIX void matrix_get_row_pointer(const matrix_t *const mat, const register uint_fas
+ 169:Core/Inc/matrix.h **** {
+ 170:Core/Inc/matrix.h ****     register uint_fast16_t address = row * mat->cols;
+ 171:Core/Inc/matrix.h ****     *row_data = &mat->data[address];
+ 172:Core/Inc/matrix.h **** }
+ 173:Core/Inc/matrix.h **** 
+ 174:Core/Inc/matrix.h **** /*!
+ 175:Core/Inc/matrix.h **** * \brief Gets a copy of a matrix column
+ 176:Core/Inc/matrix.h **** * \param[in] mat The matrix to initialize
+ 177:Core/Inc/matrix.h **** * \param[in] rows The column
+ 178:Core/Inc/matrix.h **** * \param[in] row_data Pointer to an array of the correct length to hold a column of matrix {\ref ma
+ 179:Core/Inc/matrix.h **** */
+ 180:Core/Inc/matrix.h **** HOT EXTERN_INLINE_MATRIX void matrix_get_column_copy(const matrix_t *const mat, const register uint
+ 181:Core/Inc/matrix.h **** {
+  30              		.loc 2 181 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 2 181 1 is_stmt 0 view .LVU1
+  35 0000 30B5     		push	{r4, r5, lr}
+  36              		.cfi_def_cfa_offset 12
+  37              		.cfi_offset 4, -12
+  38              		.cfi_offset 5, -8
+  39              		.cfi_offset 14, -4
+ 182:Core/Inc/matrix.h ****     // start from the back, so target index is equal to the index of the last row.
+ 183:Core/Inc/matrix.h ****     register uint_fast8_t target_index = mat->rows - 1;
+  40              		.loc 2 183 5 is_stmt 1 view .LVU2
+  41              		.loc 2 183 45 is_stmt 0 view .LVU3
+  42 0002 0368     		ldr	r3, [r0]
+  43              		.loc 2 183 27 view .LVU4
+  44 0004 013B     		subs	r3, r3, #1
+  45              	.LVL1:
+ 184:Core/Inc/matrix.h **** 
+ARM GAS  /tmp/ccNPxrNS.s 			page 5
+
+
+ 185:Core/Inc/matrix.h ****     // also, the source index is the column..th index
+ 186:Core/Inc/matrix.h ****     const register int_fast16_t stride = mat->cols;
+  46              		.loc 2 186 5 is_stmt 1 view .LVU5
+  47              		.loc 2 186 45 is_stmt 0 view .LVU6
+  48 0006 4468     		ldr	r4, [r0, #4]
+  49              	.LVL2:
+ 187:Core/Inc/matrix.h ****     register int_fast16_t source_index = target_index * stride + column;
+  50              		.loc 2 187 5 is_stmt 1 view .LVU7
+  51              		.loc 2 187 64 is_stmt 0 view .LVU8
+  52 0008 03FB0411 		mla	r1, r3, r4, r1
+  53              	.LVL3:
+ 188:Core/Inc/matrix.h **** 
+ 189:Core/Inc/matrix.h ****     // fetch data
+ 190:Core/Inc/matrix.h ****     row_data[target_index] = mat->data[source_index];
+  54              		.loc 2 190 5 is_stmt 1 view .LVU9
+  55              		.loc 2 190 13 is_stmt 0 view .LVU10
+  56 000c 02EB830E 		add	lr, r2, r3, lsl #2
+  57              		.loc 2 190 39 view .LVU11
+  58 0010 8568     		ldr	r5, [r0, #8]
+  59 0012 05EB810C 		add	ip, r5, r1, lsl #2
+  60 0016 DCF800C0 		ldr	ip, [ip]	@ float
+  61              		.loc 2 190 28 view .LVU12
+  62 001a CEF800C0 		str	ip, [lr]	@ float
+ 191:Core/Inc/matrix.h ****     while (target_index != 0)
+  63              		.loc 2 191 5 is_stmt 1 view .LVU13
+  64              		.loc 2 191 11 is_stmt 0 view .LVU14
+  65 001e 0AE0     		b	.L2
+  66              	.L3:
+ 192:Core/Inc/matrix.h ****     {
+ 193:Core/Inc/matrix.h ****         --target_index;
+  67              		.loc 2 193 9 is_stmt 1 view .LVU15
+  68 0020 013B     		subs	r3, r3, #1
+  69              	.LVL4:
+ 194:Core/Inc/matrix.h ****         source_index -= stride;
+  70              		.loc 2 194 9 view .LVU16
+  71              		.loc 2 194 22 is_stmt 0 view .LVU17
+  72 0022 091B     		subs	r1, r1, r4
+  73              	.LVL5:
+ 195:Core/Inc/matrix.h **** 
+ 196:Core/Inc/matrix.h ****         row_data[target_index] = mat->data[source_index];
+  74              		.loc 2 196 9 is_stmt 1 view .LVU18
+  75              		.loc 2 196 17 is_stmt 0 view .LVU19
+  76 0024 02EB830E 		add	lr, r2, r3, lsl #2
+  77              		.loc 2 196 43 view .LVU20
+  78 0028 8568     		ldr	r5, [r0, #8]
+  79 002a 05EB810C 		add	ip, r5, r1, lsl #2
+  80 002e DCF800C0 		ldr	ip, [ip]	@ float
+  81              		.loc 2 196 32 view .LVU21
+  82 0032 CEF800C0 		str	ip, [lr]	@ float
+  83              	.L2:
+ 191:Core/Inc/matrix.h ****     {
+  84              		.loc 2 191 25 is_stmt 1 view .LVU22
+  85 0036 002B     		cmp	r3, #0
+  86 0038 F2D1     		bne	.L3
+ 197:Core/Inc/matrix.h ****     }
+ 198:Core/Inc/matrix.h **** }
+  87              		.loc 2 198 1 is_stmt 0 view .LVU23
+ARM GAS  /tmp/ccNPxrNS.s 			page 6
+
+
+  88 003a 30BD     		pop	{r4, r5, pc}
+  89              		.loc 2 198 1 view .LVU24
+  90              		.cfi_endproc
+  91              	.LFE4:
+  93              		.section	.text.matrix_init,"ax",%progbits
+  94              		.align	1
+  95              		.global	matrix_init
+  96              		.syntax unified
+  97              		.thumb
+  98              		.thumb_func
+ 100              	matrix_init:
+ 101              	.LVL6:
+ 102              	.LFB10:
+   1:Core/Src/matrix.c **** #include <stdint.h>
+   2:Core/Src/matrix.c **** #include <assert.h>
+   3:Core/Src/matrix.c **** 
+   4:Core/Src/matrix.c **** #define EXTERN_INLINE_MATRIX static INLINE
+   5:Core/Src/matrix.c **** #include "matrix.h"
+   6:Core/Src/matrix.c **** 
+   7:Core/Src/matrix.c **** /**
+   8:Core/Src/matrix.c **** * \brief Initializes a matrix structure.
+   9:Core/Src/matrix.c **** * \param[in] mat The matrix to initialize
+  10:Core/Src/matrix.c **** * \param[in] rows The number of rows
+  11:Core/Src/matrix.c **** * \param[in] cols The number of columns
+  12:Core/Src/matrix.c **** * \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
+  13:Core/Src/matrix.c **** */
+  14:Core/Src/matrix.c **** void matrix_init(matrix_t * mat, uint_fast8_t rows, uint_fast8_t cols, matrix_data_t * buffer)
+  15:Core/Src/matrix.c **** {
+ 103              		.loc 1 15 1 is_stmt 1 view -0
+ 104              		.cfi_startproc
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107              		@ link register save eliminated.
+  16:Core/Src/matrix.c ****     mat->cols = cols;
+ 108              		.loc 1 16 5 view .LVU26
+ 109              		.loc 1 16 15 is_stmt 0 view .LVU27
+ 110 0000 4260     		str	r2, [r0, #4]
+  17:Core/Src/matrix.c ****     mat->rows = rows;
+ 111              		.loc 1 17 5 is_stmt 1 view .LVU28
+ 112              		.loc 1 17 15 is_stmt 0 view .LVU29
+ 113 0002 0160     		str	r1, [r0]
+  18:Core/Src/matrix.c ****     mat->data = buffer;
+ 114              		.loc 1 18 5 is_stmt 1 view .LVU30
+ 115              		.loc 1 18 15 is_stmt 0 view .LVU31
+ 116 0004 8360     		str	r3, [r0, #8]
+  19:Core/Src/matrix.c **** }
+ 117              		.loc 1 19 1 view .LVU32
+ 118 0006 7047     		bx	lr
+ 119              		.cfi_endproc
+ 120              	.LFE10:
+ 122              		.section	.text.matrix_invert_lower,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	matrix_invert_lower
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 129              	matrix_invert_lower:
+ARM GAS  /tmp/ccNPxrNS.s 			page 7
+
+
+ 130              	.LVL7:
+ 131              	.LFB11:
+  20:Core/Src/matrix.c **** 
+  21:Core/Src/matrix.c **** /**
+  22:Core/Src/matrix.c **** * \brief Inverts a lower triangular matrix.
+  23:Core/Src/matrix.c **** * \param[in] lower The lower triangular matrix to be inverted.
+  24:Core/Src/matrix.c **** * \param[out] inverse The inverse of the lower triangular matrix.
+  25:Core/Src/matrix.c **** *
+  26:Core/Src/matrix.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  27:Core/Src/matrix.c **** */
+  28:Core/Src/matrix.c **** void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT inverse)
+  29:Core/Src/matrix.c **** {
+ 132              		.loc 1 29 1 is_stmt 1 view -0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 0
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136              		@ link register save eliminated.
+ 137              		.loc 1 29 1 is_stmt 0 view .LVU34
+ 138 0000 F0B4     		push	{r4, r5, r6, r7}
+ 139              		.cfi_def_cfa_offset 16
+ 140              		.cfi_offset 4, -16
+ 141              		.cfi_offset 5, -12
+ 142              		.cfi_offset 6, -8
+ 143              		.cfi_offset 7, -4
+  30:Core/Src/matrix.c ****     int_fast8_t i, j, k;
+ 144              		.loc 1 30 5 is_stmt 1 view .LVU35
+  31:Core/Src/matrix.c ****     const uint_fast8_t n = lower->rows;
+ 145              		.loc 1 31 5 view .LVU36
+ 146              		.loc 1 31 24 is_stmt 0 view .LVU37
+ 147 0002 0368     		ldr	r3, [r0]
+ 148              	.LVL8:
+  32:Core/Src/matrix.c ****     const matrix_data_t *const  t = lower->data;
+ 149              		.loc 1 32 5 is_stmt 1 view .LVU38
+ 150              		.loc 1 32 33 is_stmt 0 view .LVU39
+ 151 0004 8668     		ldr	r6, [r0, #8]
+ 152              	.LVL9:
+  33:Core/Src/matrix.c ****     matrix_data_t *a = inverse->data;
+ 153              		.loc 1 33 5 is_stmt 1 view .LVU40
+ 154              		.loc 1 33 20 is_stmt 0 view .LVU41
+ 155 0006 8F68     		ldr	r7, [r1, #8]
+ 156              	.LVL10:
+  34:Core/Src/matrix.c **** 
+  35:Core/Src/matrix.c ****     // TODO reorder these operations to avoid cache misses
+  36:Core/Src/matrix.c **** 
+  37:Core/Src/matrix.c ****     // inverts the lower triangular system and saves the result
+  38:Core/Src/matrix.c ****     // in the upper triangle to minimize cache misses
+  39:Core/Src/matrix.c ****     for(i =0; i < n; ++i )
+ 157              		.loc 1 39 5 is_stmt 1 view .LVU42
+ 158              		.loc 1 39 11 is_stmt 0 view .LVU43
+ 159 0008 0025     		movs	r5, #0
+ 160              		.loc 1 39 5 view .LVU44
+ 161 000a 27E0     		b	.L7
+ 162              	.LVL11:
+ 163              	.L23:
+ 164              	.LBB2:
+ 165              	.LBB3:
+  40:Core/Src/matrix.c ****     {
+ARM GAS  /tmp/ccNPxrNS.s 			page 8
+
+
+  41:Core/Src/matrix.c ****         const matrix_data_t el_ii = t[i*n+i];
+  42:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+  43:Core/Src/matrix.c ****         {
+  44:Core/Src/matrix.c ****             matrix_data_t sum = (i==j) ? (matrix_data_t)1.0 : (matrix_data_t)0;
+ 166              		.loc 1 44 61 discriminator 1 view .LVU45
+ 167 000c B7EE007A 		vmov.f32	s14, #1.0e+0
+ 168 0010 21E0     		b	.L9
+ 169              	.LVL12:
+ 170              	.L11:
+  45:Core/Src/matrix.c ****             for(k=i-1; k >=j; --k )
+  46:Core/Src/matrix.c ****             {
+  47:Core/Src/matrix.c ****                 sum -= t[i*n+k]*a[j*n+k];
+ 171              		.loc 1 47 17 is_stmt 1 view .LVU46
+ 172              		.loc 1 47 29 is_stmt 0 view .LVU47
+ 173 0012 03FB0421 		mla	r1, r3, r4, r2
+ 174              		.loc 1 47 25 view .LVU48
+ 175 0016 06EB8101 		add	r1, r6, r1, lsl #2
+ 176 001a D1ED007A 		vldr.32	s15, [r1]
+ 177              		.loc 1 47 38 view .LVU49
+ 178 001e 03FB0021 		mla	r1, r3, r0, r2
+ 179              		.loc 1 47 34 view .LVU50
+ 180 0022 07EB8101 		add	r1, r7, r1, lsl #2
+ 181 0026 D1ED006A 		vldr.32	s13, [r1]
+ 182              		.loc 1 47 32 view .LVU51
+ 183 002a 67EEA67A 		vmul.f32	s15, s15, s13
+ 184              		.loc 1 47 21 view .LVU52
+ 185 002e 37EE677A 		vsub.f32	s14, s14, s15
+ 186              	.LVL13:
+  45:Core/Src/matrix.c ****             for(k=i-1; k >=j; --k )
+ 187              		.loc 1 45 31 is_stmt 1 discriminator 3 view .LVU53
+ 188 0032 013A     		subs	r2, r2, #1
+ 189              	.LVL14:
+ 190              	.L10:
+  45:Core/Src/matrix.c ****             for(k=i-1; k >=j; --k )
+ 191              		.loc 1 45 26 discriminator 1 view .LVU54
+ 192 0034 9042     		cmp	r0, r2
+ 193 0036 ECDD     		ble	.L11
+  48:Core/Src/matrix.c ****             }
+  49:Core/Src/matrix.c ****             a[j*n+i] = sum / el_ii;
+ 194              		.loc 1 49 13 view .LVU55
+ 195              		.loc 1 49 18 is_stmt 0 view .LVU56
+ 196 0038 03FB0042 		mla	r2, r3, r0, r4
+ 197              	.LVL15:
+ 198              		.loc 1 49 14 view .LVU57
+ 199 003c 07EB8202 		add	r2, r7, r2, lsl #2
+ 200              		.loc 1 49 28 view .LVU58
+ 201 0040 C7EE067A 		vdiv.f32	s15, s14, s12
+ 202              		.loc 1 49 22 view .LVU59
+ 203 0044 C2ED007A 		vstr.32	s15, [r2]
+ 204              	.LBE3:
+  42:Core/Src/matrix.c ****         {
+ 205              		.loc 1 42 28 is_stmt 1 discriminator 2 view .LVU60
+ 206 0048 0130     		adds	r0, r0, #1
+ 207              	.LVL16:
+ 208              	.L8:
+  42:Core/Src/matrix.c ****         {
+ 209              		.loc 1 42 22 discriminator 1 view .LVU61
+ARM GAS  /tmp/ccNPxrNS.s 			page 9
+
+
+ 210 004a 8542     		cmp	r5, r0
+ 211 004c 05DB     		blt	.L22
+ 212              	.LBB4:
+  44:Core/Src/matrix.c ****             for(k=i-1; k >=j; --k )
+ 213              		.loc 1 44 13 view .LVU62
+  44:Core/Src/matrix.c ****             for(k=i-1; k >=j; --k )
+ 214              		.loc 1 44 61 is_stmt 0 view .LVU63
+ 215 004e 8542     		cmp	r5, r0
+ 216 0050 DCD0     		beq	.L23
+  44:Core/Src/matrix.c ****             for(k=i-1; k >=j; --k )
+ 217              		.loc 1 44 61 discriminator 2 view .LVU64
+ 218 0052 9FED267A 		vldr.32	s14, .L27
+ 219              	.L9:
+ 220              	.LVL17:
+  45:Core/Src/matrix.c ****             {
+ 221              		.loc 1 45 13 is_stmt 1 view .LVU65
+  45:Core/Src/matrix.c ****             {
+ 222              		.loc 1 45 18 is_stmt 0 view .LVU66
+ 223 0056 6A1E     		subs	r2, r5, #1
+ 224              	.LVL18:
+  45:Core/Src/matrix.c ****             {
+ 225              		.loc 1 45 13 view .LVU67
+ 226 0058 ECE7     		b	.L10
+ 227              	.LVL19:
+ 228              	.L22:
+  45:Core/Src/matrix.c ****             {
+ 229              		.loc 1 45 13 view .LVU68
+ 230              	.LBE4:
+ 231              	.LBE2:
+  39:Core/Src/matrix.c ****     {
+ 232              		.loc 1 39 22 is_stmt 1 discriminator 2 view .LVU69
+ 233 005a 0135     		adds	r5, r5, #1
+ 234              	.LVL20:
+ 235              	.L7:
+  39:Core/Src/matrix.c ****     {
+ 236              		.loc 1 39 17 discriminator 1 view .LVU70
+ 237 005c 2C46     		mov	r4, r5
+ 238 005e 9D42     		cmp	r5, r3
+ 239 0060 07D2     		bcs	.L24
+ 240              	.LBB5:
+  41:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 241              		.loc 1 41 9 view .LVU71
+  41:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 242              		.loc 1 41 42 is_stmt 0 view .LVU72
+ 243 0062 03FB0552 		mla	r2, r3, r5, r5
+  41:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 244              		.loc 1 41 38 view .LVU73
+ 245 0066 06EB8202 		add	r2, r6, r2, lsl #2
+  41:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 246              		.loc 1 41 29 view .LVU74
+ 247 006a 92ED006A 		vldr.32	s12, [r2]
+ 248              	.LVL21:
+  42:Core/Src/matrix.c ****         {
+ 249              		.loc 1 42 9 is_stmt 1 view .LVU75
+  42:Core/Src/matrix.c ****         {
+ 250              		.loc 1 42 15 is_stmt 0 view .LVU76
+ 251 006e 0020     		movs	r0, #0
+ARM GAS  /tmp/ccNPxrNS.s 			page 10
+
+
+  42:Core/Src/matrix.c ****         {
+ 252              		.loc 1 42 9 view .LVU77
+ 253 0070 EBE7     		b	.L8
+ 254              	.LVL22:
+ 255              	.L24:
+  42:Core/Src/matrix.c ****         {
+ 256              		.loc 1 42 9 view .LVU78
+ 257              	.LBE5:
+  50:Core/Src/matrix.c ****         }
+  51:Core/Src/matrix.c ****     }
+  52:Core/Src/matrix.c ****     // solve the system and handle the previous solution being in the upper triangle
+  53:Core/Src/matrix.c ****     // takes advantage of symmetry
+  54:Core/Src/matrix.c ****     for(i=n-1; i>=0; --i )
+ 258              		.loc 1 54 5 is_stmt 1 view .LVU79
+ 259              		.loc 1 54 12 is_stmt 0 view .LVU80
+ 260 0072 5D1E     		subs	r5, r3, #1
+ 261              	.LVL23:
+ 262              		.loc 1 54 5 view .LVU81
+ 263 0074 2CE0     		b	.L14
+ 264              	.LVL24:
+ 265              	.L17:
+ 266              	.LBB6:
+ 267              	.LBB7:
+  55:Core/Src/matrix.c ****     {
+  56:Core/Src/matrix.c ****         const matrix_data_t el_ii = t[i*n+i];
+  57:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+  58:Core/Src/matrix.c ****         {
+  59:Core/Src/matrix.c ****             matrix_data_t sum = (i<j) ? 0 : a[j*n+i];
+  60:Core/Src/matrix.c ****             for(k=i+1; k<n; ++k)
+  61:Core/Src/matrix.c ****             {
+  62:Core/Src/matrix.c ****                 sum -= t[k*n+i]*a[j*n+k];
+ 268              		.loc 1 62 17 is_stmt 1 view .LVU82
+ 269              		.loc 1 62 29 is_stmt 0 view .LVU83
+ 270 0076 03FB0241 		mla	r1, r3, r2, r4
+ 271              		.loc 1 62 25 view .LVU84
+ 272 007a 06EB8101 		add	r1, r6, r1, lsl #2
+ 273 007e D1ED007A 		vldr.32	s15, [r1]
+ 274              		.loc 1 62 38 view .LVU85
+ 275 0082 03FB0021 		mla	r1, r3, r0, r2
+ 276              		.loc 1 62 34 view .LVU86
+ 277 0086 07EB8101 		add	r1, r7, r1, lsl #2
+ 278 008a D1ED006A 		vldr.32	s13, [r1]
+ 279              		.loc 1 62 32 view .LVU87
+ 280 008e 67EEA67A 		vmul.f32	s15, s15, s13
+ 281              		.loc 1 62 21 view .LVU88
+ 282 0092 37EE677A 		vsub.f32	s14, s14, s15
+ 283              	.LVL25:
+  60:Core/Src/matrix.c ****             {
+ 284              		.loc 1 60 29 is_stmt 1 discriminator 3 view .LVU89
+ 285 0096 0132     		adds	r2, r2, #1
+ 286              	.LVL26:
+ 287              	.L16:
+  60:Core/Src/matrix.c ****             {
+ 288              		.loc 1 60 25 discriminator 1 view .LVU90
+ 289 0098 9A42     		cmp	r2, r3
+ 290 009a ECD3     		bcc	.L17
+  63:Core/Src/matrix.c ****             }
+ARM GAS  /tmp/ccNPxrNS.s 			page 11
+
+
+  64:Core/Src/matrix.c ****             a[i*n+j] = a[j*n+i] = sum / el_ii;
+ 291              		.loc 1 64 13 view .LVU91
+ 292              		.loc 1 64 29 is_stmt 0 view .LVU92
+ 293 009c 03FB0042 		mla	r2, r3, r0, r4
+ 294              	.LVL27:
+ 295              		.loc 1 64 25 view .LVU93
+ 296 00a0 07EB8202 		add	r2, r7, r2, lsl #2
+ 297              		.loc 1 64 39 view .LVU94
+ 298 00a4 C7EE067A 		vdiv.f32	s15, s14, s12
+ 299              		.loc 1 64 33 view .LVU95
+ 300 00a8 C2ED007A 		vstr.32	s15, [r2]
+ 301              		.loc 1 64 18 view .LVU96
+ 302 00ac 03FB0402 		mla	r2, r3, r4, r0
+ 303              		.loc 1 64 14 view .LVU97
+ 304 00b0 07EB8202 		add	r2, r7, r2, lsl #2
+ 305              		.loc 1 64 22 view .LVU98
+ 306 00b4 C2ED007A 		vstr.32	s15, [r2]
+ 307              	.LBE7:
+  57:Core/Src/matrix.c ****         {
+ 308              		.loc 1 57 28 is_stmt 1 discriminator 2 view .LVU99
+ 309 00b8 0130     		adds	r0, r0, #1
+ 310              	.LVL28:
+ 311              	.L15:
+  57:Core/Src/matrix.c ****         {
+ 312              		.loc 1 57 22 discriminator 1 view .LVU100
+ 313 00ba 8542     		cmp	r5, r0
+ 314 00bc 07DB     		blt	.L25
+ 315              	.LBB8:
+  59:Core/Src/matrix.c ****             for(k=i+1; k<n; ++k)
+ 316              		.loc 1 59 13 view .LVU101
+  59:Core/Src/matrix.c ****             for(k=i+1; k<n; ++k)
+ 317              		.loc 1 59 50 is_stmt 0 discriminator 1 view .LVU102
+ 318 00be 03FB0042 		mla	r2, r3, r0, r4
+  59:Core/Src/matrix.c ****             for(k=i+1; k<n; ++k)
+ 319              		.loc 1 59 46 discriminator 1 view .LVU103
+ 320 00c2 07EB8202 		add	r2, r7, r2, lsl #2
+  59:Core/Src/matrix.c ****             for(k=i+1; k<n; ++k)
+ 321              		.loc 1 59 43 discriminator 1 view .LVU104
+ 322 00c6 92ED007A 		vldr.32	s14, [r2]
+ 323              	.LVL29:
+  60:Core/Src/matrix.c ****             {
+ 324              		.loc 1 60 13 is_stmt 1 view .LVU105
+  60:Core/Src/matrix.c ****             {
+ 325              		.loc 1 60 18 is_stmt 0 view .LVU106
+ 326 00ca 6A1C     		adds	r2, r5, #1
+ 327              	.LVL30:
+  60:Core/Src/matrix.c ****             {
+ 328              		.loc 1 60 13 view .LVU107
+ 329 00cc E4E7     		b	.L16
+ 330              	.LVL31:
+ 331              	.L25:
+  60:Core/Src/matrix.c ****             {
+ 332              		.loc 1 60 13 view .LVU108
+ 333              	.LBE8:
+ 334              	.LBE6:
+  54:Core/Src/matrix.c ****     {
+ 335              		.loc 1 54 22 is_stmt 1 discriminator 2 view .LVU109
+ARM GAS  /tmp/ccNPxrNS.s 			page 12
+
+
+ 336 00ce 013D     		subs	r5, r5, #1
+ 337              	.LVL32:
+ 338              	.L14:
+  54:Core/Src/matrix.c ****     {
+ 339              		.loc 1 54 17 discriminator 1 view .LVU110
+ 340 00d0 002D     		cmp	r5, #0
+ 341 00d2 08DB     		blt	.L26
+ 342              	.LBB9:
+  56:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 343              		.loc 1 56 9 view .LVU111
+  56:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 344              		.loc 1 56 42 is_stmt 0 view .LVU112
+ 345 00d4 2C46     		mov	r4, r5
+ 346 00d6 03FB0552 		mla	r2, r3, r5, r5
+  56:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 347              		.loc 1 56 38 view .LVU113
+ 348 00da 06EB8202 		add	r2, r6, r2, lsl #2
+  56:Core/Src/matrix.c ****         for(j = 0; j <= i; ++j )
+ 349              		.loc 1 56 29 view .LVU114
+ 350 00de 92ED006A 		vldr.32	s12, [r2]
+ 351              	.LVL33:
+  57:Core/Src/matrix.c ****         {
+ 352              		.loc 1 57 9 is_stmt 1 view .LVU115
+  57:Core/Src/matrix.c ****         {
+ 353              		.loc 1 57 15 is_stmt 0 view .LVU116
+ 354 00e2 0020     		movs	r0, #0
+  57:Core/Src/matrix.c ****         {
+ 355              		.loc 1 57 9 view .LVU117
+ 356 00e4 E9E7     		b	.L15
+ 357              	.LVL34:
+ 358              	.L26:
+  57:Core/Src/matrix.c ****         {
+ 359              		.loc 1 57 9 view .LVU118
+ 360              	.LBE9:
+  65:Core/Src/matrix.c ****         }
+  66:Core/Src/matrix.c ****     }
+  67:Core/Src/matrix.c **** }
+ 361              		.loc 1 67 1 view .LVU119
+ 362 00e6 F0BC     		pop	{r4, r5, r6, r7}
+ 363              		.cfi_restore 7
+ 364              		.cfi_restore 6
+ 365              		.cfi_restore 5
+ 366              		.cfi_restore 4
+ 367              		.cfi_def_cfa_offset 0
+ 368              	.LVL35:
+ 369              		.loc 1 67 1 view .LVU120
+ 370 00e8 7047     		bx	lr
+ 371              	.L28:
+ 372 00ea 00BF     		.align	2
+ 373              	.L27:
+ 374 00ec 00000000 		.word	0
+ 375              		.cfi_endproc
+ 376              	.LFE11:
+ 378              		.section	.rodata.matrix_mult.str1.4,"aMS",%progbits,1
+ 379              		.align	2
+ 380              	.LC0:
+ 381 0000 6120213D 		.ascii	"a != (matrix_t*)0\000"
+ARM GAS  /tmp/ccNPxrNS.s 			page 13
+
+
+ 381      20286D61 
+ 381      74726978 
+ 381      5F742A29 
+ 381      3000
+ 382 0012 0000     		.align	2
+ 383              	.LC1:
+ 384 0014 436F7265 		.ascii	"Core/Src/matrix.c\000"
+ 384      2F537263 
+ 384      2F6D6174 
+ 384      7269782E 
+ 384      6300
+ 385 0026 0000     		.align	2
+ 386              	.LC2:
+ 387 0028 6320213D 		.ascii	"c != (matrix_t*)0\000"
+ 387      20286D61 
+ 387      74726978 
+ 387      5F742A29 
+ 387      3000
+ 388 003a 0000     		.align	2
+ 389              	.LC3:
+ 390 003c 62617578 		.ascii	"baux != (matrix_data_t*)0\000"
+ 390      20213D20 
+ 390      286D6174 
+ 390      7269785F 
+ 390      64617461 
+ 391 0056 0000     		.align	2
+ 392              	.LC4:
+ 393 0058 612D3E63 		.ascii	"a->cols == b->rows\000"
+ 393      6F6C7320 
+ 393      3D3D2062 
+ 393      2D3E726F 
+ 393      777300
+ 394 006b 00       		.align	2
+ 395              	.LC5:
+ 396 006c 612D3E72 		.ascii	"a->rows == c->rows\000"
+ 396      6F777320 
+ 396      3D3D2063 
+ 396      2D3E726F 
+ 396      777300
+ 397 007f 00       		.align	2
+ 398              	.LC6:
+ 399 0080 622D3E63 		.ascii	"b->cols == c->cols\000"
+ 399      6F6C7320 
+ 399      3D3D2063 
+ 399      2D3E636F 
+ 399      6C7300
+ 400              		.section	.text.matrix_mult,"ax",%progbits
+ 401              		.align	1
+ 402              		.global	matrix_mult
+ 403              		.syntax unified
+ 404              		.thumb
+ 405              		.thumb_func
+ 407              	matrix_mult:
+ 408              	.LVL36:
+ 409              	.LFB12:
+  68:Core/Src/matrix.c **** 
+  69:Core/Src/matrix.c **** /*!
+ARM GAS  /tmp/ccNPxrNS.s 			page 14
+
+
+  70:Core/Src/matrix.c **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+  71:Core/Src/matrix.c **** * \param[in] a Matrix A
+  72:Core/Src/matrix.c **** * \param[in] b Matrix B
+  73:Core/Src/matrix.c **** * \param[in] c Resulting matrix C (will be overwritten)
+  74:Core/Src/matrix.c **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+  75:Core/Src/matrix.c **** *
+  76:Core/Src/matrix.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+  77:Core/Src/matrix.c **** */
+  78:Core/Src/matrix.c **** // Burası bellek optimizasyonu için çok ÖNEMLİ!!!!!!!!!!!!!!
+  79:Core/Src/matrix.c **** // Burada matrix çarpımında, özellikle büyük matrislerde, cache performansını artırmak iç
+  80:Core/Src/matrix.c **** void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matr
+  81:Core/Src/matrix.c **** {
+ 410              		.loc 1 81 1 is_stmt 1 view -0
+ 411              		.cfi_startproc
+ 412              		@ args = 0, pretend = 0, frame = 8
+ 413              		@ frame_needed = 0, uses_anonymous_args = 0
+ 414              		.loc 1 81 1 is_stmt 0 view .LVU122
+ 415 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 416              		.cfi_def_cfa_offset 36
+ 417              		.cfi_offset 4, -36
+ 418              		.cfi_offset 5, -32
+ 419              		.cfi_offset 6, -28
+ 420              		.cfi_offset 7, -24
+ 421              		.cfi_offset 8, -20
+ 422              		.cfi_offset 9, -16
+ 423              		.cfi_offset 10, -12
+ 424              		.cfi_offset 11, -8
+ 425              		.cfi_offset 14, -4
+ 426 0004 83B0     		sub	sp, sp, #12
+ 427              		.cfi_def_cfa_offset 48
+ 428 0006 1D46     		mov	r5, r3
+  82:Core/Src/matrix.c ****     register int_fast16_t i, j, k;
+ 429              		.loc 1 82 5 is_stmt 1 view .LVU123
+  83:Core/Src/matrix.c ****     const uint_fast8_t bcols = b->cols;
+ 430              		.loc 1 83 5 view .LVU124
+ 431              		.loc 1 83 24 is_stmt 0 view .LVU125
+ 432 0008 4B68     		ldr	r3, [r1, #4]
+ 433              	.LVL37:
+  84:Core/Src/matrix.c ****     const uint_fast8_t ccols = c->cols;
+ 434              		.loc 1 84 5 is_stmt 1 view .LVU126
+ 435              		.loc 1 84 24 is_stmt 0 view .LVU127
+ 436 000a D2F80490 		ldr	r9, [r2, #4]
+ 437              	.LVL38:
+  85:Core/Src/matrix.c ****     const uint_fast8_t brows = b->rows;
+ 438              		.loc 1 85 5 is_stmt 1 view .LVU128
+ 439              		.loc 1 85 24 is_stmt 0 view .LVU129
+ 440 000e 0C68     		ldr	r4, [r1]
+ 441              	.LVL39:
+  86:Core/Src/matrix.c ****     const uint_fast8_t arows = a->rows;
+ 442              		.loc 1 86 5 is_stmt 1 view .LVU130
+ 443              		.loc 1 86 24 is_stmt 0 view .LVU131
+ 444 0010 0768     		ldr	r7, [r0]
+ 445              	.LVL40:
+  87:Core/Src/matrix.c **** 
+  88:Core/Src/matrix.c ****     matrix_data_t *RESTRICT const adata = a->data;
+ 446              		.loc 1 88 5 is_stmt 1 view .LVU132
+ 447              		.loc 1 88 35 is_stmt 0 view .LVU133
+ARM GAS  /tmp/ccNPxrNS.s 			page 15
+
+
+ 448 0012 8668     		ldr	r6, [r0, #8]
+ 449              	.LVL41:
+  89:Core/Src/matrix.c ****     matrix_data_t *RESTRICT const cdata = c->data;
+ 450              		.loc 1 89 5 is_stmt 1 view .LVU134
+ 451              		.loc 1 89 35 is_stmt 0 view .LVU135
+ 452 0014 D2F808A0 		ldr	r10, [r2, #8]
+ 453              	.LVL42:
+  90:Core/Src/matrix.c **** 
+  91:Core/Src/matrix.c ****     // assert pointer validity
+  92:Core/Src/matrix.c ****     assert(a != (matrix_t*)0);
+ 454              		.loc 1 92 5 is_stmt 1 view .LVU136
+ 455 0018 78B1     		cbz	r0, .L43
+ 456 001a 8E46     		mov	lr, r1
+  93:Core/Src/matrix.c ****     assert(b != (matrix_t*)0);
+ 457              		.loc 1 93 5 view .LVU137
+  94:Core/Src/matrix.c ****     assert(c != (matrix_t*)0);
+ 458              		.loc 1 94 5 view .LVU138
+ 459 001c 9AB1     		cbz	r2, .L44
+  95:Core/Src/matrix.c ****     assert(baux != (matrix_data_t*)0);
+ 460              		.loc 1 95 5 view .LVU139
+ 461 001e C5B1     		cbz	r5, .L45
+  96:Core/Src/matrix.c **** 
+  97:Core/Src/matrix.c ****     // test dimensions of a and b
+  98:Core/Src/matrix.c ****     assert(a->cols == b->rows);
+ 462              		.loc 1 98 5 view .LVU140
+ 463 0020 4168     		ldr	r1, [r0, #4]
+ 464              	.LVL43:
+ 465              		.loc 1 98 5 is_stmt 0 view .LVU141
+ 466 0022 A142     		cmp	r1, r4
+ 467 0024 1BD1     		bne	.L46
+  99:Core/Src/matrix.c **** 
+ 100:Core/Src/matrix.c ****     // test dimension of c
+ 101:Core/Src/matrix.c ****     assert(a->rows == c->rows);
+ 468              		.loc 1 101 5 is_stmt 1 view .LVU142
+ 469 0026 1268     		ldr	r2, [r2]
+ 470              	.LVL44:
+ 471              		.loc 1 101 5 is_stmt 0 view .LVU143
+ 472 0028 BA42     		cmp	r2, r7
+ 473 002a 1ED1     		bne	.L47
+ 102:Core/Src/matrix.c ****     assert(b->cols == c->cols);
+ 474              		.loc 1 102 5 is_stmt 1 view .LVU144
+ 475 002c 4B45     		cmp	r3, r9
+ 476 002e 22D1     		bne	.L48
+ 103:Core/Src/matrix.c **** 
+ 104:Core/Src/matrix.c ****     //for (j = 0; j < bcols; ++j)
+ 105:Core/Src/matrix.c ****     for (j = bcols-1; j >= 0; --j)
+ 477              		.loc 1 105 5 view .LVU145
+ 478              		.loc 1 105 19 is_stmt 0 view .LVU146
+ 479 0030 03F1FF3B 		add	fp, r3, #-1
+ 480              	.LVL45:
+ 481              		.loc 1 105 19 view .LVU147
+ 482 0034 CDF804E0 		str	lr, [sp, #4]
+ 483              		.loc 1 105 5 view .LVU148
+ 484 0038 45E0     		b	.L36
+ 485              	.LVL46:
+ 486              	.L43:
+  92:Core/Src/matrix.c ****     assert(b != (matrix_t*)0);
+ARM GAS  /tmp/ccNPxrNS.s 			page 16
+
+
+ 487              		.loc 1 92 5 discriminator 1 view .LVU149
+ 488 003a 2A4B     		ldr	r3, .L51
+ 489              	.LVL47:
+  92:Core/Src/matrix.c ****     assert(b != (matrix_t*)0);
+ 490              		.loc 1 92 5 discriminator 1 view .LVU150
+ 491 003c 2A4A     		ldr	r2, .L51+4
+ 492              	.LVL48:
+  92:Core/Src/matrix.c ****     assert(b != (matrix_t*)0);
+ 493              		.loc 1 92 5 discriminator 1 view .LVU151
+ 494 003e 5C21     		movs	r1, #92
+ 495              	.LVL49:
+  92:Core/Src/matrix.c ****     assert(b != (matrix_t*)0);
+ 496              		.loc 1 92 5 discriminator 1 view .LVU152
+ 497 0040 2A48     		ldr	r0, .L51+8
+ 498              	.LVL50:
+  92:Core/Src/matrix.c ****     assert(b != (matrix_t*)0);
+ 499              		.loc 1 92 5 discriminator 1 view .LVU153
+ 500 0042 FFF7FEFF 		bl	__assert_func
+ 501              	.LVL51:
+ 502              	.L44:
+  94:Core/Src/matrix.c ****     assert(baux != (matrix_data_t*)0);
+ 503              		.loc 1 94 5 discriminator 1 view .LVU154
+ 504 0046 2A4B     		ldr	r3, .L51+12
+ 505              	.LVL52:
+  94:Core/Src/matrix.c ****     assert(baux != (matrix_data_t*)0);
+ 506              		.loc 1 94 5 discriminator 1 view .LVU155
+ 507 0048 274A     		ldr	r2, .L51+4
+ 508              	.LVL53:
+  94:Core/Src/matrix.c ****     assert(baux != (matrix_data_t*)0);
+ 509              		.loc 1 94 5 discriminator 1 view .LVU156
+ 510 004a 5E21     		movs	r1, #94
+ 511              	.LVL54:
+  94:Core/Src/matrix.c ****     assert(baux != (matrix_data_t*)0);
+ 512              		.loc 1 94 5 discriminator 1 view .LVU157
+ 513 004c 2748     		ldr	r0, .L51+8
+ 514              	.LVL55:
+  94:Core/Src/matrix.c ****     assert(baux != (matrix_data_t*)0);
+ 515              		.loc 1 94 5 discriminator 1 view .LVU158
+ 516 004e FFF7FEFF 		bl	__assert_func
+ 517              	.LVL56:
+ 518              	.L45:
+  95:Core/Src/matrix.c **** 
+ 519              		.loc 1 95 5 discriminator 1 view .LVU159
+ 520 0052 284B     		ldr	r3, .L51+16
+ 521              	.LVL57:
+  95:Core/Src/matrix.c **** 
+ 522              		.loc 1 95 5 discriminator 1 view .LVU160
+ 523 0054 244A     		ldr	r2, .L51+4
+ 524              	.LVL58:
+  95:Core/Src/matrix.c **** 
+ 525              		.loc 1 95 5 discriminator 1 view .LVU161
+ 526 0056 5F21     		movs	r1, #95
+ 527              	.LVL59:
+  95:Core/Src/matrix.c **** 
+ 528              		.loc 1 95 5 discriminator 1 view .LVU162
+ 529 0058 2448     		ldr	r0, .L51+8
+ 530              	.LVL60:
+ARM GAS  /tmp/ccNPxrNS.s 			page 17
+
+
+  95:Core/Src/matrix.c **** 
+ 531              		.loc 1 95 5 discriminator 1 view .LVU163
+ 532 005a FFF7FEFF 		bl	__assert_func
+ 533              	.LVL61:
+ 534              	.L46:
+  98:Core/Src/matrix.c **** 
+ 535              		.loc 1 98 5 discriminator 1 view .LVU164
+ 536 005e 264B     		ldr	r3, .L51+20
+ 537              	.LVL62:
+  98:Core/Src/matrix.c **** 
+ 538              		.loc 1 98 5 discriminator 1 view .LVU165
+ 539 0060 214A     		ldr	r2, .L51+4
+ 540              	.LVL63:
+  98:Core/Src/matrix.c **** 
+ 541              		.loc 1 98 5 discriminator 1 view .LVU166
+ 542 0062 6221     		movs	r1, #98
+ 543 0064 2148     		ldr	r0, .L51+8
+ 544              	.LVL64:
+  98:Core/Src/matrix.c **** 
+ 545              		.loc 1 98 5 discriminator 1 view .LVU167
+ 546 0066 FFF7FEFF 		bl	__assert_func
+ 547              	.LVL65:
+ 548              	.L47:
+ 101:Core/Src/matrix.c ****     assert(b->cols == c->cols);
+ 549              		.loc 1 101 5 discriminator 1 view .LVU168
+ 550 006a 244B     		ldr	r3, .L51+24
+ 551              	.LVL66:
+ 101:Core/Src/matrix.c ****     assert(b->cols == c->cols);
+ 552              		.loc 1 101 5 discriminator 1 view .LVU169
+ 553 006c 1E4A     		ldr	r2, .L51+4
+ 554 006e 6521     		movs	r1, #101
+ 555 0070 1E48     		ldr	r0, .L51+8
+ 556              	.LVL67:
+ 101:Core/Src/matrix.c ****     assert(b->cols == c->cols);
+ 557              		.loc 1 101 5 discriminator 1 view .LVU170
+ 558 0072 FFF7FEFF 		bl	__assert_func
+ 559              	.LVL68:
+ 560              	.L48:
+ 102:Core/Src/matrix.c **** 
+ 561              		.loc 1 102 5 discriminator 1 view .LVU171
+ 562 0076 224B     		ldr	r3, .L51+28
+ 563              	.LVL69:
+ 102:Core/Src/matrix.c **** 
+ 564              		.loc 1 102 5 discriminator 1 view .LVU172
+ 565 0078 1B4A     		ldr	r2, .L51+4
+ 566 007a 6621     		movs	r1, #102
+ 567 007c 1B48     		ldr	r0, .L51+8
+ 568              	.LVL70:
+ 102:Core/Src/matrix.c **** 
+ 569              		.loc 1 102 5 discriminator 1 view .LVU173
+ 570 007e FFF7FEFF 		bl	__assert_func
+ 571              	.LVL71:
+ 572              	.L38:
+ 573              	.LBB10:
+ 574              	.LBB11:
+ 106:Core/Src/matrix.c ****     {
+ 107:Core/Src/matrix.c ****         // create a copy of the column in B to avoid cache issues
+ARM GAS  /tmp/ccNPxrNS.s 			page 18
+
+
+ 108:Core/Src/matrix.c ****         matrix_get_column_copy(b, j, baux);
+ 109:Core/Src/matrix.c **** 
+ 110:Core/Src/matrix.c ****         uint_fast16_t indexA = 0;
+ 111:Core/Src/matrix.c ****         for (i = 0; i < arows; ++i)
+ 112:Core/Src/matrix.c ****         {
+ 113:Core/Src/matrix.c ****             matrix_data_t total = (matrix_data_t)0;
+ 114:Core/Src/matrix.c ****             for (k = 0; k < brows;)
+ 115:Core/Src/matrix.c ****             {
+ 116:Core/Src/matrix.c ****                 total += adata[indexA++]*baux[k++];
+ 575              		.loc 1 116 17 is_stmt 1 view .LVU174
+ 576              		.loc 1 116 31 is_stmt 0 view .LVU175
+ 577 0082 06EB810E 		add	lr, r6, r1, lsl #2
+ 578 0086 DEED007A 		vldr.32	s15, [lr]
+ 579              		.loc 1 116 48 view .LVU176
+ 580 008a 0133     		adds	r3, r3, #1
+ 581              	.LVL72:
+ 582              		.loc 1 116 46 view .LVU177
+ 583 008c 05EB8202 		add	r2, r5, r2, lsl #2
+ 584 0090 D2ED006A 		vldr.32	s13, [r2]
+ 585              		.loc 1 116 41 view .LVU178
+ 586 0094 67EEA67A 		vmul.f32	s15, s15, s13
+ 587              		.loc 1 116 23 view .LVU179
+ 588 0098 37EE277A 		vadd.f32	s14, s14, s15
+ 589              	.LVL73:
+ 590              		.loc 1 116 38 view .LVU180
+ 591 009c 0131     		adds	r1, r1, #1
+ 592              	.LVL74:
+ 593              	.L39:
+ 114:Core/Src/matrix.c ****             {
+ 594              		.loc 1 114 27 is_stmt 1 discriminator 1 view .LVU181
+ 595 009e 1A46     		mov	r2, r3
+ 596 00a0 A342     		cmp	r3, r4
+ 597 00a2 EED3     		bcc	.L38
+ 117:Core/Src/matrix.c ****             }
+ 118:Core/Src/matrix.c ****             cdata[i*ccols + j] = total;
+ 598              		.loc 1 118 13 view .LVU182
+ 599              		.loc 1 118 27 is_stmt 0 view .LVU183
+ 600 00a4 09FB0080 		mla	r0, r9, r0, r8
+ 601              	.LVL75:
+ 602              		.loc 1 118 18 view .LVU184
+ 603 00a8 0AEB8000 		add	r0, r10, r0, lsl #2
+ 604              		.loc 1 118 32 view .LVU185
+ 605 00ac 80ED007A 		vstr.32	s14, [r0]
+ 606              	.LBE11:
+ 111:Core/Src/matrix.c ****         {
+ 607              		.loc 1 111 32 is_stmt 1 discriminator 2 view .LVU186
+ 608 00b0 0CF1010C 		add	ip, ip, #1
+ 609              	.LVL76:
+ 610              	.L37:
+ 111:Core/Src/matrix.c ****         {
+ 611              		.loc 1 111 23 discriminator 1 view .LVU187
+ 612 00b4 6046     		mov	r0, ip
+ 613 00b6 BC45     		cmp	ip, r7
+ 614 00b8 03D2     		bcs	.L49
+ 615              	.LBB12:
+ 113:Core/Src/matrix.c ****             for (k = 0; k < brows;)
+ 616              		.loc 1 113 27 is_stmt 0 view .LVU188
+ARM GAS  /tmp/ccNPxrNS.s 			page 19
+
+
+ 617 00ba 9FED127A 		vldr.32	s14, .L51+32
+ 114:Core/Src/matrix.c ****             {
+ 618              		.loc 1 114 20 view .LVU189
+ 619 00be 0023     		movs	r3, #0
+ 620 00c0 EDE7     		b	.L39
+ 621              	.L49:
+ 622              	.LBE12:
+ 623              	.LBE10:
+ 105:Core/Src/matrix.c ****     {
+ 624              		.loc 1 105 31 is_stmt 1 discriminator 2 view .LVU190
+ 625 00c2 0BF1FF3B 		add	fp, fp, #-1
+ 626              	.LVL77:
+ 627              	.L36:
+ 105:Core/Src/matrix.c ****     {
+ 628              		.loc 1 105 25 discriminator 1 view .LVU191
+ 629 00c6 BBF1000F 		cmp	fp, #0
+ 630 00ca 08DB     		blt	.L50
+ 631              	.LBB13:
+ 108:Core/Src/matrix.c **** 
+ 632              		.loc 1 108 9 view .LVU192
+ 633 00cc D846     		mov	r8, fp
+ 634 00ce 2A46     		mov	r2, r5
+ 635 00d0 5946     		mov	r1, fp
+ 636 00d2 0198     		ldr	r0, [sp, #4]
+ 637 00d4 FFF7FEFF 		bl	matrix_get_column_copy
+ 638              	.LVL78:
+ 110:Core/Src/matrix.c ****         for (i = 0; i < arows; ++i)
+ 639              		.loc 1 110 9 view .LVU193
+ 111:Core/Src/matrix.c ****         {
+ 640              		.loc 1 111 9 view .LVU194
+ 110:Core/Src/matrix.c ****         for (i = 0; i < arows; ++i)
+ 641              		.loc 1 110 23 is_stmt 0 view .LVU195
+ 642 00d8 0021     		movs	r1, #0
+ 111:Core/Src/matrix.c ****         {
+ 643              		.loc 1 111 16 view .LVU196
+ 644 00da 8C46     		mov	ip, r1
+ 111:Core/Src/matrix.c ****         {
+ 645              		.loc 1 111 9 view .LVU197
+ 646 00dc EAE7     		b	.L37
+ 647              	.LVL79:
+ 648              	.L50:
+ 111:Core/Src/matrix.c ****         {
+ 649              		.loc 1 111 9 view .LVU198
+ 650              	.LBE13:
+ 119:Core/Src/matrix.c ****         }
+ 120:Core/Src/matrix.c ****     }
+ 121:Core/Src/matrix.c **** }
+ 651              		.loc 1 121 1 view .LVU199
+ 652 00de 03B0     		add	sp, sp, #12
+ 653              		.cfi_def_cfa_offset 36
+ 654              		@ sp needed
+ 655 00e0 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 656              	.LVL80:
+ 657              	.L52:
+ 658              		.loc 1 121 1 view .LVU200
+ 659              		.align	2
+ 660              	.L51:
+ARM GAS  /tmp/ccNPxrNS.s 			page 20
+
+
+ 661 00e4 00000000 		.word	.LC0
+ 662 00e8 00000000 		.word	__func__.0
+ 663 00ec 14000000 		.word	.LC1
+ 664 00f0 28000000 		.word	.LC2
+ 665 00f4 3C000000 		.word	.LC3
+ 666 00f8 58000000 		.word	.LC4
+ 667 00fc 6C000000 		.word	.LC5
+ 668 0100 80000000 		.word	.LC6
+ 669 0104 00000000 		.word	0
+ 670              		.cfi_endproc
+ 671              	.LFE12:
+ 673              		.section	.text.matrix_mult_transb,"ax",%progbits
+ 674              		.align	1
+ 675              		.global	matrix_mult_transb
+ 676              		.syntax unified
+ 677              		.thumb
+ 678              		.thumb_func
+ 680              	matrix_mult_transb:
+ 681              	.LVL81:
+ 682              	.LFB13:
+ 122:Core/Src/matrix.c **** 
+ 123:Core/Src/matrix.c **** /*!
+ 124:Core/Src/matrix.c **** * \brief Performs a matrix multiplication with transposed B such that {\ref c} = {\ref a} * {\ref b
+ 125:Core/Src/matrix.c **** * \param[in] a Matrix A
+ 126:Core/Src/matrix.c **** * \param[in] b Matrix B
+ 127:Core/Src/matrix.c **** * \param[in] c Resulting matrix C (will be overwritten)
+ 128:Core/Src/matrix.c **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+ 129:Core/Src/matrix.c **** *
+ 130:Core/Src/matrix.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 131:Core/Src/matrix.c **** */
+ 132:Core/Src/matrix.c **** void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT 
+ 133:Core/Src/matrix.c **** {
+ 683              		.loc 1 133 1 is_stmt 1 view -0
+ 684              		.cfi_startproc
+ 685              		@ args = 0, pretend = 0, frame = 8
+ 686              		@ frame_needed = 0, uses_anonymous_args = 0
+ 687              		.loc 1 133 1 is_stmt 0 view .LVU202
+ 688 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 689              		.cfi_def_cfa_offset 36
+ 690              		.cfi_offset 4, -36
+ 691              		.cfi_offset 5, -32
+ 692              		.cfi_offset 6, -28
+ 693              		.cfi_offset 7, -24
+ 694              		.cfi_offset 8, -20
+ 695              		.cfi_offset 9, -16
+ 696              		.cfi_offset 10, -12
+ 697              		.cfi_offset 11, -8
+ 698              		.cfi_offset 14, -4
+ 699 0004 83B0     		sub	sp, sp, #12
+ 700              		.cfi_def_cfa_offset 48
+ 134:Core/Src/matrix.c ****     register uint_fast16_t xA, xB, indexA, indexB, end;
+ 701              		.loc 1 134 5 is_stmt 1 view .LVU203
+ 135:Core/Src/matrix.c ****     const uint_fast8_t bcols = b->cols;
+ 702              		.loc 1 135 5 view .LVU204
+ 703              		.loc 1 135 24 is_stmt 0 view .LVU205
+ 704 0006 D1F804A0 		ldr	r10, [r1, #4]
+ 705              	.LVL82:
+ARM GAS  /tmp/ccNPxrNS.s 			page 21
+
+
+ 136:Core/Src/matrix.c ****     const uint_fast8_t brows = b->rows;
+ 706              		.loc 1 136 5 is_stmt 1 view .LVU206
+ 707              		.loc 1 136 24 is_stmt 0 view .LVU207
+ 708 000a 0F68     		ldr	r7, [r1]
+ 709              	.LVL83:
+ 137:Core/Src/matrix.c ****     const uint_fast8_t arows = a->rows;
+ 710              		.loc 1 137 5 is_stmt 1 view .LVU208
+ 711              		.loc 1 137 24 is_stmt 0 view .LVU209
+ 712 000c D0F80090 		ldr	r9, [r0]
+ 713              	.LVL84:
+ 138:Core/Src/matrix.c ****     const uint_fast8_t acols = a->cols;
+ 714              		.loc 1 138 5 is_stmt 1 view .LVU210
+ 715              		.loc 1 138 24 is_stmt 0 view .LVU211
+ 716 0010 D0F804B0 		ldr	fp, [r0, #4]
+ 717              	.LVL85:
+ 139:Core/Src/matrix.c **** 
+ 140:Core/Src/matrix.c ****     matrix_data_t *const adata = a->data;
+ 718              		.loc 1 140 5 is_stmt 1 view .LVU212
+ 719              		.loc 1 140 26 is_stmt 0 view .LVU213
+ 720 0014 D0F808E0 		ldr	lr, [r0, #8]
+ 721              	.LVL86:
+ 141:Core/Src/matrix.c ****     matrix_data_t *const bdata = b->data;
+ 722              		.loc 1 141 5 is_stmt 1 view .LVU214
+ 723              		.loc 1 141 26 is_stmt 0 view .LVU215
+ 724 0018 D1F808C0 		ldr	ip, [r1, #8]
+ 725              	.LVL87:
+ 142:Core/Src/matrix.c ****     matrix_data_t *RESTRICT const cdata = c->data;
+ 726              		.loc 1 142 5 is_stmt 1 view .LVU216
+ 727              		.loc 1 142 35 is_stmt 0 view .LVU217
+ 728 001c D2F80880 		ldr	r8, [r2, #8]
+ 729              	.LVL88:
+ 143:Core/Src/matrix.c **** 
+ 144:Core/Src/matrix.c ****     uint_fast16_t cIndex = 0;
+ 730              		.loc 1 144 5 is_stmt 1 view .LVU218
+ 145:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 731              		.loc 1 145 5 view .LVU219
+ 146:Core/Src/matrix.c **** 
+ 147:Core/Src/matrix.c ****     for (xA = 0; xA < arows; ++xA)
+ 732              		.loc 1 147 5 view .LVU220
+ 145:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 733              		.loc 1 145 19 is_stmt 0 view .LVU221
+ 734 0020 0026     		movs	r6, #0
+ 144:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 735              		.loc 1 144 19 view .LVU222
+ 736 0022 3546     		mov	r5, r6
+ 737              		.loc 1 147 13 view .LVU223
+ 738 0024 3146     		mov	r1, r6
+ 739              	.LVL89:
+ 740              		.loc 1 147 13 view .LVU224
+ 741 0026 5046     		mov	r0, r10
+ 742              	.LVL90:
+ 743              		.loc 1 147 5 view .LVU225
+ 744 0028 1FE0     		b	.L54
+ 745              	.LVL91:
+ 746              	.L56:
+ 747              	.LBB14:
+ 148:Core/Src/matrix.c ****     {
+ARM GAS  /tmp/ccNPxrNS.s 			page 22
+
+
+ 149:Core/Src/matrix.c ****         end = aIndexStart + bcols;
+ 150:Core/Src/matrix.c ****         indexB = 0;
+ 151:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 152:Core/Src/matrix.c ****         {
+ 153:Core/Src/matrix.c ****             indexA = aIndexStart;
+ 154:Core/Src/matrix.c ****             matrix_data_t total = 0;
+ 155:Core/Src/matrix.c **** 
+ 156:Core/Src/matrix.c ****             while (indexA < end)
+ 157:Core/Src/matrix.c ****             {
+ 158:Core/Src/matrix.c ****                 total += adata[indexA++] * bdata[indexB++];
+ 748              		.loc 1 158 17 is_stmt 1 view .LVU226
+ 749              		.loc 1 158 31 is_stmt 0 view .LVU227
+ 750 002a 0EEB8301 		add	r1, lr, r3, lsl #2
+ 751 002e D1ED007A 		vldr.32	s15, [r1]
+ 752              	.LVL92:
+ 753              		.loc 1 158 49 view .LVU228
+ 754 0032 0CEB8201 		add	r1, ip, r2, lsl #2
+ 755 0036 D1ED006A 		vldr.32	s13, [r1]
+ 756              		.loc 1 158 42 view .LVU229
+ 757 003a 67EEA67A 		vmul.f32	s15, s15, s13
+ 758              		.loc 1 158 23 view .LVU230
+ 759 003e 37EE277A 		vadd.f32	s14, s14, s15
+ 760              	.LVL93:
+ 761              		.loc 1 158 56 view .LVU231
+ 762 0042 0132     		adds	r2, r2, #1
+ 763              	.LVL94:
+ 764              		.loc 1 158 38 view .LVU232
+ 765 0044 0133     		adds	r3, r3, #1
+ 766              	.LVL95:
+ 767              	.L57:
+ 156:Core/Src/matrix.c ****             {
+ 768              		.loc 1 156 27 is_stmt 1 view .LVU233
+ 769 0046 A342     		cmp	r3, r4
+ 770 0048 EFD3     		bcc	.L56
+ 159:Core/Src/matrix.c ****             }
+ 160:Core/Src/matrix.c **** 
+ 161:Core/Src/matrix.c ****             cdata[cIndex++] = total;
+ 771              		.loc 1 161 13 view .LVU234
+ 772              	.LVL96:
+ 773              		.loc 1 161 18 is_stmt 0 view .LVU235
+ 774 004a 08EB8503 		add	r3, r8, r5, lsl #2
+ 775              	.LVL97:
+ 776              		.loc 1 161 29 view .LVU236
+ 777 004e 83ED007A 		vstr.32	s14, [r3]
+ 778              	.LBE14:
+ 151:Core/Src/matrix.c ****         {
+ 779              		.loc 1 151 34 is_stmt 1 discriminator 2 view .LVU237
+ 780 0052 0AF1010A 		add	r10, r10, #1
+ 781              	.LVL98:
+ 782              	.LBB15:
+ 783              		.loc 1 161 25 is_stmt 0 view .LVU238
+ 784 0056 0135     		adds	r5, r5, #1
+ 785              	.LVL99:
+ 786              	.L55:
+ 787              		.loc 1 161 25 view .LVU239
+ 788              	.LBE15:
+ 151:Core/Src/matrix.c ****         {
+ARM GAS  /tmp/ccNPxrNS.s 			page 23
+
+
+ 789              		.loc 1 151 25 is_stmt 1 discriminator 1 view .LVU240
+ 790 0058 BA45     		cmp	r10, r7
+ 791 005a 03D2     		bcs	.L61
+ 792              	.LBB16:
+ 153:Core/Src/matrix.c ****             matrix_data_t total = 0;
+ 793              		.loc 1 153 20 is_stmt 0 view .LVU241
+ 794 005c 3346     		mov	r3, r6
+ 154:Core/Src/matrix.c **** 
+ 795              		.loc 1 154 27 view .LVU242
+ 796 005e 9FED087A 		vldr.32	s14, .L63
+ 797 0062 F0E7     		b	.L57
+ 798              	.L61:
+ 154:Core/Src/matrix.c **** 
+ 799              		.loc 1 154 27 view .LVU243
+ 800              	.LBE16:
+ 162:Core/Src/matrix.c ****         }
+ 163:Core/Src/matrix.c ****         aIndexStart += acols;
+ 801              		.loc 1 163 21 view .LVU244
+ 802 0064 0199     		ldr	r1, [sp, #4]
+ 803              		.loc 1 163 9 is_stmt 1 view .LVU245
+ 804              		.loc 1 163 21 is_stmt 0 view .LVU246
+ 805 0066 5E44     		add	r6, r6, fp
+ 806              	.LVL100:
+ 147:Core/Src/matrix.c ****     {
+ 807              		.loc 1 147 30 is_stmt 1 discriminator 2 view .LVU247
+ 808 0068 0131     		adds	r1, r1, #1
+ 809              	.LVL101:
+ 810              	.L54:
+ 147:Core/Src/matrix.c ****     {
+ 811              		.loc 1 147 21 discriminator 1 view .LVU248
+ 812 006a 4945     		cmp	r1, r9
+ 813 006c 04D2     		bcs	.L62
+ 149:Core/Src/matrix.c ****         indexB = 0;
+ 814              		.loc 1 149 9 view .LVU249
+ 149:Core/Src/matrix.c ****         indexB = 0;
+ 815              		.loc 1 149 13 is_stmt 0 view .LVU250
+ 816 006e 3418     		adds	r4, r6, r0
+ 817              	.LVL102:
+ 150:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 818              		.loc 1 150 9 is_stmt 1 view .LVU251
+ 151:Core/Src/matrix.c ****         {
+ 819              		.loc 1 151 9 view .LVU252
+ 150:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 820              		.loc 1 150 16 is_stmt 0 view .LVU253
+ 821 0070 0022     		movs	r2, #0
+ 151:Core/Src/matrix.c ****         {
+ 822              		.loc 1 151 17 view .LVU254
+ 823 0072 9246     		mov	r10, r2
+ 824 0074 0191     		str	r1, [sp, #4]
+ 151:Core/Src/matrix.c ****         {
+ 825              		.loc 1 151 9 view .LVU255
+ 826 0076 EFE7     		b	.L55
+ 827              	.LVL103:
+ 828              	.L62:
+ 164:Core/Src/matrix.c ****     }
+ 165:Core/Src/matrix.c **** }
+ 829              		.loc 1 165 1 view .LVU256
+ARM GAS  /tmp/ccNPxrNS.s 			page 24
+
+
+ 830 0078 03B0     		add	sp, sp, #12
+ 831              		.cfi_def_cfa_offset 36
+ 832              		@ sp needed
+ 833 007a BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 834              	.LVL104:
+ 835              	.L64:
+ 836              		.loc 1 165 1 view .LVU257
+ 837 007e 00BF     		.align	2
+ 838              	.L63:
+ 839 0080 00000000 		.word	0
+ 840              		.cfi_endproc
+ 841              	.LFE13:
+ 843              		.section	.text.matrix_multadd_transb,"ax",%progbits
+ 844              		.align	1
+ 845              		.global	matrix_multadd_transb
+ 846              		.syntax unified
+ 847              		.thumb
+ 848              		.thumb_func
+ 850              	matrix_multadd_transb:
+ 851              	.LVL105:
+ 852              	.LFB14:
+ 166:Core/Src/matrix.c **** 
+ 167:Core/Src/matrix.c **** /*!
+ 168:Core/Src/matrix.c **** * \brief Performs a matrix multiplication with transposed B and adds the result to {\ref c} such th
+ 169:Core/Src/matrix.c **** * \param[in] a Matrix A
+ 170:Core/Src/matrix.c **** * \param[in] b Matrix B
+ 171:Core/Src/matrix.c **** * \param[in] c Resulting matrix C
+ 172:Core/Src/matrix.c **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+ 173:Core/Src/matrix.c **** *
+ 174:Core/Src/matrix.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 175:Core/Src/matrix.c **** */
+ 176:Core/Src/matrix.c **** void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRI
+ 177:Core/Src/matrix.c **** {
+ 853              		.loc 1 177 1 is_stmt 1 view -0
+ 854              		.cfi_startproc
+ 855              		@ args = 0, pretend = 0, frame = 8
+ 856              		@ frame_needed = 0, uses_anonymous_args = 0
+ 857              		.loc 1 177 1 is_stmt 0 view .LVU259
+ 858 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 859              		.cfi_def_cfa_offset 36
+ 860              		.cfi_offset 4, -36
+ 861              		.cfi_offset 5, -32
+ 862              		.cfi_offset 6, -28
+ 863              		.cfi_offset 7, -24
+ 864              		.cfi_offset 8, -20
+ 865              		.cfi_offset 9, -16
+ 866              		.cfi_offset 10, -12
+ 867              		.cfi_offset 11, -8
+ 868              		.cfi_offset 14, -4
+ 869 0004 83B0     		sub	sp, sp, #12
+ 870              		.cfi_def_cfa_offset 48
+ 178:Core/Src/matrix.c ****     register uint_fast16_t xA, xB, indexA, indexB, end;
+ 871              		.loc 1 178 5 is_stmt 1 view .LVU260
+ 179:Core/Src/matrix.c ****     const uint_fast8_t bcols = b->cols;
+ 872              		.loc 1 179 5 view .LVU261
+ 873              		.loc 1 179 24 is_stmt 0 view .LVU262
+ 874 0006 D1F804A0 		ldr	r10, [r1, #4]
+ARM GAS  /tmp/ccNPxrNS.s 			page 25
+
+
+ 875              	.LVL106:
+ 180:Core/Src/matrix.c ****     const uint_fast8_t brows = b->rows;
+ 876              		.loc 1 180 5 is_stmt 1 view .LVU263
+ 877              		.loc 1 180 24 is_stmt 0 view .LVU264
+ 878 000a 0F68     		ldr	r7, [r1]
+ 879              	.LVL107:
+ 181:Core/Src/matrix.c ****     const uint_fast8_t arows = a->rows;
+ 880              		.loc 1 181 5 is_stmt 1 view .LVU265
+ 881              		.loc 1 181 24 is_stmt 0 view .LVU266
+ 882 000c D0F80090 		ldr	r9, [r0]
+ 883              	.LVL108:
+ 182:Core/Src/matrix.c ****     const uint_fast8_t acols = a->cols;
+ 884              		.loc 1 182 5 is_stmt 1 view .LVU267
+ 885              		.loc 1 182 24 is_stmt 0 view .LVU268
+ 886 0010 D0F804B0 		ldr	fp, [r0, #4]
+ 887              	.LVL109:
+ 183:Core/Src/matrix.c **** 
+ 184:Core/Src/matrix.c ****     matrix_data_t *const adata = a->data;
+ 888              		.loc 1 184 5 is_stmt 1 view .LVU269
+ 889              		.loc 1 184 26 is_stmt 0 view .LVU270
+ 890 0014 D0F808E0 		ldr	lr, [r0, #8]
+ 891              	.LVL110:
+ 185:Core/Src/matrix.c ****     matrix_data_t *const bdata = b->data;
+ 892              		.loc 1 185 5 is_stmt 1 view .LVU271
+ 893              		.loc 1 185 26 is_stmt 0 view .LVU272
+ 894 0018 D1F808C0 		ldr	ip, [r1, #8]
+ 895              	.LVL111:
+ 186:Core/Src/matrix.c ****     matrix_data_t *RESTRICT const cdata = c->data;
+ 896              		.loc 1 186 5 is_stmt 1 view .LVU273
+ 897              		.loc 1 186 35 is_stmt 0 view .LVU274
+ 898 001c D2F80880 		ldr	r8, [r2, #8]
+ 899              	.LVL112:
+ 187:Core/Src/matrix.c **** 
+ 188:Core/Src/matrix.c ****     uint_fast16_t cIndex = 0;
+ 900              		.loc 1 188 5 is_stmt 1 view .LVU275
+ 189:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 901              		.loc 1 189 5 view .LVU276
+ 190:Core/Src/matrix.c **** 
+ 191:Core/Src/matrix.c ****     for (xA = 0; xA < arows; ++xA)
+ 902              		.loc 1 191 5 view .LVU277
+ 189:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 903              		.loc 1 189 19 is_stmt 0 view .LVU278
+ 904 0020 0026     		movs	r6, #0
+ 188:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 905              		.loc 1 188 19 view .LVU279
+ 906 0022 3546     		mov	r5, r6
+ 907              		.loc 1 191 13 view .LVU280
+ 908 0024 3146     		mov	r1, r6
+ 909              	.LVL113:
+ 910              		.loc 1 191 13 view .LVU281
+ 911 0026 5046     		mov	r0, r10
+ 912              	.LVL114:
+ 913              		.loc 1 191 5 view .LVU282
+ 914 0028 23E0     		b	.L66
+ 915              	.LVL115:
+ 916              	.L68:
+ 917              	.LBB17:
+ARM GAS  /tmp/ccNPxrNS.s 			page 26
+
+
+ 192:Core/Src/matrix.c ****     {
+ 193:Core/Src/matrix.c ****         end = aIndexStart + bcols;
+ 194:Core/Src/matrix.c ****         indexB = 0;
+ 195:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 196:Core/Src/matrix.c ****         {
+ 197:Core/Src/matrix.c ****             indexA = aIndexStart;
+ 198:Core/Src/matrix.c ****             matrix_data_t total = 0;
+ 199:Core/Src/matrix.c **** 
+ 200:Core/Src/matrix.c ****             while (indexA < end)
+ 201:Core/Src/matrix.c ****             {
+ 202:Core/Src/matrix.c ****                 total += adata[indexA++] * bdata[indexB++];
+ 918              		.loc 1 202 17 is_stmt 1 view .LVU283
+ 919              		.loc 1 202 31 is_stmt 0 view .LVU284
+ 920 002a 0EEB8301 		add	r1, lr, r3, lsl #2
+ 921 002e D1ED007A 		vldr.32	s15, [r1]
+ 922              	.LVL116:
+ 923              		.loc 1 202 49 view .LVU285
+ 924 0032 0CEB8201 		add	r1, ip, r2, lsl #2
+ 925 0036 D1ED006A 		vldr.32	s13, [r1]
+ 926              		.loc 1 202 42 view .LVU286
+ 927 003a 67EEA67A 		vmul.f32	s15, s15, s13
+ 928              		.loc 1 202 23 view .LVU287
+ 929 003e 37EE277A 		vadd.f32	s14, s14, s15
+ 930              	.LVL117:
+ 931              		.loc 1 202 56 view .LVU288
+ 932 0042 0132     		adds	r2, r2, #1
+ 933              	.LVL118:
+ 934              		.loc 1 202 38 view .LVU289
+ 935 0044 0133     		adds	r3, r3, #1
+ 936              	.LVL119:
+ 937              	.L69:
+ 200:Core/Src/matrix.c ****             {
+ 938              		.loc 1 200 27 is_stmt 1 view .LVU290
+ 939 0046 A342     		cmp	r3, r4
+ 940 0048 EFD3     		bcc	.L68
+ 203:Core/Src/matrix.c ****             }
+ 204:Core/Src/matrix.c **** 
+ 205:Core/Src/matrix.c ****             cdata[cIndex++] += total;
+ 941              		.loc 1 205 13 view .LVU291
+ 942              	.LVL120:
+ 943              		.loc 1 205 18 is_stmt 0 view .LVU292
+ 944 004a 08EB8503 		add	r3, r8, r5, lsl #2
+ 945              	.LVL121:
+ 946              		.loc 1 205 18 view .LVU293
+ 947 004e D3ED007A 		vldr.32	s15, [r3]
+ 948              		.loc 1 205 29 view .LVU294
+ 949 0052 77EE877A 		vadd.f32	s15, s15, s14
+ 950 0056 C3ED007A 		vstr.32	s15, [r3]
+ 951              	.LBE17:
+ 195:Core/Src/matrix.c ****         {
+ 952              		.loc 1 195 34 is_stmt 1 discriminator 2 view .LVU295
+ 953 005a 0AF1010A 		add	r10, r10, #1
+ 954              	.LVL122:
+ 955              	.LBB18:
+ 956              		.loc 1 205 25 is_stmt 0 view .LVU296
+ 957 005e 0135     		adds	r5, r5, #1
+ 958              	.LVL123:
+ARM GAS  /tmp/ccNPxrNS.s 			page 27
+
+
+ 959              	.L67:
+ 960              		.loc 1 205 25 view .LVU297
+ 961              	.LBE18:
+ 195:Core/Src/matrix.c ****         {
+ 962              		.loc 1 195 25 is_stmt 1 discriminator 1 view .LVU298
+ 963 0060 BA45     		cmp	r10, r7
+ 964 0062 03D2     		bcs	.L73
+ 965              	.LBB19:
+ 197:Core/Src/matrix.c ****             matrix_data_t total = 0;
+ 966              		.loc 1 197 20 is_stmt 0 view .LVU299
+ 967 0064 3346     		mov	r3, r6
+ 198:Core/Src/matrix.c **** 
+ 968              		.loc 1 198 27 view .LVU300
+ 969 0066 9FED087A 		vldr.32	s14, .L75
+ 970 006a ECE7     		b	.L69
+ 971              	.L73:
+ 198:Core/Src/matrix.c **** 
+ 972              		.loc 1 198 27 view .LVU301
+ 973              	.LBE19:
+ 206:Core/Src/matrix.c ****         }
+ 207:Core/Src/matrix.c ****         aIndexStart += acols;
+ 974              		.loc 1 207 21 view .LVU302
+ 975 006c 0199     		ldr	r1, [sp, #4]
+ 976              		.loc 1 207 9 is_stmt 1 view .LVU303
+ 977              		.loc 1 207 21 is_stmt 0 view .LVU304
+ 978 006e 5E44     		add	r6, r6, fp
+ 979              	.LVL124:
+ 191:Core/Src/matrix.c ****     {
+ 980              		.loc 1 191 30 is_stmt 1 discriminator 2 view .LVU305
+ 981 0070 0131     		adds	r1, r1, #1
+ 982              	.LVL125:
+ 983              	.L66:
+ 191:Core/Src/matrix.c ****     {
+ 984              		.loc 1 191 21 discriminator 1 view .LVU306
+ 985 0072 4945     		cmp	r1, r9
+ 986 0074 04D2     		bcs	.L74
+ 193:Core/Src/matrix.c ****         indexB = 0;
+ 987              		.loc 1 193 9 view .LVU307
+ 193:Core/Src/matrix.c ****         indexB = 0;
+ 988              		.loc 1 193 13 is_stmt 0 view .LVU308
+ 989 0076 3418     		adds	r4, r6, r0
+ 990              	.LVL126:
+ 194:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 991              		.loc 1 194 9 is_stmt 1 view .LVU309
+ 195:Core/Src/matrix.c ****         {
+ 992              		.loc 1 195 9 view .LVU310
+ 194:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 993              		.loc 1 194 16 is_stmt 0 view .LVU311
+ 994 0078 0022     		movs	r2, #0
+ 195:Core/Src/matrix.c ****         {
+ 995              		.loc 1 195 17 view .LVU312
+ 996 007a 9246     		mov	r10, r2
+ 997 007c 0191     		str	r1, [sp, #4]
+ 195:Core/Src/matrix.c ****         {
+ 998              		.loc 1 195 9 view .LVU313
+ 999 007e EFE7     		b	.L67
+ 1000              	.LVL127:
+ARM GAS  /tmp/ccNPxrNS.s 			page 28
+
+
+ 1001              	.L74:
+ 208:Core/Src/matrix.c ****     }
+ 209:Core/Src/matrix.c **** }
+ 1002              		.loc 1 209 1 view .LVU314
+ 1003 0080 03B0     		add	sp, sp, #12
+ 1004              		.cfi_def_cfa_offset 36
+ 1005              		@ sp needed
+ 1006 0082 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1007              	.LVL128:
+ 1008              	.L76:
+ 1009              		.loc 1 209 1 view .LVU315
+ 1010 0086 00BF     		.align	2
+ 1011              	.L75:
+ 1012 0088 00000000 		.word	0
+ 1013              		.cfi_endproc
+ 1014              	.LFE14:
+ 1016              		.section	.text.matrix_multscale_transb,"ax",%progbits
+ 1017              		.align	1
+ 1018              		.global	matrix_multscale_transb
+ 1019              		.syntax unified
+ 1020              		.thumb
+ 1021              		.thumb_func
+ 1023              	matrix_multscale_transb:
+ 1024              	.LVL129:
+ 1025              	.LFB15:
+ 210:Core/Src/matrix.c **** 
+ 211:Core/Src/matrix.c **** /*!
+ 212:Core/Src/matrix.c **** * \brief Performs a matrix multiplication with transposed B and scales the result such that {\ref c
+ 213:Core/Src/matrix.c **** * \param[in] a Matrix A
+ 214:Core/Src/matrix.c **** * \param[in] b Matrix B
+ 215:Core/Src/matrix.c **** * \param[in] scale Scaling factor
+ 216:Core/Src/matrix.c **** * \param[in] c Resulting matrix C(will be overwritten)
+ 217:Core/Src/matrix.c **** *
+ 218:Core/Src/matrix.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 219:Core/Src/matrix.c **** */
+ 220:Core/Src/matrix.c **** void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matri
+ 221:Core/Src/matrix.c **** {
+ 1026              		.loc 1 221 1 is_stmt 1 view -0
+ 1027              		.cfi_startproc
+ 1028              		@ args = 0, pretend = 0, frame = 8
+ 1029              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1030              		.loc 1 221 1 is_stmt 0 view .LVU317
+ 1031 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1032              		.cfi_def_cfa_offset 36
+ 1033              		.cfi_offset 4, -36
+ 1034              		.cfi_offset 5, -32
+ 1035              		.cfi_offset 6, -28
+ 1036              		.cfi_offset 7, -24
+ 1037              		.cfi_offset 8, -20
+ 1038              		.cfi_offset 9, -16
+ 1039              		.cfi_offset 10, -12
+ 1040              		.cfi_offset 11, -8
+ 1041              		.cfi_offset 14, -4
+ 1042 0004 83B0     		sub	sp, sp, #12
+ 1043              		.cfi_def_cfa_offset 48
+ 1044 0006 F0EE406A 		vmov.f32	s13, s0
+ 222:Core/Src/matrix.c ****     register uint_fast16_t xA, xB, indexA, indexB, end;
+ARM GAS  /tmp/ccNPxrNS.s 			page 29
+
+
+ 1045              		.loc 1 222 5 is_stmt 1 view .LVU318
+ 223:Core/Src/matrix.c ****     const uint_fast8_t bcols = b->cols;
+ 1046              		.loc 1 223 5 view .LVU319
+ 1047              		.loc 1 223 24 is_stmt 0 view .LVU320
+ 1048 000a D1F804A0 		ldr	r10, [r1, #4]
+ 1049              	.LVL130:
+ 224:Core/Src/matrix.c ****     const uint_fast8_t brows = b->rows;
+ 1050              		.loc 1 224 5 is_stmt 1 view .LVU321
+ 1051              		.loc 1 224 24 is_stmt 0 view .LVU322
+ 1052 000e 0F68     		ldr	r7, [r1]
+ 1053              	.LVL131:
+ 225:Core/Src/matrix.c ****     const uint_fast8_t arows = a->rows;
+ 1054              		.loc 1 225 5 is_stmt 1 view .LVU323
+ 1055              		.loc 1 225 24 is_stmt 0 view .LVU324
+ 1056 0010 D0F80090 		ldr	r9, [r0]
+ 1057              	.LVL132:
+ 226:Core/Src/matrix.c ****     const uint_fast8_t acols = a->cols;
+ 1058              		.loc 1 226 5 is_stmt 1 view .LVU325
+ 1059              		.loc 1 226 24 is_stmt 0 view .LVU326
+ 1060 0014 D0F804B0 		ldr	fp, [r0, #4]
+ 1061              	.LVL133:
+ 227:Core/Src/matrix.c **** 
+ 228:Core/Src/matrix.c ****     matrix_data_t *const adata = a->data;
+ 1062              		.loc 1 228 5 is_stmt 1 view .LVU327
+ 1063              		.loc 1 228 26 is_stmt 0 view .LVU328
+ 1064 0018 D0F808E0 		ldr	lr, [r0, #8]
+ 1065              	.LVL134:
+ 229:Core/Src/matrix.c ****     matrix_data_t *const bdata = b->data;
+ 1066              		.loc 1 229 5 is_stmt 1 view .LVU329
+ 1067              		.loc 1 229 26 is_stmt 0 view .LVU330
+ 1068 001c D1F808C0 		ldr	ip, [r1, #8]
+ 1069              	.LVL135:
+ 230:Core/Src/matrix.c ****     matrix_data_t *RESTRICT const cdata = c->data;
+ 1070              		.loc 1 230 5 is_stmt 1 view .LVU331
+ 1071              		.loc 1 230 35 is_stmt 0 view .LVU332
+ 1072 0020 D2F80880 		ldr	r8, [r2, #8]
+ 1073              	.LVL136:
+ 231:Core/Src/matrix.c **** 
+ 232:Core/Src/matrix.c ****     uint_fast16_t cIndex = 0;
+ 1074              		.loc 1 232 5 is_stmt 1 view .LVU333
+ 233:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 1075              		.loc 1 233 5 view .LVU334
+ 234:Core/Src/matrix.c **** 
+ 235:Core/Src/matrix.c ****     for (xA = 0; xA < arows; ++xA)
+ 1076              		.loc 1 235 5 view .LVU335
+ 233:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 1077              		.loc 1 233 19 is_stmt 0 view .LVU336
+ 1078 0024 0026     		movs	r6, #0
+ 232:Core/Src/matrix.c ****     uint_fast16_t aIndexStart = 0;
+ 1079              		.loc 1 232 19 view .LVU337
+ 1080 0026 3546     		mov	r5, r6
+ 1081              		.loc 1 235 13 view .LVU338
+ 1082 0028 3146     		mov	r1, r6
+ 1083              	.LVL137:
+ 1084              		.loc 1 235 13 view .LVU339
+ 1085 002a 5046     		mov	r0, r10
+ 1086              	.LVL138:
+ARM GAS  /tmp/ccNPxrNS.s 			page 30
+
+
+ 1087              		.loc 1 235 5 view .LVU340
+ 1088 002c 21E0     		b	.L78
+ 1089              	.LVL139:
+ 1090              	.L80:
+ 1091              	.LBB20:
+ 236:Core/Src/matrix.c ****     {
+ 237:Core/Src/matrix.c ****         end = aIndexStart + bcols;
+ 238:Core/Src/matrix.c ****         indexB = 0;
+ 239:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 240:Core/Src/matrix.c ****         {
+ 241:Core/Src/matrix.c ****             indexA = aIndexStart;
+ 242:Core/Src/matrix.c ****             matrix_data_t total = 0;
+ 243:Core/Src/matrix.c **** 
+ 244:Core/Src/matrix.c ****             while (indexA < end)
+ 245:Core/Src/matrix.c ****             {
+ 246:Core/Src/matrix.c ****                 total += adata[indexA++] * bdata[indexB++];
+ 1092              		.loc 1 246 17 is_stmt 1 view .LVU341
+ 1093              		.loc 1 246 31 is_stmt 0 view .LVU342
+ 1094 002e 0EEB8301 		add	r1, lr, r3, lsl #2
+ 1095 0032 D1ED007A 		vldr.32	s15, [r1]
+ 1096              	.LVL140:
+ 1097              		.loc 1 246 49 view .LVU343
+ 1098 0036 0CEB8201 		add	r1, ip, r2, lsl #2
+ 1099 003a 91ED006A 		vldr.32	s12, [r1]
+ 1100              		.loc 1 246 42 view .LVU344
+ 1101 003e 67EE867A 		vmul.f32	s15, s15, s12
+ 1102              		.loc 1 246 23 view .LVU345
+ 1103 0042 37EE277A 		vadd.f32	s14, s14, s15
+ 1104              	.LVL141:
+ 1105              		.loc 1 246 56 view .LVU346
+ 1106 0046 0132     		adds	r2, r2, #1
+ 1107              	.LVL142:
+ 1108              		.loc 1 246 38 view .LVU347
+ 1109 0048 0133     		adds	r3, r3, #1
+ 1110              	.LVL143:
+ 1111              	.L81:
+ 244:Core/Src/matrix.c ****             {
+ 1112              		.loc 1 244 27 is_stmt 1 view .LVU348
+ 1113 004a A342     		cmp	r3, r4
+ 1114 004c EFD3     		bcc	.L80
+ 247:Core/Src/matrix.c ****             }
+ 248:Core/Src/matrix.c **** 
+ 249:Core/Src/matrix.c ****             cdata[cIndex++] = total * scale;
+ 1115              		.loc 1 249 13 view .LVU349
+ 1116              	.LVL144:
+ 1117              		.loc 1 249 18 is_stmt 0 view .LVU350
+ 1118 004e 08EB8503 		add	r3, r8, r5, lsl #2
+ 1119              	.LVL145:
+ 1120              		.loc 1 249 37 view .LVU351
+ 1121 0052 27EE267A 		vmul.f32	s14, s14, s13
+ 1122              	.LVL146:
+ 1123              		.loc 1 249 29 view .LVU352
+ 1124 0056 83ED007A 		vstr.32	s14, [r3]
+ 1125              	.LBE20:
+ 239:Core/Src/matrix.c ****         {
+ 1126              		.loc 1 239 34 is_stmt 1 discriminator 2 view .LVU353
+ 1127 005a 0AF1010A 		add	r10, r10, #1
+ARM GAS  /tmp/ccNPxrNS.s 			page 31
+
+
+ 1128              	.LVL147:
+ 1129              	.LBB21:
+ 1130              		.loc 1 249 25 is_stmt 0 view .LVU354
+ 1131 005e 0135     		adds	r5, r5, #1
+ 1132              	.LVL148:
+ 1133              	.L79:
+ 1134              		.loc 1 249 25 view .LVU355
+ 1135              	.LBE21:
+ 239:Core/Src/matrix.c ****         {
+ 1136              		.loc 1 239 25 is_stmt 1 discriminator 1 view .LVU356
+ 1137 0060 BA45     		cmp	r10, r7
+ 1138 0062 03D2     		bcs	.L85
+ 1139              	.LBB22:
+ 241:Core/Src/matrix.c ****             matrix_data_t total = 0;
+ 1140              		.loc 1 241 20 is_stmt 0 view .LVU357
+ 1141 0064 3346     		mov	r3, r6
+ 242:Core/Src/matrix.c **** 
+ 1142              		.loc 1 242 27 view .LVU358
+ 1143 0066 9FED087A 		vldr.32	s14, .L87
+ 1144 006a EEE7     		b	.L81
+ 1145              	.L85:
+ 242:Core/Src/matrix.c **** 
+ 1146              		.loc 1 242 27 view .LVU359
+ 1147              	.LBE22:
+ 250:Core/Src/matrix.c ****         }
+ 251:Core/Src/matrix.c ****         aIndexStart += acols;
+ 1148              		.loc 1 251 21 view .LVU360
+ 1149 006c 0199     		ldr	r1, [sp, #4]
+ 1150              		.loc 1 251 9 is_stmt 1 view .LVU361
+ 1151              		.loc 1 251 21 is_stmt 0 view .LVU362
+ 1152 006e 5E44     		add	r6, r6, fp
+ 1153              	.LVL149:
+ 235:Core/Src/matrix.c ****     {
+ 1154              		.loc 1 235 30 is_stmt 1 discriminator 2 view .LVU363
+ 1155 0070 0131     		adds	r1, r1, #1
+ 1156              	.LVL150:
+ 1157              	.L78:
+ 235:Core/Src/matrix.c ****     {
+ 1158              		.loc 1 235 21 discriminator 1 view .LVU364
+ 1159 0072 4945     		cmp	r1, r9
+ 1160 0074 04D2     		bcs	.L86
+ 237:Core/Src/matrix.c ****         indexB = 0;
+ 1161              		.loc 1 237 9 view .LVU365
+ 237:Core/Src/matrix.c ****         indexB = 0;
+ 1162              		.loc 1 237 13 is_stmt 0 view .LVU366
+ 1163 0076 3418     		adds	r4, r6, r0
+ 1164              	.LVL151:
+ 238:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 1165              		.loc 1 238 9 is_stmt 1 view .LVU367
+ 239:Core/Src/matrix.c ****         {
+ 1166              		.loc 1 239 9 view .LVU368
+ 238:Core/Src/matrix.c ****         for (xB = 0; xB < brows; ++xB)
+ 1167              		.loc 1 238 16 is_stmt 0 view .LVU369
+ 1168 0078 0022     		movs	r2, #0
+ 239:Core/Src/matrix.c ****         {
+ 1169              		.loc 1 239 17 view .LVU370
+ 1170 007a 9246     		mov	r10, r2
+ARM GAS  /tmp/ccNPxrNS.s 			page 32
+
+
+ 1171 007c 0191     		str	r1, [sp, #4]
+ 239:Core/Src/matrix.c ****         {
+ 1172              		.loc 1 239 9 view .LVU371
+ 1173 007e EFE7     		b	.L79
+ 1174              	.LVL152:
+ 1175              	.L86:
+ 252:Core/Src/matrix.c ****     }
+ 253:Core/Src/matrix.c **** }
+ 1176              		.loc 1 253 1 view .LVU372
+ 1177 0080 03B0     		add	sp, sp, #12
+ 1178              		.cfi_def_cfa_offset 36
+ 1179              		@ sp needed
+ 1180 0082 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1181              	.LVL153:
+ 1182              	.L88:
+ 1183              		.loc 1 253 1 view .LVU373
+ 1184 0086 00BF     		.align	2
+ 1185              	.L87:
+ 1186 0088 00000000 		.word	0
+ 1187              		.cfi_endproc
+ 1188              	.LFE15:
+ 1190              		.section	.text.matrix_mult_rowvector,"ax",%progbits
+ 1191              		.align	1
+ 1192              		.global	matrix_mult_rowvector
+ 1193              		.syntax unified
+ 1194              		.thumb
+ 1195              		.thumb_func
+ 1197              	matrix_mult_rowvector:
+ 1198              	.LVL154:
+ 1199              	.LFB16:
+ 254:Core/Src/matrix.c **** 
+ 255:Core/Src/matrix.c **** /*!
+ 256:Core/Src/matrix.c **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref x} * {\ref b}
+ 257:Core/Src/matrix.c **** * \param[in] a Matrix A
+ 258:Core/Src/matrix.c **** * \param[in] x Vector x
+ 259:Core/Src/matrix.c **** * \param[in] c Resulting vector C (will be overwritten)
+ 260:Core/Src/matrix.c **** *
+ 261:Core/Src/matrix.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 262:Core/Src/matrix.c **** */
+ 263:Core/Src/matrix.c **** void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matr
+ 264:Core/Src/matrix.c **** {
+ 1200              		.loc 1 264 1 is_stmt 1 view -0
+ 1201              		.cfi_startproc
+ 1202              		@ args = 0, pretend = 0, frame = 0
+ 1203              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1204              		.loc 1 264 1 is_stmt 0 view .LVU375
+ 1205 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1206              		.cfi_def_cfa_offset 20
+ 1207              		.cfi_offset 4, -20
+ 1208              		.cfi_offset 5, -16
+ 1209              		.cfi_offset 6, -12
+ 1210              		.cfi_offset 7, -8
+ 1211              		.cfi_offset 14, -4
+ 265:Core/Src/matrix.c ****     uint_fast16_t i, j;
+ 1212              		.loc 1 265 5 is_stmt 1 view .LVU376
+ 266:Core/Src/matrix.c ****     const uint_fast8_t arows = a->rows;
+ 1213              		.loc 1 266 5 view .LVU377
+ARM GAS  /tmp/ccNPxrNS.s 			page 33
+
+
+ 1214              		.loc 1 266 24 is_stmt 0 view .LVU378
+ 1215 0002 0668     		ldr	r6, [r0]
+ 1216              	.LVL155:
+ 267:Core/Src/matrix.c ****     const uint_fast8_t acols = a->cols;
+ 1217              		.loc 1 267 5 is_stmt 1 view .LVU379
+ 1218              		.loc 1 267 24 is_stmt 0 view .LVU380
+ 1219 0004 4468     		ldr	r4, [r0, #4]
+ 1220              	.LVL156:
+ 268:Core/Src/matrix.c **** 
+ 269:Core/Src/matrix.c ****     const matrix_data_t *RESTRICT const adata = a->data;
+ 1221              		.loc 1 269 5 is_stmt 1 view .LVU381
+ 1222              		.loc 1 269 41 is_stmt 0 view .LVU382
+ 1223 0006 8068     		ldr	r0, [r0, #8]
+ 1224              	.LVL157:
+ 270:Core/Src/matrix.c ****     const matrix_data_t *RESTRICT const xdata = x->data;
+ 1225              		.loc 1 270 5 is_stmt 1 view .LVU383
+ 1226              		.loc 1 270 41 is_stmt 0 view .LVU384
+ 1227 0008 8D68     		ldr	r5, [r1, #8]
+ 1228              	.LVL158:
+ 271:Core/Src/matrix.c ****     matrix_data_t *RESTRICT const cdata = c->data;
+ 1229              		.loc 1 271 5 is_stmt 1 view .LVU385
+ 1230              		.loc 1 271 35 is_stmt 0 view .LVU386
+ 1231 000a 9768     		ldr	r7, [r2, #8]
+ 1232              	.LVL159:
+ 272:Core/Src/matrix.c **** 
+ 273:Core/Src/matrix.c ****     uint_fast16_t indexA = 0;
+ 1233              		.loc 1 273 5 is_stmt 1 view .LVU387
+ 274:Core/Src/matrix.c ****     uint_fast16_t cIndex = 0;
+ 1234              		.loc 1 274 5 view .LVU388
+ 275:Core/Src/matrix.c ****     matrix_data_t b0 = xdata[0];
+ 1235              		.loc 1 275 5 view .LVU389
+ 1236              		.loc 1 275 19 is_stmt 0 view .LVU390
+ 1237 000c 95ED006A 		vldr.32	s12, [r5]
+ 1238              	.LVL160:
+ 276:Core/Src/matrix.c **** 
+ 277:Core/Src/matrix.c ****     for (i = 0; i < arows; ++i)
+ 1239              		.loc 1 277 5 is_stmt 1 view .LVU391
+ 274:Core/Src/matrix.c ****     matrix_data_t b0 = xdata[0];
+ 1240              		.loc 1 274 19 is_stmt 0 view .LVU392
+ 1241 0010 4FF0000C 		mov	ip, #0
+ 273:Core/Src/matrix.c ****     uint_fast16_t cIndex = 0;
+ 1242              		.loc 1 273 19 view .LVU393
+ 1243 0014 6346     		mov	r3, ip
+ 1244              		.loc 1 277 12 view .LVU394
+ 1245 0016 E646     		mov	lr, ip
+ 1246              		.loc 1 277 5 view .LVU395
+ 1247 0018 18E0     		b	.L90
+ 1248              	.LVL161:
+ 1249              	.L92:
+ 1250              	.LBB23:
+ 278:Core/Src/matrix.c ****     {
+ 279:Core/Src/matrix.c ****         matrix_data_t total = adata[indexA++] * b0;
+ 280:Core/Src/matrix.c **** 
+ 281:Core/Src/matrix.c ****         for (j = 1; j < acols; ++j)
+ 282:Core/Src/matrix.c ****         {
+ 283:Core/Src/matrix.c ****             total += adata[indexA++] * xdata[j];
+ 1251              		.loc 1 283 13 is_stmt 1 view .LVU396
+ARM GAS  /tmp/ccNPxrNS.s 			page 34
+
+
+ 1252              		.loc 1 283 27 is_stmt 0 view .LVU397
+ 1253 001a 00EB8201 		add	r1, r0, r2, lsl #2
+ 1254 001e D1ED007A 		vldr.32	s15, [r1]
+ 1255              		.loc 1 283 45 view .LVU398
+ 1256 0022 05EB8301 		add	r1, r5, r3, lsl #2
+ 1257 0026 D1ED006A 		vldr.32	s13, [r1]
+ 1258              		.loc 1 283 38 view .LVU399
+ 1259 002a 67EEA67A 		vmul.f32	s15, s15, s13
+ 1260              		.loc 1 283 19 view .LVU400
+ 1261 002e 37EE277A 		vadd.f32	s14, s14, s15
+ 1262              	.LVL162:
+ 281:Core/Src/matrix.c ****         {
+ 1263              		.loc 1 281 32 is_stmt 1 discriminator 3 view .LVU401
+ 1264 0032 0133     		adds	r3, r3, #1
+ 1265              	.LVL163:
+ 1266              		.loc 1 283 34 is_stmt 0 view .LVU402
+ 1267 0034 0132     		adds	r2, r2, #1
+ 1268              	.LVL164:
+ 1269              	.L91:
+ 281:Core/Src/matrix.c ****         {
+ 1270              		.loc 1 281 23 is_stmt 1 discriminator 1 view .LVU403
+ 1271 0036 A342     		cmp	r3, r4
+ 1272 0038 EFD3     		bcc	.L92
+ 284:Core/Src/matrix.c ****         }
+ 285:Core/Src/matrix.c **** 
+ 286:Core/Src/matrix.c ****         cdata[cIndex++] = total;
+ 1273              		.loc 1 286 9 view .LVU404
+ 1274              	.LVL165:
+ 1275              		.loc 1 286 14 is_stmt 0 view .LVU405
+ 1276 003a 07EB8C03 		add	r3, r7, ip, lsl #2
+ 1277              	.LVL166:
+ 1278              		.loc 1 286 25 view .LVU406
+ 1279 003e 83ED007A 		vstr.32	s14, [r3]
+ 1280              	.LBE23:
+ 277:Core/Src/matrix.c ****     {
+ 1281              		.loc 1 277 28 is_stmt 1 discriminator 2 view .LVU407
+ 1282 0042 0EF1010E 		add	lr, lr, #1
+ 1283              	.LVL167:
+ 1284              	.LBB24:
+ 1285              		.loc 1 286 21 is_stmt 0 view .LVU408
+ 1286 0046 0CF1010C 		add	ip, ip, #1
+ 1287              	.LVL168:
+ 1288              		.loc 1 286 21 view .LVU409
+ 1289              	.LBE24:
+ 277:Core/Src/matrix.c ****     {
+ 1290              		.loc 1 277 28 discriminator 2 view .LVU410
+ 1291 004a 1346     		mov	r3, r2
+ 1292              	.LVL169:
+ 1293              	.L90:
+ 277:Core/Src/matrix.c ****     {
+ 1294              		.loc 1 277 19 is_stmt 1 discriminator 1 view .LVU411
+ 1295 004c B645     		cmp	lr, r6
+ 1296 004e 08D2     		bcs	.L95
+ 1297              	.LBB25:
+ 279:Core/Src/matrix.c **** 
+ 1298              		.loc 1 279 9 view .LVU412
+ 279:Core/Src/matrix.c **** 
+ARM GAS  /tmp/ccNPxrNS.s 			page 35
+
+
+ 1299              		.loc 1 279 43 is_stmt 0 view .LVU413
+ 1300 0050 5A1C     		adds	r2, r3, #1
+ 1301              	.LVL170:
+ 279:Core/Src/matrix.c **** 
+ 1302              		.loc 1 279 36 view .LVU414
+ 1303 0052 00EB8303 		add	r3, r0, r3, lsl #2
+ 1304 0056 93ED007A 		vldr.32	s14, [r3]
+ 279:Core/Src/matrix.c **** 
+ 1305              		.loc 1 279 23 view .LVU415
+ 1306 005a 27EE067A 		vmul.f32	s14, s14, s12
+ 1307              	.LVL171:
+ 281:Core/Src/matrix.c ****         {
+ 1308              		.loc 1 281 9 is_stmt 1 view .LVU416
+ 281:Core/Src/matrix.c ****         {
+ 1309              		.loc 1 281 16 is_stmt 0 view .LVU417
+ 1310 005e 0123     		movs	r3, #1
+ 281:Core/Src/matrix.c ****         {
+ 1311              		.loc 1 281 9 view .LVU418
+ 1312 0060 E9E7     		b	.L91
+ 1313              	.LVL172:
+ 1314              	.L95:
+ 281:Core/Src/matrix.c ****         {
+ 1315              		.loc 1 281 9 view .LVU419
+ 1316              	.LBE25:
+ 287:Core/Src/matrix.c ****     }
+ 288:Core/Src/matrix.c **** }
+ 1317              		.loc 1 288 1 view .LVU420
+ 1318 0062 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1319              		.loc 1 288 1 view .LVU421
+ 1320              		.cfi_endproc
+ 1321              	.LFE16:
+ 1323              		.section	.text.matrix_multadd_rowvector,"ax",%progbits
+ 1324              		.align	1
+ 1325              		.global	matrix_multadd_rowvector
+ 1326              		.syntax unified
+ 1327              		.thumb
+ 1328              		.thumb_func
+ 1330              	matrix_multadd_rowvector:
+ 1331              	.LVL173:
+ 1332              	.LFB17:
+ 289:Core/Src/matrix.c **** 
+ 290:Core/Src/matrix.c **** /*!
+ 291:Core/Src/matrix.c **** * \brief Performs a matrix multiplication such that {\ref c} = {\ref c} + {\ref x} * {\ref b}
+ 292:Core/Src/matrix.c **** * \param[in] a Matrix A
+ 293:Core/Src/matrix.c **** * \param[in] x Vector x
+ 294:Core/Src/matrix.c **** * \param[in] c Resulting vector C (will be added to)
+ 295:Core/Src/matrix.c **** * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+ 296:Core/Src/matrix.c **** *
+ 297:Core/Src/matrix.c **** * Kudos: https://code.google.com/p/efficient-java-matrix-library
+ 298:Core/Src/matrix.c **** */
+ 299:Core/Src/matrix.c **** void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, m
+ 300:Core/Src/matrix.c **** {
+ 1333              		.loc 1 300 1 is_stmt 1 view -0
+ 1334              		.cfi_startproc
+ 1335              		@ args = 0, pretend = 0, frame = 0
+ 1336              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1337              		.loc 1 300 1 is_stmt 0 view .LVU423
+ARM GAS  /tmp/ccNPxrNS.s 			page 36
+
+
+ 1338 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1339              		.cfi_def_cfa_offset 20
+ 1340              		.cfi_offset 4, -20
+ 1341              		.cfi_offset 5, -16
+ 1342              		.cfi_offset 6, -12
+ 1343              		.cfi_offset 7, -8
+ 1344              		.cfi_offset 14, -4
+ 301:Core/Src/matrix.c ****     uint_fast16_t i, j;
+ 1345              		.loc 1 301 5 is_stmt 1 view .LVU424
+ 302:Core/Src/matrix.c ****     const uint_fast8_t arows = a->rows;
+ 1346              		.loc 1 302 5 view .LVU425
+ 1347              		.loc 1 302 24 is_stmt 0 view .LVU426
+ 1348 0002 0668     		ldr	r6, [r0]
+ 1349              	.LVL174:
+ 303:Core/Src/matrix.c ****     const uint_fast8_t acols = a->cols;
+ 1350              		.loc 1 303 5 is_stmt 1 view .LVU427
+ 1351              		.loc 1 303 24 is_stmt 0 view .LVU428
+ 1352 0004 4468     		ldr	r4, [r0, #4]
+ 1353              	.LVL175:
+ 304:Core/Src/matrix.c **** 
+ 305:Core/Src/matrix.c ****     const matrix_data_t *RESTRICT const adata = a->data;
+ 1354              		.loc 1 305 5 is_stmt 1 view .LVU429
+ 1355              		.loc 1 305 41 is_stmt 0 view .LVU430
+ 1356 0006 8068     		ldr	r0, [r0, #8]
+ 1357              	.LVL176:
+ 306:Core/Src/matrix.c ****     const matrix_data_t *RESTRICT const xdata = x->data;
+ 1358              		.loc 1 306 5 is_stmt 1 view .LVU431
+ 1359              		.loc 1 306 41 is_stmt 0 view .LVU432
+ 1360 0008 8D68     		ldr	r5, [r1, #8]
+ 1361              	.LVL177:
+ 307:Core/Src/matrix.c ****     matrix_data_t *RESTRICT const cdata = c->data;
+ 1362              		.loc 1 307 5 is_stmt 1 view .LVU433
+ 1363              		.loc 1 307 35 is_stmt 0 view .LVU434
+ 1364 000a 9768     		ldr	r7, [r2, #8]
+ 1365              	.LVL178:
+ 308:Core/Src/matrix.c **** 
+ 309:Core/Src/matrix.c ****     uint_fast16_t indexA = 0;
+ 1366              		.loc 1 309 5 is_stmt 1 view .LVU435
+ 310:Core/Src/matrix.c ****     uint_fast16_t cIndex = 0;
+ 1367              		.loc 1 310 5 view .LVU436
+ 311:Core/Src/matrix.c ****     matrix_data_t b0 = xdata[0];
+ 1368              		.loc 1 311 5 view .LVU437
+ 1369              		.loc 1 311 19 is_stmt 0 view .LVU438
+ 1370 000c 95ED006A 		vldr.32	s12, [r5]
+ 1371              	.LVL179:
+ 312:Core/Src/matrix.c **** 
+ 313:Core/Src/matrix.c ****     for (i = 0; i < arows; ++i)
+ 1372              		.loc 1 313 5 is_stmt 1 view .LVU439
+ 310:Core/Src/matrix.c ****     matrix_data_t b0 = xdata[0];
+ 1373              		.loc 1 310 19 is_stmt 0 view .LVU440
+ 1374 0010 4FF0000C 		mov	ip, #0
+ 309:Core/Src/matrix.c ****     uint_fast16_t cIndex = 0;
+ 1375              		.loc 1 309 19 view .LVU441
+ 1376 0014 6346     		mov	r3, ip
+ 1377              		.loc 1 313 12 view .LVU442
+ 1378 0016 E646     		mov	lr, ip
+ 1379              		.loc 1 313 5 view .LVU443
+ARM GAS  /tmp/ccNPxrNS.s 			page 37
+
+
+ 1380 0018 1CE0     		b	.L97
+ 1381              	.LVL180:
+ 1382              	.L99:
+ 1383              	.LBB26:
+ 314:Core/Src/matrix.c ****     {
+ 315:Core/Src/matrix.c ****         matrix_data_t total = adata[indexA++] * b0;
+ 316:Core/Src/matrix.c **** 
+ 317:Core/Src/matrix.c ****         for (j = 1; j < acols; ++j)
+ 318:Core/Src/matrix.c ****         {
+ 319:Core/Src/matrix.c ****             total += adata[indexA++] * xdata[j];
+ 1384              		.loc 1 319 13 is_stmt 1 view .LVU444
+ 1385              		.loc 1 319 27 is_stmt 0 view .LVU445
+ 1386 001a 00EB8201 		add	r1, r0, r2, lsl #2
+ 1387 001e D1ED007A 		vldr.32	s15, [r1]
+ 1388              		.loc 1 319 45 view .LVU446
+ 1389 0022 05EB8301 		add	r1, r5, r3, lsl #2
+ 1390 0026 D1ED006A 		vldr.32	s13, [r1]
+ 1391              		.loc 1 319 38 view .LVU447
+ 1392 002a 67EEA67A 		vmul.f32	s15, s15, s13
+ 1393              		.loc 1 319 19 view .LVU448
+ 1394 002e 37EE277A 		vadd.f32	s14, s14, s15
+ 1395              	.LVL181:
+ 317:Core/Src/matrix.c ****         {
+ 1396              		.loc 1 317 32 is_stmt 1 discriminator 3 view .LVU449
+ 1397 0032 0133     		adds	r3, r3, #1
+ 1398              	.LVL182:
+ 1399              		.loc 1 319 34 is_stmt 0 view .LVU450
+ 1400 0034 0132     		adds	r2, r2, #1
+ 1401              	.LVL183:
+ 1402              	.L98:
+ 317:Core/Src/matrix.c ****         {
+ 1403              		.loc 1 317 23 is_stmt 1 discriminator 1 view .LVU451
+ 1404 0036 A342     		cmp	r3, r4
+ 1405 0038 EFD3     		bcc	.L99
+ 320:Core/Src/matrix.c ****         }
+ 321:Core/Src/matrix.c **** 
+ 322:Core/Src/matrix.c ****         cdata[cIndex++] += total;
+ 1406              		.loc 1 322 9 view .LVU452
+ 1407              	.LVL184:
+ 1408              		.loc 1 322 14 is_stmt 0 view .LVU453
+ 1409 003a 07EB8C03 		add	r3, r7, ip, lsl #2
+ 1410              	.LVL185:
+ 1411              		.loc 1 322 14 view .LVU454
+ 1412 003e D3ED007A 		vldr.32	s15, [r3]
+ 1413              		.loc 1 322 25 view .LVU455
+ 1414 0042 77EE877A 		vadd.f32	s15, s15, s14
+ 1415 0046 C3ED007A 		vstr.32	s15, [r3]
+ 1416              	.LBE26:
+ 313:Core/Src/matrix.c ****     {
+ 1417              		.loc 1 313 28 is_stmt 1 discriminator 2 view .LVU456
+ 1418 004a 0EF1010E 		add	lr, lr, #1
+ 1419              	.LVL186:
+ 1420              	.LBB27:
+ 1421              		.loc 1 322 21 is_stmt 0 view .LVU457
+ 1422 004e 0CF1010C 		add	ip, ip, #1
+ 1423              	.LVL187:
+ 1424              		.loc 1 322 21 view .LVU458
+ARM GAS  /tmp/ccNPxrNS.s 			page 38
+
+
+ 1425              	.LBE27:
+ 313:Core/Src/matrix.c ****     {
+ 1426              		.loc 1 313 28 discriminator 2 view .LVU459
+ 1427 0052 1346     		mov	r3, r2
+ 1428              	.LVL188:
+ 1429              	.L97:
+ 313:Core/Src/matrix.c ****     {
+ 1430              		.loc 1 313 19 is_stmt 1 discriminator 1 view .LVU460
+ 1431 0054 B645     		cmp	lr, r6
+ 1432 0056 08D2     		bcs	.L102
+ 1433              	.LBB28:
+ 315:Core/Src/matrix.c **** 
+ 1434              		.loc 1 315 9 view .LVU461
+ 315:Core/Src/matrix.c **** 
+ 1435              		.loc 1 315 43 is_stmt 0 view .LVU462
+ 1436 0058 5A1C     		adds	r2, r3, #1
+ 1437              	.LVL189:
+ 315:Core/Src/matrix.c **** 
+ 1438              		.loc 1 315 36 view .LVU463
+ 1439 005a 00EB8303 		add	r3, r0, r3, lsl #2
+ 1440 005e 93ED007A 		vldr.32	s14, [r3]
+ 315:Core/Src/matrix.c **** 
+ 1441              		.loc 1 315 23 view .LVU464
+ 1442 0062 27EE067A 		vmul.f32	s14, s14, s12
+ 1443              	.LVL190:
+ 317:Core/Src/matrix.c ****         {
+ 1444              		.loc 1 317 9 is_stmt 1 view .LVU465
+ 317:Core/Src/matrix.c ****         {
+ 1445              		.loc 1 317 16 is_stmt 0 view .LVU466
+ 1446 0066 0123     		movs	r3, #1
+ 317:Core/Src/matrix.c ****         {
+ 1447              		.loc 1 317 9 view .LVU467
+ 1448 0068 E5E7     		b	.L98
+ 1449              	.LVL191:
+ 1450              	.L102:
+ 317:Core/Src/matrix.c ****         {
+ 1451              		.loc 1 317 9 view .LVU468
+ 1452              	.LBE28:
+ 323:Core/Src/matrix.c ****     }
+ 324:Core/Src/matrix.c **** }
+ 1453              		.loc 1 324 1 view .LVU469
+ 1454 006a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1455              		.loc 1 324 1 view .LVU470
+ 1456              		.cfi_endproc
+ 1457              	.LFE17:
+ 1459              		.section	.rodata.__func__.0,"a"
+ 1460              		.align	2
+ 1463              	__func__.0:
+ 1464 0000 6D617472 		.ascii	"matrix_mult\000"
+ 1464      69785F6D 
+ 1464      756C7400 
+ 1465              		.text
+ 1466              	.Letext0:
+ 1467              		.file 3 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 1468              		.file 4 "/usr/include/newlib/assert.h"
+ARM GAS  /tmp/ccNPxrNS.s 			page 39
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 matrix.c
+     /tmp/ccNPxrNS.s:21     .text.matrix_get_column_copy:00000000 $t
+     /tmp/ccNPxrNS.s:26     .text.matrix_get_column_copy:00000000 matrix_get_column_copy
+     /tmp/ccNPxrNS.s:94     .text.matrix_init:00000000 $t
+     /tmp/ccNPxrNS.s:100    .text.matrix_init:00000000 matrix_init
+     /tmp/ccNPxrNS.s:123    .text.matrix_invert_lower:00000000 $t
+     /tmp/ccNPxrNS.s:129    .text.matrix_invert_lower:00000000 matrix_invert_lower
+     /tmp/ccNPxrNS.s:374    .text.matrix_invert_lower:000000ec $d
+     /tmp/ccNPxrNS.s:379    .rodata.matrix_mult.str1.4:00000000 $d
+     /tmp/ccNPxrNS.s:401    .text.matrix_mult:00000000 $t
+     /tmp/ccNPxrNS.s:407    .text.matrix_mult:00000000 matrix_mult
+     /tmp/ccNPxrNS.s:661    .text.matrix_mult:000000e4 $d
+     /tmp/ccNPxrNS.s:1463   .rodata.__func__.0:00000000 __func__.0
+     /tmp/ccNPxrNS.s:674    .text.matrix_mult_transb:00000000 $t
+     /tmp/ccNPxrNS.s:680    .text.matrix_mult_transb:00000000 matrix_mult_transb
+     /tmp/ccNPxrNS.s:839    .text.matrix_mult_transb:00000080 $d
+     /tmp/ccNPxrNS.s:844    .text.matrix_multadd_transb:00000000 $t
+     /tmp/ccNPxrNS.s:850    .text.matrix_multadd_transb:00000000 matrix_multadd_transb
+     /tmp/ccNPxrNS.s:1012   .text.matrix_multadd_transb:00000088 $d
+     /tmp/ccNPxrNS.s:1017   .text.matrix_multscale_transb:00000000 $t
+     /tmp/ccNPxrNS.s:1023   .text.matrix_multscale_transb:00000000 matrix_multscale_transb
+     /tmp/ccNPxrNS.s:1186   .text.matrix_multscale_transb:00000088 $d
+     /tmp/ccNPxrNS.s:1191   .text.matrix_mult_rowvector:00000000 $t
+     /tmp/ccNPxrNS.s:1197   .text.matrix_mult_rowvector:00000000 matrix_mult_rowvector
+     /tmp/ccNPxrNS.s:1324   .text.matrix_multadd_rowvector:00000000 $t
+     /tmp/ccNPxrNS.s:1330   .text.matrix_multadd_rowvector:00000000 matrix_multadd_rowvector
+     /tmp/ccNPxrNS.s:1460   .rodata.__func__.0:00000000 $d
+
+UNDEFINED SYMBOLS
+__assert_func

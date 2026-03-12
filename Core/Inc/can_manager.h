@@ -15,9 +15,8 @@
 #define CAN_ID_SYSTEM_STATUS    0x150  // Kalp atışı (Düşük öncelik)
 #define CAN_ID_CMD_TO_SENSOR    0x0A0  // Jetsonun bu karta emir vermesi için kullanıdğı ID
 
-
-// Fonksiyonlarımızı dünyaya duyuruyoruz
+// Fonksiyonlarımızı dünyaya duyuruyoruz (hcan parametresi eklendi!)
 void CAN_Config_Init(CAN_HandleTypeDef *hcan);
-uint8_t CAN_Send_Message(uint32_t id, uint8_t *data, uint8_t len);
+uint8_t CAN_Send_Message(CAN_HandleTypeDef *hcan, uint32_t id, uint8_t *data, uint8_t len);
 
 #endif /* INC_CAN_MANAGER_H_ */

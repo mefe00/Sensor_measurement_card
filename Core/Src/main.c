@@ -15,6 +15,22 @@
   *
   ******************************************************************************
   */
+// ===================================================================== //
+// ===================================================================== //
+// ===================================================================== //
+// Task_IMU == çok yüksek öncelik (SPI + DMA ve 200-400 Hz civarı)
+// Task_GPS == yüksek öncelik (USART + DMA ve 10 Hz civarı)
+// Task_CAN == orta öncelik (Interrupt bazlı ve 100 Hz civarı)
+// Task_BME == düşük öncelik (SPI + DMA ve 20 Hz civarı)
+
+// FAİLSAFE DURUMLARI:
+// 1-) GPS kaybı: FreeRTOS yapısı ile bu durumda GPS Fix bayrağı düşecek ve GPS Task'ı atlanıp IMU verisi ile hareket sağlanacak. Aynı zamanda CAN üzerinden GPS_LOST loglanacak. Bu 2 GPS'de gittiği durumda.
+// 2-) Haberleşme hattı kitlenmesi: SPI veya I2C hatları düşerse bunu algılamak için Timeout sayacı kullanılır. MCU Timeout süresi aşıldığında sensörün gücünü kesip tekrar açacak (reset).
+// 3-) Kartın belirlenemeyen bir durumda donması ve hataya düşmesi halinde Watchdog Timer devreye girecek ve kartı resetleyecektir. Bu sayede kartın kendini kurtarması sağlanır.
+// ===================================================================== //
+
+
+
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -25,7 +41,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "kalman_factory_measurement.h"
+#include "kalman_factory_filter.h"
+#include "neo-m8n.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +64,13 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+// =========================================================================== //
+// FİLTRE TANIMLAMALARI //
+KALMAN_FACTORY_FILTER(alt_filter, 3);          // 3 durumlu X vektörü (z (basınç sensöründen alınan irtifa değeri), v (z eksenideki IMU'nun ölçtüğü hız), a (z eksenindeki IMU'dan alınan ivme) )
+KALMAN_FACTORY_MEASUREMENT(bme_meas, 3, 1);    // BME280 ölçümü (1 boyutlu) [1 0 0] 
+KALMAN_FACTORY_MEASUREMENT(imu_meas, 3, 1);    // MPU9250 Z ölçümü (1 boyutlu) [0 0 1]
 
+/* =========================================================================== */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,7 +81,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern NEO_M8N_Handle_t gps_1;
+extern NEO_M8N_Handle_t gps_2;
 /* USER CODE END 0 */
 
 /**
@@ -95,6 +120,49 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+// =========================================================================== //
+// FİLTRE İÇİN GEREKLİ FONKİYON TANIMLAMALARI // 
+
+void Init_Altitude_Filter(float dt) {
+    // F Matrisi (Fizik Kuralları) - Satır satır tek boyutlu diziye yazılır
+    alt_filter.F.data[0] = 1.0f; alt_filter.F.data[1] = dt;   alt_filter.F.data[2] = 0.5f * dt * dt;
+    alt_filter.F.data[3] = 0.0f; alt_filter.F.data[4] = 1.0f; alt_filter.F.data[5] = dt;
+    alt_filter.F.data[6] = 0.0f; alt_filter.F.data[7] = 0.0f; alt_filter.F.data[8] = 1.0f;
+    
+    // H Matrisleri (Sensörlerin baktığı yerler)
+    bme_meas.H.data[0] = 1.0f; bme_meas.H.data[1] = 0.0f; bme_meas.H.data[2] = 0.0f; // Sadece Konum
+    imu_meas.H.data[0] = 0.0f; imu_meas.H.data[1] = 0.0f; imu_meas.H.data[2] = 1.0f; // Sadece İvme
+    
+    // R Matrisleri (Sensör Gürültüleri - Tuning burada yapılır)
+    bme_meas.R.data[0] = 2.5f;   // BME280'e az güven
+    imu_meas.R.data[0] = 0.1f;   // İvmeölçere çok güven
+}
+
+// 3. ADIM: FreeRTOS Task'inde Çalışan Ana Döngü
+void Task_Filter_Update(void *pvParameters) {
+    while(1) {
+        // Fiziksel olarak bir adım ileri git (Predict)
+        kalman_predict(&alt_filter);
+        
+        // MPU9250'den ivme geldiyse filtreyi güncelle (Update)
+        if (IMU_Data_Ready()) {
+            imu_meas.z.data[0] = MPU9250_Get_Z_Accel(); 
+            kalman_correct(&alt_filter, &imu_meas); // Kalman Kazancı (K) burada hesaplanır!
+        }
+        
+        // BME280'den irtifa geldiyse filtreyi güncelle (Update)
+        if (BME280_Data_Ready()) {
+            bme_meas.z.data[0] = BME280_Get_Altitude();
+            kalman_correct(&alt_filter, &bme_meas);
+        }
+        
+        // SONUÇ: Kaymak gibi filtrelenmiş irtifa ve dikey hız!
+        float temiz_irtifa = alt_filter.x.data[0];
+        float temiz_hiz    = alt_filter.x.data[1];
+    }
+}
+// =========================================================================== //
+
 
   /* USER CODE END 2 */
 
@@ -155,6 +223,24 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+// =========================================================================== //
+// ========================================================================== //
+// GPS VERİLERİNİN DMA İLE ALINDIĞI CALLBACK FONKSİYONU //
+// DMA UART Idle kesmesi düştüğünde donanım buraya girer
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    // Hangi GPS'ten veri geldiğini UART kanalından anlıyoruz
+    if (huart->Instance == USART1) {
+        NEO_M8N_ParseBuffer(&gps_1, Size); // Byte'ları çöz
+        HAL_UARTEx_ReceiveToIdle_DMA(&huart1, gps_1.rx_buffer, 100); // Tekrar dinlemeye başla
+    }
+    else if (huart->Instance == USART2) {
+        NEO_M8N_ParseBuffer(&gps_2, Size);
+        HAL_UARTEx_ReceiveToIdle_DMA(&huart2, gps_2.rx_buffer, 100);
+    }
+}
+// =========================================================================== //
+// ========================================================================== //
 
 /* USER CODE END 4 */
 

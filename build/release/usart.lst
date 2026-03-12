@@ -1,0 +1,287 @@
+ARM GAS  /tmp/cc2BYKrk.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"usart.c"
+  16              		.text
+  17              		.section	.text.MX_USART1_UART_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	MX_USART1_UART_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	MX_USART1_UART_Init:
+  25              		@ args = 0, pretend = 0, frame = 0
+  26              		@ frame_needed = 0, uses_anonymous_args = 0
+  27 0000 08B5     		push	{r3, lr}
+  28 0002 0A48     		ldr	r0, .L5
+  29 0004 0A4B     		ldr	r3, .L5+4
+  30 0006 0360     		str	r3, [r0]
+  31 0008 4FF4E133 		mov	r3, #115200
+  32 000c 4360     		str	r3, [r0, #4]
+  33 000e 0023     		movs	r3, #0
+  34 0010 8360     		str	r3, [r0, #8]
+  35 0012 C360     		str	r3, [r0, #12]
+  36 0014 0361     		str	r3, [r0, #16]
+  37 0016 0C22     		movs	r2, #12
+  38 0018 4261     		str	r2, [r0, #20]
+  39 001a 8361     		str	r3, [r0, #24]
+  40 001c C361     		str	r3, [r0, #28]
+  41 001e FFF7FEFF 		bl	HAL_UART_Init
+  42 0022 00B9     		cbnz	r0, .L4
+  43              	.L1:
+  44 0024 08BD     		pop	{r3, pc}
+  45              	.L4:
+  46 0026 FFF7FEFF 		bl	Error_Handler
+  47 002a FBE7     		b	.L1
+  48              	.L6:
+  49              		.align	2
+  50              	.L5:
+  51 002c 00000000 		.word	huart1
+  52 0030 00100140 		.word	1073811456
+  54              		.section	.text.MX_USART2_UART_Init,"ax",%progbits
+  55              		.align	1
+  56              		.global	MX_USART2_UART_Init
+  57              		.syntax unified
+  58              		.thumb
+  59              		.thumb_func
+ARM GAS  /tmp/cc2BYKrk.s 			page 2
+
+
+  61              	MX_USART2_UART_Init:
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+  64 0000 08B5     		push	{r3, lr}
+  65 0002 0A48     		ldr	r0, .L11
+  66 0004 0A4B     		ldr	r3, .L11+4
+  67 0006 0360     		str	r3, [r0]
+  68 0008 4FF4E133 		mov	r3, #115200
+  69 000c 4360     		str	r3, [r0, #4]
+  70 000e 0023     		movs	r3, #0
+  71 0010 8360     		str	r3, [r0, #8]
+  72 0012 C360     		str	r3, [r0, #12]
+  73 0014 0361     		str	r3, [r0, #16]
+  74 0016 0C22     		movs	r2, #12
+  75 0018 4261     		str	r2, [r0, #20]
+  76 001a 8361     		str	r3, [r0, #24]
+  77 001c C361     		str	r3, [r0, #28]
+  78 001e FFF7FEFF 		bl	HAL_UART_Init
+  79 0022 00B9     		cbnz	r0, .L10
+  80              	.L7:
+  81 0024 08BD     		pop	{r3, pc}
+  82              	.L10:
+  83 0026 FFF7FEFF 		bl	Error_Handler
+  84 002a FBE7     		b	.L7
+  85              	.L12:
+  86              		.align	2
+  87              	.L11:
+  88 002c 00000000 		.word	huart2
+  89 0030 00440040 		.word	1073759232
+  91              		.section	.text.HAL_UART_MspInit,"ax",%progbits
+  92              		.align	1
+  93              		.global	HAL_UART_MspInit
+  94              		.syntax unified
+  95              		.thumb
+  96              		.thumb_func
+  98              	HAL_UART_MspInit:
+  99              		@ args = 0, pretend = 0, frame = 40
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101 0000 00B5     		push	{lr}
+ 102 0002 8BB0     		sub	sp, sp, #44
+ 103 0004 0023     		movs	r3, #0
+ 104 0006 0593     		str	r3, [sp, #20]
+ 105 0008 0693     		str	r3, [sp, #24]
+ 106 000a 0793     		str	r3, [sp, #28]
+ 107 000c 0893     		str	r3, [sp, #32]
+ 108 000e 0993     		str	r3, [sp, #36]
+ 109 0010 0368     		ldr	r3, [r0]
+ 110 0012 284A     		ldr	r2, .L19
+ 111 0014 9342     		cmp	r3, r2
+ 112 0016 05D0     		beq	.L17
+ 113 0018 274A     		ldr	r2, .L19+4
+ 114 001a 9342     		cmp	r3, r2
+ 115 001c 26D0     		beq	.L18
+ 116              	.L13:
+ 117 001e 0BB0     		add	sp, sp, #44
+ 118              		@ sp needed
+ 119 0020 5DF804FB 		ldr	pc, [sp], #4
+ARM GAS  /tmp/cc2BYKrk.s 			page 3
+
+
+ 120              	.L17:
+ 121 0024 0021     		movs	r1, #0
+ 122 0026 0191     		str	r1, [sp, #4]
+ 123 0028 244B     		ldr	r3, .L19+8
+ 124 002a 5A6C     		ldr	r2, [r3, #68]
+ 125 002c 42F01002 		orr	r2, r2, #16
+ 126 0030 5A64     		str	r2, [r3, #68]
+ 127 0032 5A6C     		ldr	r2, [r3, #68]
+ 128 0034 02F01002 		and	r2, r2, #16
+ 129 0038 0192     		str	r2, [sp, #4]
+ 130 003a 019A     		ldr	r2, [sp, #4]
+ 131 003c 0291     		str	r1, [sp, #8]
+ 132 003e 1A6B     		ldr	r2, [r3, #48]
+ 133 0040 42F00102 		orr	r2, r2, #1
+ 134 0044 1A63     		str	r2, [r3, #48]
+ 135 0046 1B6B     		ldr	r3, [r3, #48]
+ 136 0048 03F00103 		and	r3, r3, #1
+ 137 004c 0293     		str	r3, [sp, #8]
+ 138 004e 029B     		ldr	r3, [sp, #8]
+ 139 0050 4FF4C063 		mov	r3, #1536
+ 140 0054 0593     		str	r3, [sp, #20]
+ 141 0056 0223     		movs	r3, #2
+ 142 0058 0693     		str	r3, [sp, #24]
+ 143 005a 0323     		movs	r3, #3
+ 144 005c 0893     		str	r3, [sp, #32]
+ 145 005e 0723     		movs	r3, #7
+ 146 0060 0993     		str	r3, [sp, #36]
+ 147 0062 05A9     		add	r1, sp, #20
+ 148 0064 1648     		ldr	r0, .L19+12
+ 149 0066 FFF7FEFF 		bl	HAL_GPIO_Init
+ 150 006a D8E7     		b	.L13
+ 151              	.L18:
+ 152 006c 0021     		movs	r1, #0
+ 153 006e 0391     		str	r1, [sp, #12]
+ 154 0070 124B     		ldr	r3, .L19+8
+ 155 0072 1A6C     		ldr	r2, [r3, #64]
+ 156 0074 42F40032 		orr	r2, r2, #131072
+ 157 0078 1A64     		str	r2, [r3, #64]
+ 158 007a 1A6C     		ldr	r2, [r3, #64]
+ 159 007c 02F40032 		and	r2, r2, #131072
+ 160 0080 0392     		str	r2, [sp, #12]
+ 161 0082 039A     		ldr	r2, [sp, #12]
+ 162 0084 0491     		str	r1, [sp, #16]
+ 163 0086 1A6B     		ldr	r2, [r3, #48]
+ 164 0088 42F00102 		orr	r2, r2, #1
+ 165 008c 1A63     		str	r2, [r3, #48]
+ 166 008e 1B6B     		ldr	r3, [r3, #48]
+ 167 0090 03F00103 		and	r3, r3, #1
+ 168 0094 0493     		str	r3, [sp, #16]
+ 169 0096 049B     		ldr	r3, [sp, #16]
+ 170 0098 0C23     		movs	r3, #12
+ 171 009a 0593     		str	r3, [sp, #20]
+ 172 009c 0223     		movs	r3, #2
+ 173 009e 0693     		str	r3, [sp, #24]
+ 174 00a0 0323     		movs	r3, #3
+ 175 00a2 0893     		str	r3, [sp, #32]
+ 176 00a4 0723     		movs	r3, #7
+ARM GAS  /tmp/cc2BYKrk.s 			page 4
+
+
+ 177 00a6 0993     		str	r3, [sp, #36]
+ 178 00a8 05A9     		add	r1, sp, #20
+ 179 00aa 0548     		ldr	r0, .L19+12
+ 180 00ac FFF7FEFF 		bl	HAL_GPIO_Init
+ 181 00b0 B5E7     		b	.L13
+ 182              	.L20:
+ 183 00b2 00BF     		.align	2
+ 184              	.L19:
+ 185 00b4 00100140 		.word	1073811456
+ 186 00b8 00440040 		.word	1073759232
+ 187 00bc 00380240 		.word	1073887232
+ 188 00c0 00000240 		.word	1073872896
+ 190              		.section	.text.HAL_UART_MspDeInit,"ax",%progbits
+ 191              		.align	1
+ 192              		.global	HAL_UART_MspDeInit
+ 193              		.syntax unified
+ 194              		.thumb
+ 195              		.thumb_func
+ 197              	HAL_UART_MspDeInit:
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200 0000 08B5     		push	{r3, lr}
+ 201 0002 0368     		ldr	r3, [r0]
+ 202 0004 0E4A     		ldr	r2, .L27
+ 203 0006 9342     		cmp	r3, r2
+ 204 0008 03D0     		beq	.L25
+ 205 000a 0E4A     		ldr	r2, .L27+4
+ 206 000c 9342     		cmp	r3, r2
+ 207 000e 0CD0     		beq	.L26
+ 208              	.L21:
+ 209 0010 08BD     		pop	{r3, pc}
+ 210              	.L25:
+ 211 0012 02F59432 		add	r2, r2, #75776
+ 212 0016 536C     		ldr	r3, [r2, #68]
+ 213 0018 23F01003 		bic	r3, r3, #16
+ 214 001c 5364     		str	r3, [r2, #68]
+ 215 001e 4FF4C061 		mov	r1, #1536
+ 216 0022 0948     		ldr	r0, .L27+8
+ 217 0024 FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 218 0028 F2E7     		b	.L21
+ 219              	.L26:
+ 220 002a 02F5FA32 		add	r2, r2, #128000
+ 221 002e 136C     		ldr	r3, [r2, #64]
+ 222 0030 23F40033 		bic	r3, r3, #131072
+ 223 0034 1364     		str	r3, [r2, #64]
+ 224 0036 0C21     		movs	r1, #12
+ 225 0038 0348     		ldr	r0, .L27+8
+ 226 003a FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 227 003e E7E7     		b	.L21
+ 228              	.L28:
+ 229              		.align	2
+ 230              	.L27:
+ 231 0040 00100140 		.word	1073811456
+ 232 0044 00440040 		.word	1073759232
+ 233 0048 00000240 		.word	1073872896
+ 235              		.global	huart2
+ 236              		.section	.bss.huart2,"aw",%nobits
+ARM GAS  /tmp/cc2BYKrk.s 			page 5
+
+
+ 237              		.align	2
+ 240              	huart2:
+ 241 0000 00000000 		.space	72
+ 241      00000000 
+ 241      00000000 
+ 241      00000000 
+ 241      00000000 
+ 242              		.global	huart1
+ 243              		.section	.bss.huart1,"aw",%nobits
+ 244              		.align	2
+ 247              	huart1:
+ 248 0000 00000000 		.space	72
+ 248      00000000 
+ 248      00000000 
+ 248      00000000 
+ 248      00000000 
+ 249              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/cc2BYKrk.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 usart.c
+     /tmp/cc2BYKrk.s:18     .text.MX_USART1_UART_Init:00000000 $t
+     /tmp/cc2BYKrk.s:24     .text.MX_USART1_UART_Init:00000000 MX_USART1_UART_Init
+     /tmp/cc2BYKrk.s:51     .text.MX_USART1_UART_Init:0000002c $d
+     /tmp/cc2BYKrk.s:247    .bss.huart1:00000000 huart1
+     /tmp/cc2BYKrk.s:55     .text.MX_USART2_UART_Init:00000000 $t
+     /tmp/cc2BYKrk.s:61     .text.MX_USART2_UART_Init:00000000 MX_USART2_UART_Init
+     /tmp/cc2BYKrk.s:88     .text.MX_USART2_UART_Init:0000002c $d
+     /tmp/cc2BYKrk.s:240    .bss.huart2:00000000 huart2
+     /tmp/cc2BYKrk.s:92     .text.HAL_UART_MspInit:00000000 $t
+     /tmp/cc2BYKrk.s:98     .text.HAL_UART_MspInit:00000000 HAL_UART_MspInit
+     /tmp/cc2BYKrk.s:185    .text.HAL_UART_MspInit:000000b4 $d
+     /tmp/cc2BYKrk.s:191    .text.HAL_UART_MspDeInit:00000000 $t
+     /tmp/cc2BYKrk.s:197    .text.HAL_UART_MspDeInit:00000000 HAL_UART_MspDeInit
+     /tmp/cc2BYKrk.s:231    .text.HAL_UART_MspDeInit:00000040 $d
+     /tmp/cc2BYKrk.s:237    .bss.huart2:00000000 $d
+     /tmp/cc2BYKrk.s:244    .bss.huart1:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_UART_Init
+Error_Handler
+HAL_GPIO_Init
+HAL_GPIO_DeInit

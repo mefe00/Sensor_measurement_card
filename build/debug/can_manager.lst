@@ -1,0 +1,369 @@
+ARM GAS  /tmp/cc14SYiP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"can_manager.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/can_manager.c"
+  20              		.section	.text.CAN_Config_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	CAN_Config_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	CAN_Config_Init:
+  28              	.LVL0:
+  29              	.LFB137:
+   1:Core/Src/can_manager.c **** #include "can_manager.h"
+   2:Core/Src/can_manager.c **** #include <stdio.h>
+   3:Core/Src/can_manager.c **** 
+   4:Core/Src/can_manager.c **** // mian.c'de bulunna handle yapısını kullanmak için extern ediyoruz (İPTAL EDİLDİ - Modüler
+   5:Core/Src/can_manager.c **** // extern CAN_HandleTypeDef hcan1; 
+   6:Core/Src/can_manager.c **** 
+   7:Core/Src/can_manager.c **** // Gönderme işlemi için gerekli yapılar (İPTAL EDİLDİ - Race Condition önlemek için fonksi
+   8:Core/Src/can_manager.c **** // static CAN_TxHeaderTypeDef pHeader;
+   9:Core/Src/can_manager.c **** // static uint32_t pTxDatabox; 
+  10:Core/Src/can_manager.c **** 
+  11:Core/Src/can_manager.c **** // Burada CAN hattı için geçerli filtre ayarlarını yapıyoruz.
+  12:Core/Src/can_manager.c **** void CAN_Config_Init(CAN_HandleTypeDef *hcan) {
+  30              		.loc 1 12 47 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 40
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 12 47 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 4, -8
+  38              		.cfi_offset 14, -4
+  39 0002 8AB0     		sub	sp, sp, #40
+  40              		.cfi_def_cfa_offset 48
+  41 0004 0446     		mov	r4, r0
+  13:Core/Src/can_manager.c ****     CAN_FilterTypeDef sFilterConfig;
+  42              		.loc 1 13 5 is_stmt 1 view .LVU2
+  14:Core/Src/can_manager.c **** 
+  15:Core/Src/can_manager.c ****     sFilterConfig.FilterBank = 0; // 14 tane filtre bankası var, 0.sını kullanıyoruz.
+  43              		.loc 1 15 5 view .LVU3
+ARM GAS  /tmp/cc14SYiP.s 			page 2
+
+
+  44              		.loc 1 15 30 is_stmt 0 view .LVU4
+  45 0006 0023     		movs	r3, #0
+  46 0008 0593     		str	r3, [sp, #20]
+  16:Core/Src/can_manager.c ****     sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK; // Maskeleme modu (IP Maskesi gibi)
+  47              		.loc 1 16 5 is_stmt 1 view .LVU5
+  48              		.loc 1 16 30 is_stmt 0 view .LVU6
+  49 000a 0693     		str	r3, [sp, #24]
+  17:Core/Src/can_manager.c ****     sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  50              		.loc 1 17 5 is_stmt 1 view .LVU7
+  51              		.loc 1 17 31 is_stmt 0 view .LVU8
+  52 000c 0122     		movs	r2, #1
+  53 000e 0792     		str	r2, [sp, #28]
+  18:Core/Src/can_manager.c ****     
+  19:Core/Src/can_manager.c ****     // --- MANTIK ---
+  20:Core/Src/can_manager.c ****     // FilterId: "Aradığım numara şu"
+  21:Core/Src/can_manager.c ****     // FilterMask: "Numaranın hangi haneleri tutmalı?"
+  22:Core/Src/can_manager.c ****     // Biz Mask'ı 0x0000 yapıyoruz. Yani "Hiçbir hane umurumda değil, hepsini al".
+  23:Core/Src/can_manager.c ****     sFilterConfig.FilterIdHigh = 0x0000;
+  54              		.loc 1 23 5 is_stmt 1 view .LVU9
+  55              		.loc 1 23 32 is_stmt 0 view .LVU10
+  56 0010 0093     		str	r3, [sp]
+  24:Core/Src/can_manager.c ****     sFilterConfig.FilterIdLow = 0x0000;
+  57              		.loc 1 24 5 is_stmt 1 view .LVU11
+  58              		.loc 1 24 31 is_stmt 0 view .LVU12
+  59 0012 0193     		str	r3, [sp, #4]
+  25:Core/Src/can_manager.c ****     sFilterConfig.FilterMaskIdHigh = 0x0000;
+  60              		.loc 1 25 5 is_stmt 1 view .LVU13
+  61              		.loc 1 25 36 is_stmt 0 view .LVU14
+  62 0014 0293     		str	r3, [sp, #8]
+  26:Core/Src/can_manager.c ****     sFilterConfig.FilterMaskIdLow = 0x0000;
+  63              		.loc 1 26 5 is_stmt 1 view .LVU15
+  64              		.loc 1 26 35 is_stmt 0 view .LVU16
+  65 0016 0393     		str	r3, [sp, #12]
+  27:Core/Src/can_manager.c **** 
+  28:Core/Src/can_manager.c ****     sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0; // Gelen mesajları FIFO0 kutusuna at
+  66              		.loc 1 28 5 is_stmt 1 view .LVU17
+  67              		.loc 1 28 40 is_stmt 0 view .LVU18
+  68 0018 0493     		str	r3, [sp, #16]
+  29:Core/Src/can_manager.c ****     sFilterConfig.FilterActivation = ENABLE; // Filtreyi çalıştır
+  69              		.loc 1 29 5 is_stmt 1 view .LVU19
+  70              		.loc 1 29 36 is_stmt 0 view .LVU20
+  71 001a 0892     		str	r2, [sp, #32]
+  30:Core/Src/can_manager.c ****     sFilterConfig.SlaveStartFilterBank = 14; // Tek CAN kullandığımız için önemsiz
+  72              		.loc 1 30 5 is_stmt 1 view .LVU21
+  73              		.loc 1 30 40 is_stmt 0 view .LVU22
+  74 001c 0E23     		movs	r3, #14
+  75 001e 0993     		str	r3, [sp, #36]
+  31:Core/Src/can_manager.c **** 
+  32:Core/Src/can_manager.c ****     // Filtreyi Yükle
+  33:Core/Src/can_manager.c ****     if (HAL_CAN_ConfigFilter(hcan, &sFilterConfig) != HAL_OK) {
+  76              		.loc 1 33 5 is_stmt 1 view .LVU23
+  77              		.loc 1 33 9 is_stmt 0 view .LVU24
+  78 0020 6946     		mov	r1, sp
+  79 0022 FFF7FEFF 		bl	HAL_CAN_ConfigFilter
+  80              	.LVL1:
+  34:Core/Src/can_manager.c ****         // Hata Yönetimi (Buraya while(1) koyabilirsin test için)
+  35:Core/Src/can_manager.c ****     }
+ARM GAS  /tmp/cc14SYiP.s 			page 3
+
+
+  81              		.loc 1 35 5 is_stmt 1 view .LVU25
+  36:Core/Src/can_manager.c **** 
+  37:Core/Src/can_manager.c ****     // --- KRİTİK NOKTA ---
+  38:Core/Src/can_manager.c ****     // Sadece Init yetmez, "Start" demeden CAN hattı elektriklenmez.
+  39:Core/Src/can_manager.c ****     if (HAL_CAN_Start(hcan) != HAL_OK) {
+  82              		.loc 1 39 5 view .LVU26
+  83              		.loc 1 39 9 is_stmt 0 view .LVU27
+  84 0026 2046     		mov	r0, r4
+  85 0028 FFF7FEFF 		bl	HAL_CAN_Start
+  86              	.LVL2:
+  40:Core/Src/can_manager.c ****         // Hata
+  41:Core/Src/can_manager.c ****     }
+  87              		.loc 1 41 5 is_stmt 1 view .LVU28
+  42:Core/Src/can_manager.c **** 
+  43:Core/Src/can_manager.c ****     // Kesmeleri (Interrupt) Aç: Mesaj gelince işlemciye düdük çal
+  44:Core/Src/can_manager.c ****     if (HAL_CAN_ActivateNotification(hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
+  88              		.loc 1 44 5 view .LVU29
+  89              		.loc 1 44 9 is_stmt 0 view .LVU30
+  90 002c 0221     		movs	r1, #2
+  91 002e 2046     		mov	r0, r4
+  92 0030 FFF7FEFF 		bl	HAL_CAN_ActivateNotification
+  93              	.LVL3:
+  45:Core/Src/can_manager.c ****         // Hata
+  46:Core/Src/can_manager.c ****     }
+  94              		.loc 1 46 5 is_stmt 1 view .LVU31
+  47:Core/Src/can_manager.c **** }
+  95              		.loc 1 47 1 is_stmt 0 view .LVU32
+  96 0034 0AB0     		add	sp, sp, #40
+  97              		.cfi_def_cfa_offset 8
+  98              		@ sp needed
+  99 0036 10BD     		pop	{r4, pc}
+ 100              		.loc 1 47 1 view .LVU33
+ 101              		.cfi_endproc
+ 102              	.LFE137:
+ 104              		.section	.text.CAN_Send_Message,"ax",%progbits
+ 105              		.align	1
+ 106              		.global	CAN_Send_Message
+ 107              		.syntax unified
+ 108              		.thumb
+ 109              		.thumb_func
+ 111              	CAN_Send_Message:
+ 112              	.LVL4:
+ 113              	.LFB138:
+  48:Core/Src/can_manager.c **** 
+  49:Core/Src/can_manager.c **** 
+  50:Core/Src/can_manager.c **** uint8_t CAN_Send_Message(CAN_HandleTypeDef *hcan, uint32_t id, uint8_t *data, uint8_t len) {
+ 114              		.loc 1 50 92 is_stmt 1 view -0
+ 115              		.cfi_startproc
+ 116              		@ args = 0, pretend = 0, frame = 32
+ 117              		@ frame_needed = 0, uses_anonymous_args = 0
+ 118              		.loc 1 50 92 is_stmt 0 view .LVU35
+ 119 0000 30B5     		push	{r4, r5, lr}
+ 120              		.cfi_def_cfa_offset 12
+ 121              		.cfi_offset 4, -12
+ 122              		.cfi_offset 5, -8
+ 123              		.cfi_offset 14, -4
+ 124 0002 89B0     		sub	sp, sp, #36
+ARM GAS  /tmp/cc14SYiP.s 			page 4
+
+
+ 125              		.cfi_def_cfa_offset 48
+ 126 0004 0446     		mov	r4, r0
+ 127 0006 1546     		mov	r5, r2
+  51:Core/Src/can_manager.c ****     // DEĞİŞİKLİK: Race condition (çakışma) olmaması için değişkenler local (yerel) tan
+  52:Core/Src/can_manager.c ****     CAN_TxHeaderTypeDef pHeader;
+ 128              		.loc 1 52 5 is_stmt 1 view .LVU36
+  53:Core/Src/can_manager.c ****     uint32_t pTxMailbox; // pTxDatabox yazım hatası düzeltildi
+ 129              		.loc 1 53 5 view .LVU37
+  54:Core/Src/can_manager.c **** 
+  55:Core/Src/can_manager.c ****     pHeader.StdId = id;
+ 130              		.loc 1 55 5 view .LVU38
+ 131              		.loc 1 55 19 is_stmt 0 view .LVU39
+ 132 0008 0291     		str	r1, [sp, #8]
+  56:Core/Src/can_manager.c ****     pHeader.IDE = CAN_ID_STD;
+ 133              		.loc 1 56 5 is_stmt 1 view .LVU40
+ 134              		.loc 1 56 17 is_stmt 0 view .LVU41
+ 135 000a 0021     		movs	r1, #0
+ 136              	.LVL5:
+ 137              		.loc 1 56 17 view .LVU42
+ 138 000c 0491     		str	r1, [sp, #16]
+  57:Core/Src/can_manager.c ****     pHeader.RTR = CAN_RTR_DATA;
+ 139              		.loc 1 57 5 is_stmt 1 view .LVU43
+ 140              		.loc 1 57 17 is_stmt 0 view .LVU44
+ 141 000e 0591     		str	r1, [sp, #20]
+  58:Core/Src/can_manager.c ****     pHeader.DLC = len;
+ 142              		.loc 1 58 5 is_stmt 1 view .LVU45
+ 143              		.loc 1 58 17 is_stmt 0 view .LVU46
+ 144 0010 0693     		str	r3, [sp, #24]
+  59:Core/Src/can_manager.c ****     pHeader.TransmitGlobalTime = DISABLE;
+ 145              		.loc 1 59 5 is_stmt 1 view .LVU47
+ 146              		.loc 1 59 32 is_stmt 0 view .LVU48
+ 147 0012 8DF81C10 		strb	r1, [sp, #28]
+  60:Core/Src/can_manager.c **** 
+  61:Core/Src/can_manager.c ****     // --- GÜNCELLEME: BOŞ KUTU BEKLEME (NON-BLOCKING) ---
+  62:Core/Src/can_manager.c ****     // FreeRTOS kullanacağımız için while(1) ile işlemciyi burada hapsetmiyoruz!
+  63:Core/Src/can_manager.c ****     // Eğer kutular doluysa direkt başarısız dönüyoruz, tekrar deneme işini Task'e bırakıy
+  64:Core/Src/can_manager.c ****     uint32_t freeLevel = HAL_CAN_GetTxMailboxesFreeLevel(hcan);
+ 148              		.loc 1 64 5 is_stmt 1 view .LVU49
+ 149              		.loc 1 64 26 is_stmt 0 view .LVU50
+ 150 0016 FFF7FEFF 		bl	HAL_CAN_GetTxMailboxesFreeLevel
+ 151              	.LVL6:
+  65:Core/Src/can_manager.c ****     
+  66:Core/Src/can_manager.c ****     if (freeLevel == 0) {
+ 152              		.loc 1 66 5 is_stmt 1 view .LVU51
+ 153              		.loc 1 66 8 is_stmt 0 view .LVU52
+ 154 001a 10B9     		cbnz	r0, .L8
+  67:Core/Src/can_manager.c ****         return 0; // Hat çok yoğun, kutular dolu! (Task içinde osDelay yapıp tekrar denenecek)
+ 155              		.loc 1 67 16 view .LVU53
+ 156 001c 0020     		movs	r0, #0
+ 157              	.LVL7:
+ 158              	.L4:
+  68:Core/Src/can_manager.c ****     }
+  69:Core/Src/can_manager.c **** 
+  70:Core/Src/can_manager.c ****     // hcan1 yerine parametre olarak gelen hcan kullanıldı (Modülerlik)
+  71:Core/Src/can_manager.c ****     if (HAL_CAN_AddTxMessage(hcan, &pHeader, data, &pTxMailbox) != HAL_OK) {
+  72:Core/Src/can_manager.c ****         return 0; // Donanımsal hata
+  73:Core/Src/can_manager.c ****     }
+ARM GAS  /tmp/cc14SYiP.s 			page 5
+
+
+  74:Core/Src/can_manager.c ****     return 1; // Başarılı
+  75:Core/Src/can_manager.c **** }
+ 159              		.loc 1 75 1 view .LVU54
+ 160 001e 09B0     		add	sp, sp, #36
+ 161              		.cfi_remember_state
+ 162              		.cfi_def_cfa_offset 12
+ 163              		@ sp needed
+ 164 0020 30BD     		pop	{r4, r5, pc}
+ 165              	.LVL8:
+ 166              	.L8:
+ 167              		.cfi_restore_state
+  71:Core/Src/can_manager.c ****         return 0; // Donanımsal hata
+ 168              		.loc 1 71 5 is_stmt 1 view .LVU55
+  71:Core/Src/can_manager.c ****         return 0; // Donanımsal hata
+ 169              		.loc 1 71 9 is_stmt 0 view .LVU56
+ 170 0022 01AB     		add	r3, sp, #4
+ 171 0024 2A46     		mov	r2, r5
+ 172 0026 02A9     		add	r1, sp, #8
+ 173 0028 2046     		mov	r0, r4
+ 174              	.LVL9:
+  71:Core/Src/can_manager.c ****         return 0; // Donanımsal hata
+ 175              		.loc 1 71 9 view .LVU57
+ 176 002a FFF7FEFF 		bl	HAL_CAN_AddTxMessage
+ 177              	.LVL10:
+  71:Core/Src/can_manager.c ****         return 0; // Donanımsal hata
+ 178              		.loc 1 71 8 discriminator 1 view .LVU58
+ 179 002e 08B9     		cbnz	r0, .L6
+  74:Core/Src/can_manager.c **** }
+ 180              		.loc 1 74 12 view .LVU59
+ 181 0030 0120     		movs	r0, #1
+ 182 0032 F4E7     		b	.L4
+ 183              	.L6:
+  72:Core/Src/can_manager.c ****     }
+ 184              		.loc 1 72 16 view .LVU60
+ 185 0034 0020     		movs	r0, #0
+ 186 0036 F2E7     		b	.L4
+ 187              		.cfi_endproc
+ 188              	.LFE138:
+ 190              		.section	.text.HAL_CAN_RxFifo0MsgPendingCallback,"ax",%progbits
+ 191              		.align	1
+ 192              		.global	HAL_CAN_RxFifo0MsgPendingCallback
+ 193              		.syntax unified
+ 194              		.thumb
+ 195              		.thumb_func
+ 197              	HAL_CAN_RxFifo0MsgPendingCallback:
+ 198              	.LVL11:
+ 199              	.LFB139:
+  76:Core/Src/can_manager.c **** 
+  77:Core/Src/can_manager.c **** 
+  78:Core/Src/can_manager.c **** // Donanımdan mesaj geldiğinde otomatik çalışan fonksiyon
+  79:Core/Src/can_manager.c **** void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+  80:Core/Src/can_manager.c **** {
+ 200              		.loc 1 80 1 is_stmt 1 view -0
+ 201              		.cfi_startproc
+ 202              		@ args = 0, pretend = 0, frame = 40
+ 203              		@ frame_needed = 0, uses_anonymous_args = 0
+ 204              		.loc 1 80 1 is_stmt 0 view .LVU62
+ARM GAS  /tmp/cc14SYiP.s 			page 6
+
+
+ 205 0000 00B5     		push	{lr}
+ 206              		.cfi_def_cfa_offset 4
+ 207              		.cfi_offset 14, -4
+ 208 0002 8BB0     		sub	sp, sp, #44
+ 209              		.cfi_def_cfa_offset 48
+  81:Core/Src/can_manager.c ****     CAN_RxHeaderTypeDef rxHeader;
+ 210              		.loc 1 81 5 is_stmt 1 view .LVU63
+  82:Core/Src/can_manager.c ****     uint8_t rxData[8];
+ 211              		.loc 1 82 5 view .LVU64
+  83:Core/Src/can_manager.c **** 
+  84:Core/Src/can_manager.c ****     // Mesajı kutudan al
+  85:Core/Src/can_manager.c ****     if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK)
+ 212              		.loc 1 85 5 view .LVU65
+ 213              		.loc 1 85 9 is_stmt 0 view .LVU66
+ 214 0004 01AB     		add	r3, sp, #4
+ 215 0006 03AA     		add	r2, sp, #12
+ 216 0008 0021     		movs	r1, #0
+ 217 000a FFF7FEFF 		bl	HAL_CAN_GetRxMessage
+ 218              	.LVL12:
+  86:Core/Src/can_manager.c ****     {
+  87:Core/Src/can_manager.c ****         // BURASI ÇOK ÖNEMLİ:
+  88:Core/Src/can_manager.c ****         // Gelen veriyi burada İŞLEMİYORUZ (Çünkü burası Interrupt, sistemi dondurur).
+  89:Core/Src/can_manager.c ****         // Örnek: Eğer gelen ID == 0x500 ise motoru durdur vs. mantığını 
+  90:Core/Src/can_manager.c ****         // burada kurmak yerine mesajı FreeRTOS Queue (Kuyruk) yapısına fırlatacağız.
+  91:Core/Src/can_manager.c ****         
+  92:Core/Src/can_manager.c ****         // Şimdilik debug için boş bırakıyoruz veya bir LED yakabiliriz.
+  93:Core/Src/can_manager.c ****         // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13); // Mesaj gelince LED yak
+  94:Core/Src/can_manager.c ****         
+  95:Core/Src/can_manager.c ****         // İLERİDE EKLENECEK KOD: 
+  96:Core/Src/can_manager.c ****         // xQueueSendFromISR(CAN_RxQueue, &rxData, &xHigherPriorityTaskWoken);
+  97:Core/Src/can_manager.c ****     }
+ 219              		.loc 1 97 5 is_stmt 1 view .LVU67
+  98:Core/Src/can_manager.c **** }
+ 220              		.loc 1 98 1 is_stmt 0 view .LVU68
+ 221 000e 0BB0     		add	sp, sp, #44
+ 222              		.cfi_def_cfa_offset 4
+ 223              		@ sp needed
+ 224 0010 5DF804FB 		ldr	pc, [sp], #4
+ 225              		.cfi_endproc
+ 226              	.LFE139:
+ 228              		.text
+ 229              	.Letext0:
+ 230              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 231              		.file 3 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 232              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 233              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 234              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h"
+ARM GAS  /tmp/cc14SYiP.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 can_manager.c
+     /tmp/cc14SYiP.s:21     .text.CAN_Config_Init:00000000 $t
+     /tmp/cc14SYiP.s:27     .text.CAN_Config_Init:00000000 CAN_Config_Init
+     /tmp/cc14SYiP.s:105    .text.CAN_Send_Message:00000000 $t
+     /tmp/cc14SYiP.s:111    .text.CAN_Send_Message:00000000 CAN_Send_Message
+     /tmp/cc14SYiP.s:191    .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 $t
+     /tmp/cc14SYiP.s:197    .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 HAL_CAN_RxFifo0MsgPendingCallback
+
+UNDEFINED SYMBOLS
+HAL_CAN_ConfigFilter
+HAL_CAN_Start
+HAL_CAN_ActivateNotification
+HAL_CAN_GetTxMailboxesFreeLevel
+HAL_CAN_AddTxMessage
+HAL_CAN_GetRxMessage

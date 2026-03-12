@@ -76,8 +76,14 @@ endif
 # C sources
 C_SOURCES =  \
 Core/Src/can.c \
+Core/Src/can_manager.c \
+Core/Src/cholesky.c \
 Core/Src/gpio.c \
+Core/Src/kalman.c \
 Core/Src/main.c \
+Core/Src/matrix.c \
+Core/Src/neo-m8n.c \
+Core/Src/sensor_fusıon.c \
 Core/Src/spi.c \
 Core/Src/stm32f4xx_hal_msp.c \
 Core/Src/stm32f4xx_it.c \

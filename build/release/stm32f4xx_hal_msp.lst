@@ -1,0 +1,66 @@
+ARM GAS  /tmp/ccYe61GS.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"stm32f4xx_hal_msp.c"
+  16              		.text
+  17              		.section	.text.HAL_MspInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	HAL_MspInit
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	HAL_MspInit:
+  25              		@ args = 0, pretend = 0, frame = 8
+  26              		@ frame_needed = 0, uses_anonymous_args = 0
+  27              		@ link register save eliminated.
+  28 0000 82B0     		sub	sp, sp, #8
+  29 0002 0021     		movs	r1, #0
+  30 0004 0091     		str	r1, [sp]
+  31 0006 0B4B     		ldr	r3, .L3
+  32 0008 5A6C     		ldr	r2, [r3, #68]
+  33 000a 42F48042 		orr	r2, r2, #16384
+  34 000e 5A64     		str	r2, [r3, #68]
+  35 0010 5A6C     		ldr	r2, [r3, #68]
+  36 0012 02F48042 		and	r2, r2, #16384
+  37 0016 0092     		str	r2, [sp]
+  38 0018 009A     		ldr	r2, [sp]
+  39 001a 0191     		str	r1, [sp, #4]
+  40 001c 1A6C     		ldr	r2, [r3, #64]
+  41 001e 42F08052 		orr	r2, r2, #268435456
+  42 0022 1A64     		str	r2, [r3, #64]
+  43 0024 1B6C     		ldr	r3, [r3, #64]
+  44 0026 03F08053 		and	r3, r3, #268435456
+  45 002a 0193     		str	r3, [sp, #4]
+  46 002c 019B     		ldr	r3, [sp, #4]
+  47 002e 02B0     		add	sp, sp, #8
+  48              		@ sp needed
+  49 0030 7047     		bx	lr
+  50              	.L4:
+  51 0032 00BF     		.align	2
+  52              	.L3:
+  53 0034 00380240 		.word	1073887232
+  55              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/ccYe61GS.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f4xx_hal_msp.c
+     /tmp/ccYe61GS.s:18     .text.HAL_MspInit:00000000 $t
+     /tmp/ccYe61GS.s:24     .text.HAL_MspInit:00000000 HAL_MspInit
+     /tmp/ccYe61GS.s:53     .text.HAL_MspInit:00000034 $d
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,133 @@
+ARM GAS  /tmp/ccL1S58F.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"can_manager.c"
+  16              		.text
+  17              		.section	.text.CAN_Config_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	CAN_Config_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	CAN_Config_Init:
+  25              		@ args = 0, pretend = 0, frame = 40
+  26              		@ frame_needed = 0, uses_anonymous_args = 0
+  27 0000 10B5     		push	{r4, lr}
+  28 0002 8AB0     		sub	sp, sp, #40
+  29 0004 0446     		mov	r4, r0
+  30 0006 0023     		movs	r3, #0
+  31 0008 0593     		str	r3, [sp, #20]
+  32 000a 0693     		str	r3, [sp, #24]
+  33 000c 0122     		movs	r2, #1
+  34 000e 0792     		str	r2, [sp, #28]
+  35 0010 0093     		str	r3, [sp]
+  36 0012 0193     		str	r3, [sp, #4]
+  37 0014 0293     		str	r3, [sp, #8]
+  38 0016 0393     		str	r3, [sp, #12]
+  39 0018 0493     		str	r3, [sp, #16]
+  40 001a 0892     		str	r2, [sp, #32]
+  41 001c 0E23     		movs	r3, #14
+  42 001e 0993     		str	r3, [sp, #36]
+  43 0020 6946     		mov	r1, sp
+  44 0022 FFF7FEFF 		bl	HAL_CAN_ConfigFilter
+  45 0026 2046     		mov	r0, r4
+  46 0028 FFF7FEFF 		bl	HAL_CAN_Start
+  47 002c 0221     		movs	r1, #2
+  48 002e 2046     		mov	r0, r4
+  49 0030 FFF7FEFF 		bl	HAL_CAN_ActivateNotification
+  50 0034 0AB0     		add	sp, sp, #40
+  51              		@ sp needed
+  52 0036 10BD     		pop	{r4, pc}
+  54              		.section	.text.CAN_Send_Message,"ax",%progbits
+  55              		.align	1
+  56              		.global	CAN_Send_Message
+  57              		.syntax unified
+  58              		.thumb
+  59              		.thumb_func
+ARM GAS  /tmp/ccL1S58F.s 			page 2
+
+
+  61              	CAN_Send_Message:
+  62              		@ args = 0, pretend = 0, frame = 32
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+  64 0000 30B5     		push	{r4, r5, lr}
+  65 0002 89B0     		sub	sp, sp, #36
+  66 0004 0446     		mov	r4, r0
+  67 0006 1546     		mov	r5, r2
+  68 0008 0291     		str	r1, [sp, #8]
+  69 000a 0021     		movs	r1, #0
+  70 000c 0491     		str	r1, [sp, #16]
+  71 000e 0591     		str	r1, [sp, #20]
+  72 0010 0693     		str	r3, [sp, #24]
+  73 0012 8DF81C10 		strb	r1, [sp, #28]
+  74 0016 FFF7FEFF 		bl	HAL_CAN_GetTxMailboxesFreeLevel
+  75 001a 10B9     		cbnz	r0, .L8
+  76 001c 0020     		movs	r0, #0
+  77              	.L4:
+  78 001e 09B0     		add	sp, sp, #36
+  79              		@ sp needed
+  80 0020 30BD     		pop	{r4, r5, pc}
+  81              	.L8:
+  82 0022 01AB     		add	r3, sp, #4
+  83 0024 2A46     		mov	r2, r5
+  84 0026 02A9     		add	r1, sp, #8
+  85 0028 2046     		mov	r0, r4
+  86 002a FFF7FEFF 		bl	HAL_CAN_AddTxMessage
+  87 002e 08B9     		cbnz	r0, .L6
+  88 0030 0120     		movs	r0, #1
+  89 0032 F4E7     		b	.L4
+  90              	.L6:
+  91 0034 0020     		movs	r0, #0
+  92 0036 F2E7     		b	.L4
+  94              		.section	.text.HAL_CAN_RxFifo0MsgPendingCallback,"ax",%progbits
+  95              		.align	1
+  96              		.global	HAL_CAN_RxFifo0MsgPendingCallback
+  97              		.syntax unified
+  98              		.thumb
+  99              		.thumb_func
+ 101              	HAL_CAN_RxFifo0MsgPendingCallback:
+ 102              		@ args = 0, pretend = 0, frame = 40
+ 103              		@ frame_needed = 0, uses_anonymous_args = 0
+ 104 0000 00B5     		push	{lr}
+ 105 0002 8BB0     		sub	sp, sp, #44
+ 106 0004 01AB     		add	r3, sp, #4
+ 107 0006 03AA     		add	r2, sp, #12
+ 108 0008 0021     		movs	r1, #0
+ 109 000a FFF7FEFF 		bl	HAL_CAN_GetRxMessage
+ 110 000e 0BB0     		add	sp, sp, #44
+ 111              		@ sp needed
+ 112 0010 5DF804FB 		ldr	pc, [sp], #4
+ 114              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/ccL1S58F.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 can_manager.c
+     /tmp/ccL1S58F.s:18     .text.CAN_Config_Init:00000000 $t
+     /tmp/ccL1S58F.s:24     .text.CAN_Config_Init:00000000 CAN_Config_Init
+     /tmp/ccL1S58F.s:55     .text.CAN_Send_Message:00000000 $t
+     /tmp/ccL1S58F.s:61     .text.CAN_Send_Message:00000000 CAN_Send_Message
+     /tmp/ccL1S58F.s:95     .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 $t
+     /tmp/ccL1S58F.s:101    .text.HAL_CAN_RxFifo0MsgPendingCallback:00000000 HAL_CAN_RxFifo0MsgPendingCallback
+
+UNDEFINED SYMBOLS
+HAL_CAN_ConfigFilter
+HAL_CAN_Start
+HAL_CAN_ActivateNotification
+HAL_CAN_GetTxMailboxesFreeLevel
+HAL_CAN_AddTxMessage
+HAL_CAN_GetRxMessage

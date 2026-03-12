@@ -1,0 +1,172 @@
+ARM GAS  /tmp/ccFGZZ4E.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              		.section	.text.Error_Handler,"ax",%progbits
+  18              		.align	1
+  19              		.global	Error_Handler
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	Error_Handler:
+  25              		@ Volatile: function does not return.
+  26              		@ args = 0, pretend = 0, frame = 0
+  27              		@ frame_needed = 0, uses_anonymous_args = 0
+  28              		@ link register save eliminated.
+  29              		.syntax unified
+  30              	@ 962 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+  31 0000 72B6     		cpsid i
+  32              	@ 0 "" 2
+  33              		.thumb
+  34              		.syntax unified
+  35              	.L2:
+  36 0002 FEE7     		b	.L2
+  38              		.section	.text.SystemClock_Config,"ax",%progbits
+  39              		.align	1
+  40              		.global	SystemClock_Config
+  41              		.syntax unified
+  42              		.thumb
+  43              		.thumb_func
+  45              	SystemClock_Config:
+  46              		@ args = 0, pretend = 0, frame = 80
+  47              		@ frame_needed = 0, uses_anonymous_args = 0
+  48 0000 00B5     		push	{lr}
+  49 0002 95B0     		sub	sp, sp, #84
+  50 0004 3022     		movs	r2, #48
+  51 0006 0021     		movs	r1, #0
+  52 0008 08A8     		add	r0, sp, #32
+  53 000a FFF7FEFF 		bl	memset
+  54 000e 0023     		movs	r3, #0
+  55 0010 0393     		str	r3, [sp, #12]
+  56 0012 0493     		str	r3, [sp, #16]
+  57 0014 0593     		str	r3, [sp, #20]
+  58 0016 0693     		str	r3, [sp, #24]
+  59 0018 0793     		str	r3, [sp, #28]
+  60 001a 0193     		str	r3, [sp, #4]
+ARM GAS  /tmp/ccFGZZ4E.s 			page 2
+
+
+  61 001c 204A     		ldr	r2, .L9
+  62 001e 116C     		ldr	r1, [r2, #64]
+  63 0020 41F08051 		orr	r1, r1, #268435456
+  64 0024 1164     		str	r1, [r2, #64]
+  65 0026 126C     		ldr	r2, [r2, #64]
+  66 0028 02F08052 		and	r2, r2, #268435456
+  67 002c 0192     		str	r2, [sp, #4]
+  68 002e 019A     		ldr	r2, [sp, #4]
+  69 0030 0293     		str	r3, [sp, #8]
+  70 0032 1C4B     		ldr	r3, .L9+4
+  71 0034 1A68     		ldr	r2, [r3]
+  72 0036 42F48042 		orr	r2, r2, #16384
+  73 003a 1A60     		str	r2, [r3]
+  74 003c 1B68     		ldr	r3, [r3]
+  75 003e 03F48043 		and	r3, r3, #16384
+  76 0042 0293     		str	r3, [sp, #8]
+  77 0044 029B     		ldr	r3, [sp, #8]
+  78 0046 0123     		movs	r3, #1
+  79 0048 0893     		str	r3, [sp, #32]
+  80 004a 4FF48033 		mov	r3, #65536
+  81 004e 0993     		str	r3, [sp, #36]
+  82 0050 0222     		movs	r2, #2
+  83 0052 0E92     		str	r2, [sp, #56]
+  84 0054 4FF48003 		mov	r3, #4194304
+  85 0058 0F93     		str	r3, [sp, #60]
+  86 005a 0423     		movs	r3, #4
+  87 005c 1093     		str	r3, [sp, #64]
+  88 005e A821     		movs	r1, #168
+  89 0060 1191     		str	r1, [sp, #68]
+  90 0062 1292     		str	r2, [sp, #72]
+  91 0064 1393     		str	r3, [sp, #76]
+  92 0066 08A8     		add	r0, sp, #32
+  93 0068 FFF7FEFF 		bl	HAL_RCC_OscConfig
+  94 006c 98B9     		cbnz	r0, .L7
+  95 006e 0F23     		movs	r3, #15
+  96 0070 0393     		str	r3, [sp, #12]
+  97 0072 0223     		movs	r3, #2
+  98 0074 0493     		str	r3, [sp, #16]
+  99 0076 0023     		movs	r3, #0
+ 100 0078 0593     		str	r3, [sp, #20]
+ 101 007a 4FF4A053 		mov	r3, #5120
+ 102 007e 0693     		str	r3, [sp, #24]
+ 103 0080 4FF48053 		mov	r3, #4096
+ 104 0084 0793     		str	r3, [sp, #28]
+ 105 0086 0521     		movs	r1, #5
+ 106 0088 03A8     		add	r0, sp, #12
+ 107 008a FFF7FEFF 		bl	HAL_RCC_ClockConfig
+ 108 008e 20B9     		cbnz	r0, .L8
+ 109 0090 15B0     		add	sp, sp, #84
+ 110              		@ sp needed
+ 111 0092 5DF804FB 		ldr	pc, [sp], #4
+ 112              	.L7:
+ 113 0096 FFF7FEFF 		bl	Error_Handler
+ 114              	.L8:
+ 115 009a FFF7FEFF 		bl	Error_Handler
+ 116              	.L10:
+ 117 009e 00BF     		.align	2
+ARM GAS  /tmp/ccFGZZ4E.s 			page 3
+
+
+ 118              	.L9:
+ 119 00a0 00380240 		.word	1073887232
+ 120 00a4 00700040 		.word	1073770496
+ 122              		.section	.text.main,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	main
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 129              	main:
+ 130              		@ Volatile: function does not return.
+ 131              		@ args = 0, pretend = 0, frame = 0
+ 132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 133 0000 08B5     		push	{r3, lr}
+ 134 0002 FFF7FEFF 		bl	HAL_Init
+ 135 0006 FFF7FEFF 		bl	SystemClock_Config
+ 136 000a FFF7FEFF 		bl	MX_GPIO_Init
+ 137 000e FFF7FEFF 		bl	MX_CAN1_Init
+ 138 0012 FFF7FEFF 		bl	MX_SPI1_Init
+ 139 0016 FFF7FEFF 		bl	MX_SPI2_Init
+ 140 001a FFF7FEFF 		bl	MX_USART1_UART_Init
+ 141 001e FFF7FEFF 		bl	MX_USART2_UART_Init
+ 142              	.L12:
+ 143 0022 FEE7     		b	.L12
+ 145              		.ident	"GCC: (15:13.2.rel1-2) 13.2.1 20231009"
+ARM GAS  /tmp/ccFGZZ4E.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+     /tmp/ccFGZZ4E.s:18     .text.Error_Handler:00000000 $t
+     /tmp/ccFGZZ4E.s:24     .text.Error_Handler:00000000 Error_Handler
+     /tmp/ccFGZZ4E.s:39     .text.SystemClock_Config:00000000 $t
+     /tmp/ccFGZZ4E.s:45     .text.SystemClock_Config:00000000 SystemClock_Config
+     /tmp/ccFGZZ4E.s:119    .text.SystemClock_Config:000000a0 $d
+     /tmp/ccFGZZ4E.s:123    .text.main:00000000 $t
+     /tmp/ccFGZZ4E.s:129    .text.main:00000000 main
+
+UNDEFINED SYMBOLS
+memset
+HAL_RCC_OscConfig
+HAL_RCC_ClockConfig
+HAL_Init
+MX_GPIO_Init
+MX_CAN1_Init
+MX_SPI1_Init
+MX_SPI2_Init
+MX_USART1_UART_Init
+MX_USART2_UART_Init
